@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EP.1 | CLAUDE.md에 루틴을 심다 — 2026-04-16</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #0f0f0f; overflow: hidden; }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      background: #0f0f0f;
+    }
+
+    .slides-wrapper {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.45s cubic-bezier(0.55, 0, 0.1, 1);
+      will-change: auto;
+    }
+
+    .slide {
+      min-width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 80px;
+      box-sizing: border-box;
+      contain: layout paint style;
+      text-align: center;
+    }
+
+    /* Typography */
+    h1 { font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 900; color: #f8fafc; letter-spacing: -0.03em; line-height: 1.15; }
+    h2 { font-size: clamp(1.4rem, 3vw, 2.4rem); font-weight: 700; color: #f8fafc; letter-spacing: -0.02em; margin-bottom: 32px; }
+    p  { font-size: clamp(1rem, 1.8vw, 1.25rem); line-height: 1.75; color: rgba(255,255,255,0.55); }
+    .accent { color: #6366f1; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 6px;
+      padding: 5px 12px;
+      margin-bottom: 20px;
+    }
+
+    /* Slide 1 — Title */
+    .slide-title { background: linear-gradient(135deg, #0f0f0f 0%, #1a1040 100%); }
+    .slide-title h1 { margin-bottom: 20px; }
+    .slide-title .sub { font-size: clamp(0.9rem, 1.6vw, 1.15rem); color: rgba(255,255,255,0.45); margin-top: 8px; }
+    .slide-title .date { font-size: 13px; color: rgba(255,255,255,0.3); margin-top: 24px; font-family: monospace; letter-spacing: 0.05em; }
+    .glow { text-shadow: 0 0 60px rgba(99,102,241,0.5); }
+
+    /* Card grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 16px;
+    }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: left;
+    }
+    .card .icon { font-size: 28px; margin-bottom: 14px; }
+    .card .card-title { font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
+    .card .card-body { font-size: 0.85rem; color: rgba(255,255,255,0.45); line-height: 1.65; }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      max-width: 900px;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .step {
+      flex: 1;
+      text-align: center;
+      padding: 0 16px;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -10px;
+      top: 24px;
+      color: rgba(99,102,241,0.5);
+      font-size: 1.4rem;
+    }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.15);
+      border: 2px solid #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #6366f1;
+      margin: 0 auto 16px;
+    }
+    .step-title { font-size: 0.95rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
+    .step-body { font-size: 0.8rem; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+    /* List */
+    .insight-list {
+      list-style: none;
+      max-width: 700px;
+      width: 100%;
+      margin-top: 16px;
+      text-align: left;
+    }
+    .insight-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+    }
+    .insight-list li:last-child { border-bottom: none; }
+    .insight-list li::before { content: '▸'; color: #6366f1; font-size: 1rem; margin-top: 2px; flex-shrink: 0; }
+
+    /* Big stat */
+    .big-stat { font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; color: #6366f1; line-height: 1; margin: 16px 0; }
+    .stat-label { font-size: clamp(0.9rem, 1.6vw, 1.1rem); color: rgba(255,255,255,0.45); }
+
+    /* End slide */
+    .slide-end { background: linear-gradient(135deg, #1a1040 0%, #0f0f0f 100%); }
+    .next-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 32px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      background: rgba(99,102,241,0.12);
+      border: 1.5px solid rgba(99,102,241,0.3);
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .next-badge strong { color: #6366f1; }
+
+    /* UI overlays */
+    .slide-counter {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-family: monospace;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      z-index: 100;
+      letter-spacing: 0.05em;
+    }
+    .progress { position: fixed; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.07); z-index: 100; }
+    #progress-bar { height: 100%; background: #6366f1; transition: width 0.4s ease; }
+
+    /* Fragment */
+    .fragment { opacity: 0; transform: translateY(10px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .fragment.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+<div class="deck">
+  <div class="slides-wrapper">
+
+    <!-- Slide 1: 타이틀 -->
+    <section class="slide slide-title">
+      <div class="tag">EP.1 · 2026-04-16</div>
+      <h1 class="glow">CLAUDE.md에<br><span class="accent">루틴을 심다</span></h1>
+      <p class="sub">AI가 매일 저녁 콘텐츠를 대신 써주는 시스템</p>
+      <p class="date">코마인드웍스 · 정호</p>
+    </section>
+
+    <!-- Slide 2: 오늘의 미션 -->
+    <section class="slide">
+      <div class="tag">오늘의 미션</div>
+      <h2>하루 1단어로<br><span class="accent">콘텐츠 3종</span>이 생성되는 구조</h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="icon">⚙️</div>
+          <div class="card-title">CLAUDE.md 설정</div>
+          <div class="card-body">글로벌 설정에 매일 마무리 루틴 섹션 추가</div>
+        </div>
+        <div class="card">
+          <div class="icon">🔑</div>
+          <div class="card-title">트리거 정의</div>
+          <div class="card-body">"오늘 마무리" 한 마디로 모든 것이 시작</div>
+        </div>
+        <div class="card">
+          <div class="icon">📦</div>
+          <div class="card-title">Notion 연동</div>
+          <div class="card-body">생성된 콘텐츠가 자동으로 아카이브에 저장</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: 전투 기록 -->
+    <section class="slide">
+      <div class="tag">전투 기록</div>
+      <h2>열어보니 <span class="accent">이미 들어가 있었다</span></h2>
+      <ul class="insight-list">
+        <li>CLAUDE.md에 섹션 추가하려고 파일을 열었더니, 이전 대화에서 Claude가 이미 반영해 둠</li>
+        <li>추가 작업 없이 바로 테스트 단계로 전환 — 실제로 트리거가 작동하는지 확인</li>
+        <li>"오늘 마무리" 입력 → 블로그 글 + 스크립트 + PPT 생성 end-to-end 검증</li>
+      </ul>
+    </section>
+
+    <!-- Slide 4: 핵심 인사이트 1 -->
+    <section class="slide">
+      <div class="tag">핵심 인사이트 ①</div>
+      <h2>시스템이<br><span class="accent">습관을 만든다</span></h2>
+      <p style="max-width:600px; margin-top: 8px;">
+        매일 밤 콘텐츠를 써야 한다는 의지력에 기대는 게 아니라,<br>
+        트리거 하나로 블로그 글이 완성되는 <strong style="color:#f8fafc;">구조</strong>를 만들면<br>
+        지속 가능성이 완전히 달라진다.
+      </p>
+      <div class="big-stat" style="margin-top: 40px;">1 단어</div>
+      <p class="stat-label">→ 블로그 + 스크립트 + PPT + Notion 저장</p>
+    </section>
+
+    <!-- Slide 5: 핵심 인사이트 2 -->
+    <section class="slide">
+      <div class="tag">핵심 인사이트 ②</div>
+      <h2>AI는 도구가 아니라<br><span class="accent">시스템의 일부</span>다</h2>
+      <p style="max-width:640px; margin-top: 8px;">
+        CLAUDE.md는 단순한 설정 파일이 아니다.<br>
+        나의 작업 철학과 루틴이 담긴 <strong style="color:#f8fafc;">두 번째 뇌</strong>다.<br>
+        한 번 심어두면, 모든 프로젝트에서 그 규칙이 살아 움직인다.
+      </p>
+    </section>
+
+    <!-- Slide 6: 핵심 인사이트 3 -->
+    <section class="slide">
+      <div class="tag">핵심 인사이트 ③</div>
+      <h2>콘텐츠 생산은<br><span class="accent">사람이 하면 안 된다</span></h2>
+      <ul class="insight-list" style="max-width: 640px;">
+        <li>사람은 경험만 한다 — 기록과 편집은 AI가 담당</li>
+        <li>매일 밤 콘텐츠 자산이 자동으로 쌓이는 복리 구조</li>
+        <li>Notion 아카이브 → 나중에 강의·책·뉴스레터의 원석이 됨</li>
+      </ul>
+    </section>
+
+    <!-- Slide 7: 완성한 것 -->
+    <section class="slide">
+      <div class="tag">완성한 것</div>
+      <h2>오늘 <span class="accent">실제로</span> 만든 것들</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">루틴 섹션</div>
+          <div class="step-body">CLAUDE.md 글로벌 설정에 매일 마무리 루틴 확정</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-title">트리거 정의</div>
+          <div class="step-body">"오늘 끝" / "오늘 마무리" / "Day N 끝" 키워드 등록</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-title">동작 검증</div>
+          <div class="step-body">실제 테스트로 블로그·스크립트·PPT 생성 확인</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: 레벨업 포인트 -->
+    <section class="slide">
+      <div class="tag">레벨업 포인트</div>
+      <h2>오늘 <span class="accent">성장한</span> 것들</h2>
+      <ul class="insight-list" style="max-width: 680px;">
+        <li>Claude Code의 CLAUDE.md가 얼마나 강력한 자동화 도구인지 체감</li>
+        <li>트리거 기반 루틴 설계 — 의지력 없이 실행되는 구조의 위력</li>
+        <li>Notion 아카이브 DB와 연동해서 콘텐츠 자산이 자동으로 쌓이는 복리 시스템 구축</li>
+      </ul>
+    </section>
+
+    <!-- Slide 9: 다음 미션 -->
+    <section class="slide slide-end">
+      <div class="tag">다음 미션</div>
+      <h2>아직 끝나지 않았다</h2>
+      <ul class="insight-list" style="max-width: 640px; margin-top: 16px;">
+        <li>Notion 콘텐츠 아카이브 DB 실제 저장 end-to-end 테스트</li>
+        <li>vanilla-slides PPT 자동 생성 품질 개선</li>
+        <li>며칠간 루틴 돌려보면서 콘텐츠 품질 데이터 쌓기</li>
+      </ul>
+      <div class="next-badge">
+        다음 편 예고 → <strong>Notion 자동 저장 완전 연결</strong>
+      </div>
+    </section>
+
+  </div><!-- /.slides-wrapper -->
+
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">9</span></div>
+  <div class="progress"><div id="progress-bar"></div></div>
+</div><!-- /.deck -->
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+
+  document.getElementById('total').textContent = total;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    const wrapper = document.querySelector('.slides-wrapper');
+    wrapper.style.willChange = 'transform';
+    wrapper.style.transform  = `translateX(${-current * 100}vw)`;
+    wrapper.addEventListener('transitionend', () => {
+      wrapper.style.willChange = 'auto';
+    }, { once: true });
+    document.getElementById('current').textContent = current + 1;
+    const bar = document.getElementById('progress-bar');
+    if (bar) bar.style.width = `${((current + 1) / total) * 100}%`;
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+    if (e.key === 'ArrowRight' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft')                   goTo(current - 1);
+    if (e.key === 'Home')                        goTo(0);
+    if (e.key === 'End')                         goTo(total - 1);
+    if (e.key === 'f' || e.key === 'F')          toggleFullscreen();
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? goTo(current + 1) : goTo(current - 1);
+  });
+
+  goTo(0);
+</script>
+</body>
+</html>
