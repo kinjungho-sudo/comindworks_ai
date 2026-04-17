@@ -27,4 +27,8 @@ _시스템 초기화: 2026-04-17_
 
 | 2026-04-17 | ADD | ai-agent-learning-data-alchera-2026-04-17 | AI에이전트 | URL 수집: AI 에이전트 학습 데이터 가이드 (ALCHERA) |
 
-_총 저장 페이지: 5 | 이번 주 추가: 5_
+| 2026-04-17 | ADD | ai-mogawdat-dystopia-2026-04-17 | AI에이전트 | URL 수집: 모 가왓 AI 혼돈 경고 |
+
+| 2026-04-17 | ADD | ai-jensen-token-engineer-2026-04-17 | AI에이전트 | URL 수집: 젠슨 황 토큰 경제 에이전트 AI |
+
+_총 저장 페이지: 7 | 이번 주 추가: 7_
