@@ -77,4 +77,6 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-17 | ADD | biz-openclaw-opensource-ai-agent-2026-04-17 | 창업 | 웹검색 수집: OpenClaw 1인 오픈소스 AI 에이전트 사례 |
 | 2026-04-17 | ADD | biz-ai-goldentime-1person-startup-2026-04-17 | 창업 | 웹검색 수집: AI 골든타임 1인 창업 지금이 최적 타이밍 |
 
-_총 저장 페이지: 32 | 이번 주 추가: 32_
+| 2026-04-17 | ADD | biz-psychology-of-money-3habits-2026-04-17 | 창업 | 텍스트 수집: 돈의 심리학 — 부자는 절대 안 하는 가난한 습관 3가지 (Morgan Housel) |
+
+_총 저장 페이지: 33 | 이번 주 추가: 33_
