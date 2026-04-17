@@ -11,10 +11,14 @@
             "id": "ee1d6884806582e0",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "CLAUDE.md",
+                "mode": "preview",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "새 탭"
+              "title": "CLAUDE"
             }
           }
         ]
@@ -178,6 +182,25 @@
   },
   "active": "ee1d6884806582e0",
   "lastOpenFiles": [
+    "wiki/환영합니다!.md",
+    "data/wiki/창업/이렇게 구상하세요 제프 베조스의 사업개발 씽킹.md",
+    "data/wiki/창업/biz-solopreneur-ai-era-strategy-2026-04-17.md",
+    "data/wiki/창업/biz-psychology-of-money-3habits-2026-04-17.md",
+    "data/wiki/창업/biz-peter-levels-1person-28billion-2026-04-17.md",
+    "data/wiki/창업/biz-openclaw-opensource-ai-agent-2026-04-17.md",
+    "data/wiki/창업/biz-creator-saas-1person-2026-04-17.md",
+    "data/wiki/창업/biz-bezos-flywheel-2026-04-17.md",
+    "data/wiki/창업/biz-ai-goldentime-1person-startup-2026-04-17.md",
+    "data/wiki/창업/2026 모두의창업 완벽 가이드  5,000명 선발·최대 10억원 지원 총정리.md",
+    "data/wiki/Source.base",
+    "data/wiki/AI에이전트/ai-karpathy-llmwiki-claudecode-2026-04-17.md",
+    "data/wiki/AI에이전트/ai-jensen-nothink-2026-04-17.md",
+    "data/wiki/AI에이전트/ai-industrial-revolution-ai-2026-04-17.md",
+    "data/wiki/AI에이전트/ai-claudecode-llmwiki-namu-2026-04-17.md",
+    "data/source/biz-psychology-of-money-3habits-2026-04-17.md",
+    "CLAUDE.md",
+    "data/log.md",
+    "data/index.md",
     "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
     "wiki/kin_wiki/환영합니다!.md",
     "wiki/글쓰기",
@@ -187,23 +210,6 @@
     "wiki/콘텐츠/content-youtube-start-5tips-2026-04-17.md",
     "wiki/콘텐츠/content-isleua-writing-love-2026-04-17.md",
     "wiki/창업/biz-wilkinson-best-worst-business-2026-04-17.md",
-    "wiki/창업/biz-poor-habits-3things-2026-04-17.md",
-    "wiki/창업/biz-neilpatel-million-dollar-roadmap-2026-04-17.md",
-    "wiki/창업/biz-mike-boring-saas-10steps-2026-04-17.md",
-    "wiki/창업/biz-jachung-ai-6questions-2026-04-17.md",
-    "wiki/창업/biz-danmartell-zero-to-1m-2026-04-17.md",
-    "wiki/창업/biz-daniel-priestly-5steps-2026-04-17.md",
-    "wiki/나/생각/na-생각-mindset-180-2026-04-17.md",
-    "wiki/AI에이전트/ai-mogawdat-dystopia-2026-04-17.md",
-    "wiki/AI에이전트/ai-jensen-token-engineer-2026-04-17.md",
-    "wiki/AI에이전트/ai-danmartell-3levels-ai-2026-04-17.md",
-    "wiki/AI에이전트/ai-claudecode-token-save-6tips-2026-04-17.md",
-    "wiki/AI에이전트/ai-agentops-2layer-system-2026-04-17.md",
-    "source/na-생각-mindset-180-2026-04-17.md",
-    "source/content-youtube-start-5tips-2026-04-17.md",
-    "source/content-isleua-writing-love-2026-04-17.md",
-    "source/biz-wilkinson-best-worst-business-2026-04-17.md",
-    "source/biz-poor-habits-3things-2026-04-17.md",
-    "source/biz-neilpatel-million-dollar-roadmap-2026-04-17.md"
+    "wiki/창업/biz-poor-habits-3things-2026-04-17.md"
   ]
 }

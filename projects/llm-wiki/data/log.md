@@ -61,4 +61,22 @@ _시스템 초기화: 2026-04-17_
 
 | 2026-04-17 | ADD | biz-poor-habits-3things-2026-04-17 | 창업 | URL 수집: 가난한 사람의 5가지 착각, 부자 되려면 버려야 할 습관 |
 
-_총 저장 페이지: 22 | 이번 주 추가: 22_
+| 2026-04-17 | ADD | ai-jensen-nothink-2026-04-17 | AI에이전트 | URL 수집: 젠슨 황 "잡생각 금지" 불안은 시뮬레이션 |
+
+| 2026-04-17 | ADD | ai-industrial-revolution-ai-2026-04-17 | AI에이전트 | URL 수집: 산업혁명 벼락 부자 — AI혁명 기회, 토큰 이코노미 |
+
+| 2026-04-17 | ADD | ai-karpathy-llmwiki-claudecode-2026-04-17 | AI에이전트 | URL 수집: 카파시 LLM Wiki + Claude Code 10배 향상 |
+
+| 2026-04-17 | ADD | ai-claudecode-llmwiki-namu-2026-04-17 | AI에이전트 | URL 수집: Claude Code 나무위키처럼 정리 (카파시 LLM Wiki 실습) |
+
+| 2026-04-17 | ADD | biz-bezos-flywheel-2026-04-17 | 창업 | Obsidian 수집: 제프 베조스 플라이휠 — 아마존 선순환 사업개발씽킹 |
+
+| 2026-04-17 | ADD | biz-creator-saas-1person-2026-04-17 | 창업 | 웹검색 수집: 본업+SaaS 1인 창업가 수익화 전략 (Brett/ConvertKit/Typeshare) |
+| 2026-04-17 | ADD | biz-peter-levels-1person-28billion-2026-04-17 | 창업 | 웹검색 수집: 피터 레벨스 연 28억 1인 개발자 전략 |
+| 2026-04-17 | ADD | biz-solopreneur-ai-era-strategy-2026-04-17 | 창업 | 웹검색 수집: 솔로프리너 AI 시대 1인 기업가 전략 |
+| 2026-04-17 | ADD | biz-openclaw-opensource-ai-agent-2026-04-17 | 창업 | 웹검색 수집: OpenClaw 1인 오픈소스 AI 에이전트 사례 |
+| 2026-04-17 | ADD | biz-ai-goldentime-1person-startup-2026-04-17 | 창업 | 웹검색 수집: AI 골든타임 1인 창업 지금이 최적 타이밍 |
+
+| 2026-04-17 | ADD | biz-psychology-of-money-3habits-2026-04-17 | 창업 | 텍스트 수집: 돈의 심리학 — 부자는 절대 안 하는 가난한 습관 3가지 (Morgan Housel) |
+
+_총 저장 페이지: 33 | 이번 주 추가: 33_

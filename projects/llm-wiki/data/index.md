@@ -1,16 +1,20 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-04-17 | 총 페이지: 22_
+_마지막 업데이트: 2026-04-17 | 총 페이지: 33_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (7)
+## 📁 AI에이전트 (11)
 
 - [[ai-llm-wiki-youtube-2026-04-17]] - 상위 0.1프로만 쓰는 현 시점 AI를 가장 똑똑하게 쓰는 방법 #LLM #Wiki #지식관리 #카르파시
 - [[ai-agent-learning-data-alchera-2026-04-17]] - AI 에이전트 학습 데이터 수집·전처리·관리 완전 가이드 #학습데이터 #전처리 #에이전트설계
 - [[ai-mogawdat-dystopia-2026-04-17]] - 모 가왓: 10~15년 AI 혼돈의 시대, 지능 양극화와 생존 전략 3가지 #AI경고 #미래예측 #모가왓
 - [[ai-jensen-token-engineer-2026-04-17]] - 젠슨 황: 연봉 7억 엔지니어는 토큰을 절반 써야 한다, 에이전트 AI + 로보틱스 시대 #젠슨황 #에이전트AI #토큰경제
+- [[ai-jensen-nothink-2026-04-17]] - 젠슨 황: "잡생각 금지", 불안은 시뮬레이션일 뿐이다 — 엔비디아를 만든 평생 철학 #젠슨황 #마인드셋 #실행력 #불안극복
+- [[ai-industrial-revolution-ai-2026-04-17]] - 산업혁명 때 벼락 부자 된 사람들, 그 기회가 지금 똑같이 왔다 — 토큰 이코노미, 지능이 거래되는 시대 #AI혁명 #산업혁명 #토큰이코노미 #벼락부자
+- [[ai-karpathy-llmwiki-claudecode-2026-04-17]] - 카파시 LLM Wiki로 Claude Code 10배 향상: RAG 없이 마크다운 폴더만으로 AI 지식 베이스 구축 #카파시 #LLMWiki #ClaudeCode #Obsidian #AI지식관리
+- [[ai-claudecode-llmwiki-namu-2026-04-17]] - Claude Code가 내 노하우를 나무위키처럼 정리: 노트북LM vs RAG vs LLM Wiki 비교, Obsidian 실습 #ClaudeCode #LLMWiki #나무위키 #비개발자 #복리
 - [[ai-danmartell-3levels-ai-2026-04-17]] - 댄 마텔: AI 3단계 레벨, 99%는 챗봇(Level 1)에 갇혀있다 #AI3단계 #프론티어AI #지능양극화
 - [[ai-agentops-2layer-system-2026-04-17]] - 비개발자 1개월 AI 에이전트 실전 운용: ClaudeCode+OpenClo 2층 시스템, 하네스 엔지니어링, 오토리서치 #실전운용 #하네스엔지니어링 #오토리서치 #ClaudeCode
 - [[ai-claudecode-token-save-6tips-2026-04-17]] - 클로드 코드 토큰 절약 필승 설정 7가지: Sonnet 고정·컨텍스트 정리·MCP 제어 #ClaudeCode #토큰절약 #비용최적화
@@ -23,7 +27,7 @@ _마지막 업데이트: 2026-04-17 | 총 페이지: 22_
 
 ---
 
-## 📁 창업 (8)
+## 📁 창업 (15)
 
 - [[biz-toss-mvp-litmers-2026-04-17]] - 토스 MVP 전략 교훈, 프리토타이핑 vs 지금의 해법 #MVP #프리토타이핑 #스타트업 #랜딩페이지
 - [[biz-danmartell-zero-to-1m-2026-04-17]] - 댄 마텔: 0달러에서 100만 달러까지, AI 시대 제로베이스 창업 플랜 #창업 #첫클라이언트 #AI창업 #SellByChat
@@ -33,6 +37,13 @@ _마지막 업데이트: 2026-04-17 | 총 페이지: 22_
 - [[biz-neilpatel-million-dollar-roadmap-2026-04-17]] - 닐 퍼텔: 오디언스→SEO→SNS→수익화, 12개월 100만 달러 5단계 로드맵 #닐퍼텔 #SEO #디지털마케팅 #백링크 #이메일리스트
 - [[biz-mike-boring-saas-10steps-2026-04-17]] - 마이크: 지루하지만 검증된 아이디어로 5개 SaaS 부트스트랩, 월 2억 7천만원 실패 없는 10단계 플레이북 #부트스트랩SaaS #검증된아이디어 #평생할인 #앱수모
 - [[biz-poor-habits-3things-2026-04-17]] - 가난한 사람의 5가지 착각: 소득착각·소비착각·수익률착각, 재테크 스타트는 목돈부터 #마인드셋 #돈습관 #재테크 #목돈 #착각
+- [[biz-bezos-flywheel-2026-04-17]] - 제프 베조스 플라이휠: 냅킨에 그린 아마존 선순환 구조, 고객경험→트래픽→셀러→규모→저비용 무한루프 #플라이휠 #베조스 #아마존 #선순환 #사업개발씽킹
+- [[biz-creator-saas-1person-2026-04-17]] - 본업+SaaS로 수십억 버는 1인 창업가: 오디언스 먼저·ConvertKit·Typeshare 사례 #1인창업 #SaaS #크리에이터 #수익화
+- [[biz-peter-levels-1person-28billion-2026-04-17]] - 피터 레벨스: 연 28억 1인 개발자의 2주 출시·처음부터 유료·자동화 전략 #1인창업 #피터레벨스 #PhotoAI #NomadList
+- [[biz-solopreneur-ai-era-strategy-2026-04-17]] - 솔로프리너: AI 시대 1인 기업가 자유 4가지, 사람을 정의하고 일일 실행하라 #솔로프리너 #AI창업 #1인기업
+- [[biz-openclaw-opensource-ai-agent-2026-04-17]] - OpenClaw: 투자·마케팅 0원, 오픈소스+기술력으로 GitHub 역사 쓴 1인 AI 에이전트 #오픈소스 #AI에이전트 #1인창업
+- [[biz-ai-goldentime-1person-startup-2026-04-17]] - AI 골든타임: 산업혁명처럼 지금 먼저 움직이는 1인 창업가가 시장 선점 #AI골든타임 #솔로프리너 #산업혁명 #창업전략
+- [[biz-psychology-of-money-3habits-2026-04-17]] - 돈의 심리학: 대가 지불·내 게임 파악·욕심 버리기, 부자는 절대 안 하는 가난한 습관 3가지 #돈의심리학 #MorganHousel #투자마인드셋 #복리 #습관
 
 ---
 
