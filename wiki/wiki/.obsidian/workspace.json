@@ -1,0 +1,204 @@
+{
+  "main": {
+    "id": "532939d0398e8e1a",
+    "type": "split",
+    "children": [
+      {
+        "id": "214dd93618f1dde3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "247605b0c71c0538",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "새 탭"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "6f43b8430d58b9e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "a4ea78ccf6725884",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8dc9abd805ec4243",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "131550147944e81c",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "d792470d5a7985d1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "dabcbd226fbb0e21",
+    "type": "split",
+    "children": [
+      {
+        "id": "29ea526e862abb82",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b0d3e9c1c0374464",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "백링크"
+            }
+          },
+          {
+            "id": "30736bbae3ae9c4f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "나가는 링크"
+            }
+          },
+          {
+            "id": "2d0cead8d06df054",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "5a0ef38fc8079c11",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "8efdf956288e85fe",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "247605b0c71c0538",
+  "lastOpenFiles": [
+    "글쓰기",
+    "글스기",
+    "무제",
+    "kin_wiki/환영합니다!.md",
+    "kin_wiki",
+    "콘텐츠/content-youtube-start-5tips-2026-04-17.md",
+    "콘텐츠/content-isleua-writing-love-2026-04-17.md",
+    "창업/biz-wilkinson-best-worst-business-2026-04-17.md",
+    "창업/biz-poor-habits-3things-2026-04-17.md",
+    "창업/biz-neilpatel-million-dollar-roadmap-2026-04-17.md",
+    "창업/biz-mike-boring-saas-10steps-2026-04-17.md",
+    "창업/biz-jachung-ai-6questions-2026-04-17.md",
+    "창업/biz-danmartell-zero-to-1m-2026-04-17.md",
+    "창업/biz-daniel-priestly-5steps-2026-04-17.md",
+    "자동화/auto-ai-video-automation-2026-04-17.md",
+    "나/생각/na-생각-왜창업했는가-2026-04-17.md",
+    "나/생각/na-생각-mindset-180-2026-04-17.md",
+    "AI에이전트/ai-mogawdat-dystopia-2026-04-17.md",
+    "AI에이전트/ai-jensen-token-engineer-2026-04-17.md",
+    "AI에이전트/ai-danmartell-3levels-ai-2026-04-17.md",
+    "AI에이전트/ai-claudecode-token-save-6tips-2026-04-17.md",
+    "AI에이전트/ai-agentops-2layer-system-2026-04-17.md"
+  ]
+}

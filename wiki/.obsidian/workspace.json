@@ -1,0 +1,216 @@
+{
+  "main": {
+    "id": "522ec13d1f6045fc",
+    "type": "split",
+    "children": [
+      {
+        "id": "a1f16d0bd8e25090",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ee1d6884806582e0",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "auto-ai-video-automation-2026-04-17"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "cf3df8ca548d78a1",
+    "type": "split",
+    "children": [
+      {
+        "id": "f4b4deb9ff4c89a7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0b3e3e275a73174e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "5f7ab6f0b28576d1",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "bc3018c560423436",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "aa9f2fa4d8e318a8",
+    "type": "split",
+    "children": [
+      {
+        "id": "72bc43d287121995",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bce8cfee4bb66641",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "auto-ai-video-automation-2026-04-17 의 백링크"
+            }
+          },
+          {
+            "id": "92d7ea6e80abb010",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "auto-ai-video-automation-2026-04-17 의 나가는 링크"
+            }
+          },
+          {
+            "id": "6287d5f2c61bbcaa",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "d247a107d88b9a9f",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "b567d2c15e7685e9",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "auto-ai-video-automation-2026-04-17 의 개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "0b3e3e275a73174e",
+  "lastOpenFiles": [
+    "wiki/kin_wiki/환영합니다!.md",
+    "wiki/글쓰기",
+    "wiki/나/생각/na-생각-왜창업했는가-2026-04-17.md",
+    "index.md",
+    "wiki/kin_wiki",
+    "wiki/콘텐츠/content-youtube-start-5tips-2026-04-17.md",
+    "wiki/콘텐츠/content-isleua-writing-love-2026-04-17.md",
+    "wiki/창업/biz-wilkinson-best-worst-business-2026-04-17.md",
+    "wiki/창업/biz-poor-habits-3things-2026-04-17.md",
+    "wiki/창업/biz-neilpatel-million-dollar-roadmap-2026-04-17.md",
+    "wiki/창업/biz-mike-boring-saas-10steps-2026-04-17.md",
+    "wiki/창업/biz-jachung-ai-6questions-2026-04-17.md",
+    "wiki/창업/biz-danmartell-zero-to-1m-2026-04-17.md",
+    "wiki/창업/biz-daniel-priestly-5steps-2026-04-17.md",
+    "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
+    "wiki/나/생각/na-생각-mindset-180-2026-04-17.md",
+    "wiki/AI에이전트/ai-mogawdat-dystopia-2026-04-17.md",
+    "wiki/AI에이전트/ai-jensen-token-engineer-2026-04-17.md",
+    "wiki/AI에이전트/ai-danmartell-3levels-ai-2026-04-17.md",
+    "wiki/AI에이전트/ai-claudecode-token-save-6tips-2026-04-17.md",
+    "wiki/AI에이전트/ai-agentops-2layer-system-2026-04-17.md",
+    "source/na-생각-mindset-180-2026-04-17.md",
+    "source/content-youtube-start-5tips-2026-04-17.md",
+    "source/content-isleua-writing-love-2026-04-17.md",
+    "source/biz-wilkinson-best-worst-business-2026-04-17.md",
+    "source/biz-poor-habits-3things-2026-04-17.md",
+    "source/biz-neilpatel-million-dollar-roadmap-2026-04-17.md"
+  ]
+}

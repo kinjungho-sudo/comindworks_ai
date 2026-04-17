@@ -18,5 +18,5 @@ if [ -d "$SCRIPT_DIR/venv" ]; then
 fi
 
 cd "$SCRIPT_DIR"
-echo "Starting LLM Wiki Backend on port 3000..."
-uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+echo "Starting LLM Wiki Backend on port 5500..."
+uvicorn main:app --host 0.0.0.0 --port 5500 --reload
