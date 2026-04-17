@@ -71,4 +71,10 @@ _시스템 초기화: 2026-04-17_
 
 | 2026-04-17 | ADD | biz-bezos-flywheel-2026-04-17 | 창업 | Obsidian 수집: 제프 베조스 플라이휠 — 아마존 선순환 사업개발씽킹 |
 
-_총 저장 페이지: 27 | 이번 주 추가: 27_
+| 2026-04-17 | ADD | biz-creator-saas-1person-2026-04-17 | 창업 | 웹검색 수집: 본업+SaaS 1인 창업가 수익화 전략 (Brett/ConvertKit/Typeshare) |
+| 2026-04-17 | ADD | biz-peter-levels-1person-28billion-2026-04-17 | 창업 | 웹검색 수집: 피터 레벨스 연 28억 1인 개발자 전략 |
+| 2026-04-17 | ADD | biz-solopreneur-ai-era-strategy-2026-04-17 | 창업 | 웹검색 수집: 솔로프리너 AI 시대 1인 기업가 전략 |
+| 2026-04-17 | ADD | biz-openclaw-opensource-ai-agent-2026-04-17 | 창업 | 웹검색 수집: OpenClaw 1인 오픈소스 AI 에이전트 사례 |
+| 2026-04-17 | ADD | biz-ai-goldentime-1person-startup-2026-04-17 | 창업 | 웹검색 수집: AI 골든타임 1인 창업 지금이 최적 타이밍 |
+
+_총 저장 페이지: 32 | 이번 주 추가: 32_
