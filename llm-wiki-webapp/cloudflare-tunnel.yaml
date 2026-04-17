@@ -1,0 +1,14 @@
+# Cloudflare Tunnel 설정
+# Mac Mini에서 ~/.cloudflared/config.yml 에 병합할 내용
+
+tunnel: <YOUR_TUNNEL_ID>
+credentials-file: /Users/<username>/.cloudflared/<YOUR_TUNNEL_ID>.json
+
+ingress:
+  - hostname: n8n.comindworks.xyz
+    service: http://localhost:5678
+
+  - hostname: wiki.comindworks.xyz
+    service: http://localhost:3000
+
+  - service: http_status:404
