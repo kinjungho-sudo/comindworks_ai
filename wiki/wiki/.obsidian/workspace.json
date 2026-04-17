@@ -1,0 +1,193 @@
+{
+  "main": {
+    "id": "628f207437c26cb3",
+    "type": "split",
+    "children": [
+      {
+        "id": "10f22c7f62e75e8f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f35011a23c22d207",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "그래프 뷰"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c020013ca0b3be93",
+    "type": "split",
+    "children": [
+      {
+        "id": "f20f25e45dc57723",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6ecbf5b39d53a922",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "724b595d6abcfffb",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "faaa800fb7a78796",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "20a3d72af0306167",
+    "type": "split",
+    "children": [
+      {
+        "id": "c257edce4cdafa0f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9924ded76c6f77fc",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "무제.base",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "무제 의 백링크"
+            }
+          },
+          {
+            "id": "b9fa13b98f049e94",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "무제.base",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "무제 의 나가는 링크"
+            }
+          },
+          {
+            "id": "94042f84455fdb30",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "3d7c611a1d95bfa3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "9d0f804577b8cef5",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "무제.base",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "무제 의 개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "6ecbf5b39d53a922",
+  "lastOpenFiles": [
+    "AI에이전트/ai-claudecode-llmwiki-namu-2026-04-17.md",
+    "글쓰기.md",
+    "글쓰기",
+    "나/생각/na-생각-mindset-180-2026-04-17.md",
+    "나/일기/na-일기-수술전날-2026-04-17.md",
+    "나/생각/na-생각-하네스엔지니어링-2026-04-17.md",
+    "Source.base",
+    "AI에이전트/ai-agent-learning-data-alchera-2026-04-17.md"
+  ]
+}

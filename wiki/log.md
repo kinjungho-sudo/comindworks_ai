@@ -67,4 +67,6 @@ _시스템 초기화: 2026-04-17_
 
 | 2026-04-17 | ADD | ai-karpathy-llmwiki-claudecode-2026-04-17 | AI에이전트 | URL 수집: 카파시 LLM Wiki + Claude Code 10배 향상 |
 
-_총 저장 페이지: 25 | 이번 주 추가: 25_
+| 2026-04-17 | ADD | ai-claudecode-llmwiki-namu-2026-04-17 | AI에이전트 | URL 수집: Claude Code 나무위키처럼 정리 (카파시 LLM Wiki 실습) |
+
+_총 저장 페이지: 26 | 이번 주 추가: 26_
