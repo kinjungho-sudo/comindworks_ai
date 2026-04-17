@@ -11,14 +11,10 @@
             "id": "ee1d6884806582e0",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
-                "mode": "preview",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "auto-ai-video-automation-2026-04-17"
+              "title": "새 탭"
             }
           }
         ]
@@ -94,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "auto-ai-video-automation-2026-04-17 의 백링크"
+              "title": "백링크"
             }
           },
           {
@@ -113,12 +108,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "auto-ai-video-automation-2026-04-17 의 나가는 링크"
+              "title": "나가는 링크"
             }
           },
           {
@@ -156,13 +150,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "auto-ai-video-automation-2026-04-17 의 개요"
+              "title": "개요"
             }
           }
         ]
@@ -183,8 +176,9 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "0b3e3e275a73174e",
+  "active": "ee1d6884806582e0",
   "lastOpenFiles": [
+    "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
     "wiki/kin_wiki/환영합니다!.md",
     "wiki/글쓰기",
     "wiki/나/생각/na-생각-왜창업했는가-2026-04-17.md",
@@ -199,7 +193,6 @@
     "wiki/창업/biz-jachung-ai-6questions-2026-04-17.md",
     "wiki/창업/biz-danmartell-zero-to-1m-2026-04-17.md",
     "wiki/창업/biz-daniel-priestly-5steps-2026-04-17.md",
-    "wiki/자동화/auto-ai-video-automation-2026-04-17.md",
     "wiki/나/생각/na-생각-mindset-180-2026-04-17.md",
     "wiki/AI에이전트/ai-mogawdat-dystopia-2026-04-17.md",
     "wiki/AI에이전트/ai-jensen-token-engineer-2026-04-17.md",
