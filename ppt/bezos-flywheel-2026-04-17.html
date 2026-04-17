@@ -64,8 +64,8 @@
   /* ── Slide 2 Background ── */
   .slide-2 {
     background:
-      radial-gradient(ellipse 60% 50% at 10% 50%, rgba(99,102,241,0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 90% 50%, rgba(16,185,129,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 60% at 15% 50%, rgba(99,102,241,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 85% 50%, rgba(245,158,11,0.05) 0%, transparent 50%),
       var(--bg);
   }
 
@@ -149,108 +149,143 @@
   }
 
   /* === SLIDE 2 === */
+  .s2-layout {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    width: 100%;
+    max-width: 1040px;
+  }
+
+  /* 왼쪽: 냅킨 이미지 영역 */
+  .s2-napkin-wrap {
+    flex: 0 0 auto;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .s2-napkin-frame {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 24px 64px rgba(0,0,0,0.6),
+      0 0 40px rgba(99,102,241,0.12);
+  }
+  .s2-napkin-frame img {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    filter: sepia(0.15) contrast(1.05);
+  }
+  .s2-napkin-caption {
+    font-size: 11px;
+    color: var(--dimmed);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .s2-napkin-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  /* 오른쪽: 텍스트 영역 */
+  .s2-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
   .s2-label {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--indigo-light);
-    margin-bottom: 12px;
-    align-self: flex-start;
+    margin-bottom: 10px;
   }
   .s2-title {
-    font-size: clamp(32px, 4vw, 48px);
+    font-size: clamp(26px, 3.2vw, 40px);
     font-weight: 900;
     letter-spacing: -0.04em;
     line-height: 1.1;
-    align-self: flex-start;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
   }
   .s2-title .accent { color: var(--indigo-light); }
 
-  .flywheel-grid {
-    display: grid;
-    grid-template-columns: 1fr 80px 1fr 80px 1fr 80px 1fr;
-    align-items: center;
-    width: 100%;
-    max-width: 960px;
-    gap: 0;
-    margin-bottom: 36px;
+  .s2-loop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
   }
-
-  .fw-node {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 20px 16px;
-    text-align: center;
-    position: relative;
-    transition: border-color 0.3s;
-  }
-  .fw-node:hover { border-color: rgba(99,102,241,0.5); }
-
-  .fw-node.highlight {
-    border-color: rgba(99,102,241,0.4);
-    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(99,102,241,0.05));
-  }
-
-  .fw-icon {
-    font-size: 28px;
-    margin-bottom: 8px;
-    display: block;
-  }
-  .fw-name {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-  }
-  .fw-en {
-    font-size: 10px;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .fw-arrow {
+  .s2-loop-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--indigo-light);
-    font-size: 20px;
-    opacity: 0.6;
-  }
-
-  .s2-insight-row {
-    display: flex;
-    gap: 16px;
-    width: 100%;
-    max-width: 960px;
-  }
-  .s2-insight-card {
-    flex: 1;
+    gap: 12px;
+    padding: 11px 16px;
     background: var(--surface);
     border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.2s;
+  }
+  .s2-loop-item:hover { border-color: rgba(99,102,241,0.3); }
+  .s2-loop-num {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--indigo);
+    min-width: 18px;
+    font-variant-numeric: tabular-nums;
+  }
+  .s2-loop-arrow {
+    font-size: 13px;
+    color: var(--indigo-light);
+    opacity: 0.5;
+    margin: 0 2px;
+  }
+  .s2-loop-text {
+    font-size: 13px;
+    color: rgba(248,250,252,0.8);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .s2-loop-text strong { color: var(--text); }
+
+  .s2-key-insight {
+    background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(99,102,241,0.05));
+    border: 1.5px solid rgba(99,102,241,0.3);
     border-radius: 12px;
     padding: 16px 20px;
     display: flex;
     align-items: flex-start;
     gap: 12px;
   }
-  .s2-insight-card .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--indigo);
-    margin-top: 6px;
+  .s2-insight-icon {
+    font-size: 20px;
     flex-shrink: 0;
+    margin-top: 1px;
   }
-  .s2-insight-text {
+  .s2-insight-body {
     font-size: 13px;
-    color: rgba(248,250,252,0.7);
-    line-height: 1.6;
+    color: rgba(248,250,252,0.75);
+    line-height: 1.65;
   }
-  .s2-insight-text strong { color: var(--text); font-weight: 700; }
+  .s2-insight-body strong { color: var(--text); }
 
   /* === SLIDE 3 === */
   .s3-label {
@@ -468,88 +503,76 @@
          SLIDE 2 — 아마존 플라이휠 구조
     ════════════════════════════════════ -->
     <div class="slide slide-2">
-      <div class="s2-label">Amazon Flywheel</div>
-      <h2 class="s2-title">
-        자기 강화 루프 —<br>
-        <span class="accent">한 곳을 강화하면 전체가 빨라진다</span>
-      </h2>
+      <div class="s2-layout">
 
-      <div class="flywheel-grid">
-        <div class="fw-node highlight">
-          <span class="fw-icon">💰</span>
-          <div class="fw-name">낮은 비용 구조</div>
-          <div class="fw-en">Lower Cost</div>
+        <!-- 왼쪽: 원본 냅킨 이미지 -->
+        <div class="s2-napkin-wrap">
+          <div class="s2-napkin-frame">
+            <span class="s2-napkin-label">Original Sketch · 2001</span>
+            <img id="napkin-img"
+              src="https://cdn.maily.so/q2fvvss7xdqlytel2c7p10od7o7t"
+              alt="Jeff Bezos Flywheel Napkin Sketch">
+            <svg id="napkin-fallback" style="display:none;width:100%;padding:24px;" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="140" cy="140" r="118" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.35"/>
+              <circle cx="140" cy="140" r="80" stroke="#6366f1" stroke-width="1" opacity="0.15"/>
+              <text x="140" y="34" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="sans-serif" font-weight="700">Customer Experience</text>
+              <text x="242" y="105" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="sans-serif" font-weight="700">Traffic</text>
+              <text x="228" y="196" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="sans-serif" font-weight="700">Sellers</text>
+              <text x="140" y="248" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="sans-serif" font-weight="700">Selection</text>
+              <text x="48" y="196" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="sans-serif" font-weight="700">Lower Price</text>
+              <text x="38" y="105" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="sans-serif" font-weight="700">Lower Cost</text>
+              <defs><marker id="arr" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#818cf8"/></marker></defs>
+              <path d="M162 36 Q210 52 230 88" stroke="#818cf8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+              <path d="M240 118 Q248 156 228 182" stroke="#818cf8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+              <path d="M213 200 Q185 232 158 242" stroke="#818cf8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+              <path d="M122 242 Q88 228 65 202" stroke="#818cf8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+              <path d="M50 182 Q34 148 44 112" stroke="#818cf8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+              <path d="M55 88 Q82 54 118 38" stroke="#818cf8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+              <text x="140" y="148" text-anchor="middle" fill="#6366f1" font-size="32" font-family="sans-serif" opacity="0.25">↻</text>
+            </svg>
+          </div>
+          <p class="s2-napkin-caption">출처: Brunch @jsrecord/94 · maily.so/gritbd</p>
         </div>
-        <div class="fw-arrow">→</div>
-        <div class="fw-node highlight">
-          <span class="fw-icon">🏷️</span>
-          <div class="fw-name">더 낮은 가격</div>
-          <div class="fw-en">Lower Price</div>
-        </div>
-        <div class="fw-arrow">→</div>
-        <div class="fw-node highlight">
-          <span class="fw-icon">⭐</span>
-          <div class="fw-name">고객 경험 향상</div>
-          <div class="fw-en">Customer Exp.</div>
-        </div>
-        <div class="fw-arrow">→</div>
-        <div class="fw-node">
-          <span class="fw-icon">📈</span>
-          <div class="fw-name">트래픽 증가</div>
-          <div class="fw-en">More Traffic</div>
-        </div>
-      </div>
 
-      <!-- second row reversed -->
-      <div style="display:flex;align-items:center;width:100%;max-width:960px;gap:0;margin-bottom:10px;">
-        <div style="flex:1;"></div>
-        <div style="width:80px;display:flex;align-items:center;justify-content:center;color:var(--indigo-light);font-size:20px;opacity:0.6;">↑</div>
-        <div style="flex:1;"></div>
-        <div style="width:80px;"></div>
-        <div style="flex:1;"></div>
-        <div style="width:80px;display:flex;align-items:center;justify-content:center;color:var(--indigo-light);font-size:20px;opacity:0.6;">↓</div>
-        <div style="flex:1;"></div>
-      </div>
+        <!-- 오른쪽: 설명 -->
+        <div class="s2-content">
+          <div class="s2-label">Amazon Flywheel</div>
+          <h2 class="s2-title">
+            자기 강화 루프 —<br>
+            <span class="accent">한 곳을 강화하면 전체가 빨라진다</span>
+          </h2>
 
-      <div style="display:grid;grid-template-columns:1fr 80px 1fr 80px 1fr 80px 1fr;align-items:center;width:100%;max-width:960px;margin-bottom:28px;">
-        <div class="fw-node">
-          <span class="fw-icon">🔄</span>
-          <div class="fw-name">규모→비용 감소</div>
-          <div class="fw-en">Growth Loop</div>
-        </div>
-        <div class="fw-arrow" style="transform:rotate(180deg)">→</div>
-        <div class="fw-node">
-          <span class="fw-icon">📦</span>
-          <div class="fw-name">상품 다양성</div>
-          <div class="fw-en">Selection</div>
-        </div>
-        <div class="fw-arrow" style="transform:rotate(180deg)">→</div>
-        <div class="fw-node">
-          <span class="fw-icon">🏪</span>
-          <div class="fw-name">셀러 유입</div>
-          <div class="fw-en">More Sellers</div>
-        </div>
-        <div class="fw-arrow" style="transform:rotate(180deg)">→</div>
-        <div class="fw-node" style="opacity:0.3;font-size:11px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;">
-          ↑ 순환
-        </div>
-      </div>
+          <div class="s2-loop-list">
+            <div class="s2-loop-item">
+              <span class="s2-loop-num">①</span>
+              <span class="s2-loop-text"><strong>낮은 비용 구조</strong> → 더 낮은 가격 제공 가능</span>
+            </div>
+            <div class="s2-loop-item">
+              <span class="s2-loop-num">②</span>
+              <span class="s2-loop-text"><strong>고객 경험 향상</strong> → 트래픽·방문자 증가</span>
+            </div>
+            <div class="s2-loop-item">
+              <span class="s2-loop-num">③</span>
+              <span class="s2-loop-text"><strong>셀러 유입 증가</strong> → 상품 다양성 확대</span>
+            </div>
+            <div class="s2-loop-item">
+              <span class="s2-loop-num">④</span>
+              <span class="s2-loop-text"><strong>규모 확대</strong> → 고정비 감소 → 다시 ①로</span>
+            </div>
+          </div>
 
-      <div class="s2-insight-row">
-        <div class="s2-insight-card">
-          <div class="dot"></div>
-          <p class="s2-insight-text"><strong>처음엔 느리다.</strong> 아마존도 7년간 적자였다. 플라이휠은 처음 돌리기가 가장 힘들다.</p>
+          <div class="s2-key-insight">
+            <span class="s2-insight-icon">💡</span>
+            <p class="s2-insight-body">
+              아마존의 모든 사업 기획은 <strong>이 플라이휠에 넣어보고</strong> 작동하는지 검증했다.
+              연결되지 않는 기획은 추진하지 않았다. 창업 7년차에도 이 원칙은 바뀌지 않았다.
+            </p>
+          </div>
         </div>
-        <div class="s2-insight-card">
-          <div class="dot"></div>
-          <p class="s2-insight-text"><strong>방향의 일관성.</strong> 이리저리 흔들리면 절대 가속이 안 붙는다. 고객 중심을 절대 타협하지 않았다.</p>
-        </div>
-        <div class="s2-insight-card">
-          <div class="dot"></div>
-          <p class="s2-insight-text"><strong>모든 사업 기획을</strong> 플라이휠에 대입했다. 연결되지 않는 기획은 추진하지 않았다.</p>
-        </div>
+
       </div>
     </div>
+
 
 
     <!-- ═══════════════════════════════════
@@ -649,6 +672,16 @@
 <div class="nav-hint">← → 방향키 이동 &nbsp;·&nbsp; F 전체화면</div>
 
 <script>
+  // 냅킨 이미지 로드 실패 시 SVG 폴백 표시
+  const napkinImg = document.getElementById('napkin-img');
+  const napkinFallback = document.getElementById('napkin-fallback');
+  if (napkinImg) {
+    napkinImg.addEventListener('error', function() {
+      napkinImg.style.display = 'none';
+      if (napkinFallback) napkinFallback.style.display = 'block';
+    });
+  }
+
   let current = 0;
   const slides = document.querySelectorAll('.slide');
   const total  = slides.length;
