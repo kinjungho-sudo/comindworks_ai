@@ -26,19 +26,19 @@ _입력 수집 + 입구 관리 (품질/중복/분류)_
 - 저품질 → "품질 기준 미달이에요. 저장하지 않을게요. [사유]"
 
 ### Step 3 — 중복 검사 (`scripts/duplicate_check.py`)
-- `wiki/index.md` 에서 유사 페이지 검색
+- `projects/llm-wiki/data/index.md` 에서 유사 페이지 검색
 - 80%+ 유사 → 사용자 확인 요청
 
 ### Step 4 — 카테고리 분류
-- `wiki/guidelines/librarian_rules.md` 의 분류 기준 참조
+- `projects/llm-wiki/guidelines/librarian_rules.md` 의 분류 기준 참조
 - Claude가 내용 보고 자동 판단
 - "📁 [카테고리]로 분류했어요. 맞나요?" 확인
 
 ### Step 5 — 저장 실행
-1. `wiki/source/[파일명].md` — Raw 원본 저장
-2. `wiki/wiki/[카테고리]/[파일명].md` — Wiki 페이지 생성 (`wiki-writer` 스킬 호출)
-3. `wiki/index.md` — 목차 업데이트
-4. `wiki/log.md` — 이력 기록
+1. `projects/llm-wiki/data/source/[파일명].md` — Raw 원본 저장
+2. `projects/llm-wiki/data/wiki/[카테고리]/[파일명].md` — Wiki 페이지 생성 (`wiki-writer` 스킬 호출)
+3. `projects/llm-wiki/data/index.md` — 목차 업데이트
+4. `projects/llm-wiki/data/log.md` — 이력 기록
 5. Git 커밋
 
 ### Step 6 — 완료 보고
@@ -55,4 +55,4 @@ _입력 수집 + 입구 관리 (품질/중복/분류)_
 
 ## 주의
 - `.env` 에서 NOTION_API_KEY, NOTION_DB_ID 읽어서 notion-sync 스킬에 전달
-- 저장 실패 시 `wiki/log.md`에 ERROR 기록
+- 저장 실패 시 `projects/llm-wiki/data/log.md`에 ERROR 기록

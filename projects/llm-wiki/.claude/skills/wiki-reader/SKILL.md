@@ -14,7 +14,7 @@ index.md만 먼저 읽고 관련 페이지 7~8개만 선별 로드하여 답변 
 ## 실행 순서
 
 ### Step 1 — index.md 전체 로드
-`wiki/index.md` 하나만 읽는다. (목차 파악 — 토큰 최소)
+`projects/llm-wiki/data/index.md` 하나만 읽는다. (목차 파악 — 토큰 최소)
 
 ### Step 2 — 관련 페이지 선별 (`scripts/selective_read.py`)
 선별 기준:
@@ -46,7 +46,7 @@ index.md만 먼저 읽고 관련 페이지 7~8개만 선별 로드하여 답변 
 3. 내 인사이트로 마무리
 
 ### Step 5 — 글쓰기 검수 (글쓰기 요청 시에만)
-`wiki/guidelines/writing_checklist.md` 로드 → 체크리스트 검수 → 필요 시 수정
+`projects/llm-wiki/guidelines/writing_checklist.md` 로드 → 체크리스트 검수 → 필요 시 수정
 
 ### Step 6 — 완성된 글 저장 (글쓰기 요청 시에만)
 "이 글을 Wiki에 저장할까요?" 확인 후 → `wiki-collector` 호출:

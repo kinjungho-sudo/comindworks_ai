@@ -7,21 +7,21 @@ from datetime import date, timedelta
 
 
 CATEGORY_PATHS = {
-    "AI에이전트": "wiki/wiki/AI에이전트",
-    "자동화": "wiki/wiki/자동화",
-    "창업": "wiki/wiki/창업",
-    "콘텐츠": "wiki/wiki/콘텐츠",
-    "개발": "wiki/wiki/개발",
-    "리서치": "wiki/wiki/리서치",
-    "나": "wiki/wiki/나",
-    "기타": "wiki/wiki/기타",
+    "AI에이전트": "projects/llm-wiki/data/wiki/AI에이전트",
+    "자동화": "projects/llm-wiki/data/wiki/자동화",
+    "창업": "projects/llm-wiki/data/wiki/창업",
+    "콘텐츠": "projects/llm-wiki/data/wiki/콘텐츠",
+    "개발": "projects/llm-wiki/data/wiki/개발",
+    "리서치": "projects/llm-wiki/data/wiki/리서치",
+    "나": "projects/llm-wiki/data/wiki/나",
+    "기타": "projects/llm-wiki/data/wiki/기타",
 }
 
 SUBCATEGORY_PATHS = {
-    "diary": "wiki/wiki/나/일기",
-    "thought": "wiki/wiki/나/생각",
-    "experience": "wiki/wiki/나/경험",
-    "retrospect": "wiki/wiki/나/회고",
+    "diary": "projects/llm-wiki/data/wiki/나/일기",
+    "thought": "projects/llm-wiki/data/wiki/나/생각",
+    "experience": "projects/llm-wiki/data/wiki/나/경험",
+    "retrospect": "projects/llm-wiki/data/wiki/나/회고",
 }
 
 PERSONAL_TYPES = {"diary", "thought", "experience", "retrospect"}

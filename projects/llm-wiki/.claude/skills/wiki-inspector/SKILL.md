@@ -15,7 +15,7 @@ Wiki의 건강 상태를 점검한다.
 ## 실행 순서
 
 ### Step 1 — 현황 수집 (`scripts/inspect_wiki.py`)
-- `wiki/index.md` 전체 파싱
+- `projects/llm-wiki/data/index.md` 전체 파싱
 - 총 페이지 수, 카테고리별 분포 집계
 - 이번 주 추가 페이지 목록 (log.md에서)
 
@@ -69,7 +69,7 @@ Wiki의 건강 상태를 점검한다.
 ```
 
 ### Step 6 — 자동 조치 (승인 시)
-- 만료 페이지: `wiki/wiki/기타/archived/` 로 이동 + index.md에서 제거
+- 만료 페이지: `projects/llm-wiki/data/wiki/기타/archived/` 로 이동 + index.md에서 제거
 - 크기 초과: 분할 실행
 - 모순: 사용자가 선택한 버전 유지, 나머지 deprecated 태그
 

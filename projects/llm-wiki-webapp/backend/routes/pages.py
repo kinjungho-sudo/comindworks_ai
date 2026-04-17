@@ -50,7 +50,7 @@ def get_pages():
                 "category": category,
                 "quality_score": quality_score,
                 "date": created,
-                "path": f"wiki/wiki/{category}/{fname}",
+                "path": f"projects/llm-wiki/data/wiki/{category}/{fname}",
             })
 
     pages.sort(key=lambda x: x["date"], reverse=True)

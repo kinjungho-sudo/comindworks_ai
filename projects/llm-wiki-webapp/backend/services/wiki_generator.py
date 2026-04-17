@@ -77,7 +77,7 @@ async def generate_wiki_page(scraped: dict, input_type: str) -> dict:
         "category": category,
         "content": wiki_content,
         "created": created,
-        "path": f"wiki/wiki/{category}/{slug}.md",
+        "path": f"projects/llm-wiki/data/wiki/{category}/{slug}.md",
     }
 
 

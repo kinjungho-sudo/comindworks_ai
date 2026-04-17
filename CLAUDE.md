@@ -14,7 +14,7 @@ Claude는 도서관 입구 관리자(품질 검사) + 사서(분류 및 정리) 
 
 ## 새 대화 시작 시 자동 현황 보고
 
-대화가 시작되면 **항상 먼저** `wiki/index.md`와 `wiki/log.md`를 읽고 아래 형식으로 보고한다:
+대화가 시작되면 **항상 먼저** `projects/llm-wiki/data/index.md`와 `projects/llm-wiki/data/log.md`를 읽고 아래 형식으로 보고한다:
 
 ```
 📚 Wiki 현황 보고
@@ -97,10 +97,10 @@ Claude는 도서관 입구 관리자(품질 검사) + 사서(분류 및 정리) 
   │
   ▼
 [4] 저장 실행
-  ├── wiki/source/ 에 원본 저장
-  ├── wiki/wiki/[카테고리]/ 에 Wiki 페이지 생성
-  ├── wiki/index.md 업데이트
-  ├── wiki/log.md 기록
+  ├── projects/llm-wiki/data/source/ 에 원본 저장
+  ├── projects/llm-wiki/data/wiki/[카테고리]/ 에 Wiki 페이지 생성
+  ├── projects/llm-wiki/data/index.md 업데이트
+  ├── projects/llm-wiki/data/log.md 기록
   └── git 커밋 (자동)
   │
   ▼
@@ -120,7 +120,7 @@ Claude는 도서관 입구 관리자(품질 검사) + 사서(분류 및 정리) 
 요청
   │
   ▼
-[1] wiki/index.md 전체 로드 (목차만 — 토큰 최소)
+[1] projects/llm-wiki/data/index.md 전체 로드 (목차만 — 토큰 최소)
   │
   ▼
 [2] 관련 페이지 선별 (최대 7~8개)
@@ -137,7 +137,7 @@ Claude는 도서관 입구 관리자(품질 검사) + 사서(분류 및 정리) 
 [5] 글쓰기 요청이면: writing_checklist.md 검수 적용
   │
   ▼
-[6] 완성된 글도 수집 → wiki/wiki/콘텐츠/ 에 저장
+[6] 완성된 글도 수집 → projects/llm-wiki/data/wiki/콘텐츠/ 에 저장
 ```
 
 ---
@@ -176,10 +176,10 @@ auto-n8n-workflow-basic-2026-04-17.md
 
 ## 운영 규칙 참조
 
-- 상세 운영 규칙: `wiki/guidelines/librarian_rules.md`
-- 글쓰기 검수: `wiki/guidelines/writing_checklist.md`
-- 전체 목차: `wiki/index.md`
-- 작업 이력: `wiki/log.md`
+- 상세 운영 규칙: `projects/llm-wiki/guidelines/librarian_rules.md`
+- 글쓰기 검수: `projects/llm-wiki/guidelines/writing_checklist.md`
+- 전체 목차: `projects/llm-wiki/data/index.md`
+- 작업 이력: `projects/llm-wiki/data/log.md`
 
 ---
 

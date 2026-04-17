@@ -42,7 +42,7 @@ type: [url|text|pdf|image|diary|thought|experience|retrospect]
 ```
 
 ### Step 2 — 관련 페이지 자동 링크
-- `wiki/index.md` 에서 태그/키워드 매칭으로 관련 페이지 탐색
+- `projects/llm-wiki/data/index.md` 에서 태그/키워드 매칭으로 관련 페이지 탐색
 - 상위 3개 링크 자동 삽입
 
 ### Step 3 — 페이지 크기 모니터링
@@ -62,9 +62,9 @@ type: [url|text|pdf|image|diary|thought|experience|retrospect]
 
 ## 파일 저장 위치
 ```
-wiki/wiki/[카테고리]/[파일명].md
+projects/llm-wiki/data/wiki/[카테고리]/[파일명].md
 ```
 카테고리가 `나`인 경우:
 ```
-wiki/wiki/나/[서브카테고리]/[파일명].md
+projects/llm-wiki/data/wiki/나/[서브카테고리]/[파일명].md
 ```

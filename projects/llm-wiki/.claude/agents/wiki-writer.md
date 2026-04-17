@@ -1,8 +1,8 @@
 # Agent: wiki-writer
 
 ## 담당 영역
-- `wiki/wiki/` — Wiki 페이지 생성 및 관리
-- `wiki/index.md` — 목차 업데이트 (페이지 추가 시)
+- `projects/llm-wiki/data/wiki/` — Wiki 페이지 생성 및 관리
+- `projects/llm-wiki/data/index.md` — 목차 업데이트 (페이지 추가 시)
 
 ## 역할 설명
 수집된 내용을 표준 Wiki 페이지 형식으로 변환하는 에이전트.
@@ -19,5 +19,5 @@ frontmatter 생성, 관련 페이지 링크, 페이지 분할 담당.
 - wiki-collector 에이전트가 입력 전처리 완료 후 호출됨
 
 ## 산출물
-- `wiki/wiki/[카테고리]/[파일명].md`
+- `projects/llm-wiki/data/wiki/[카테고리]/[파일명].md`
 - 페이지 분할 시 2개 파일
