@@ -1,11 +1,11 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-04-17 | 총 페이지: 25_
+_마지막 업데이트: 2026-04-17 | 총 페이지: 26_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (10)
+## 📁 AI에이전트 (11)
 
 - [[ai-llm-wiki-youtube-2026-04-17]] - 상위 0.1프로만 쓰는 현 시점 AI를 가장 똑똑하게 쓰는 방법 #LLM #Wiki #지식관리 #카르파시
 - [[ai-agent-learning-data-alchera-2026-04-17]] - AI 에이전트 학습 데이터 수집·전처리·관리 완전 가이드 #학습데이터 #전처리 #에이전트설계
@@ -14,6 +14,7 @@ _마지막 업데이트: 2026-04-17 | 총 페이지: 25_
 - [[ai-jensen-nothink-2026-04-17]] - 젠슨 황: "잡생각 금지", 불안은 시뮬레이션일 뿐이다 — 엔비디아를 만든 평생 철학 #젠슨황 #마인드셋 #실행력 #불안극복
 - [[ai-industrial-revolution-ai-2026-04-17]] - 산업혁명 때 벼락 부자 된 사람들, 그 기회가 지금 똑같이 왔다 — 토큰 이코노미, 지능이 거래되는 시대 #AI혁명 #산업혁명 #토큰이코노미 #벼락부자
 - [[ai-karpathy-llmwiki-claudecode-2026-04-17]] - 카파시 LLM Wiki로 Claude Code 10배 향상: RAG 없이 마크다운 폴더만으로 AI 지식 베이스 구축 #카파시 #LLMWiki #ClaudeCode #Obsidian #AI지식관리
+- [[ai-claudecode-llmwiki-namu-2026-04-17]] - Claude Code가 내 노하우를 나무위키처럼 정리: 노트북LM vs RAG vs LLM Wiki 비교, Obsidian 실습 #ClaudeCode #LLMWiki #나무위키 #비개발자 #복리
 - [[ai-danmartell-3levels-ai-2026-04-17]] - 댄 마텔: AI 3단계 레벨, 99%는 챗봇(Level 1)에 갇혀있다 #AI3단계 #프론티어AI #지능양극화
 - [[ai-agentops-2layer-system-2026-04-17]] - 비개발자 1개월 AI 에이전트 실전 운용: ClaudeCode+OpenClo 2층 시스템, 하네스 엔지니어링, 오토리서치 #실전운용 #하네스엔지니어링 #오토리서치 #ClaudeCode
 - [[ai-claudecode-token-save-6tips-2026-04-17]] - 클로드 코드 토큰 절약 필승 설정 7가지: Sonnet 고정·컨텍스트 정리·MCP 제어 #ClaudeCode #토큰절약 #비용최적화
