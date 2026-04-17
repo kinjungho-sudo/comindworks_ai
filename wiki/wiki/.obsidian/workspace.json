@@ -11,10 +11,14 @@
             "id": "f35011a23c22d207",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "그래프 뷰"
+              "type": "markdown",
+              "state": {
+                "file": "창업/이렇게 구상하세요 제프 베조스의 사업개발 씽킹.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "이렇게 구상하세요 제프 베조스의 사업개발 씽킹"
             }
           }
         ]
@@ -181,13 +185,23 @@
   },
   "active": "6ecbf5b39d53a922",
   "lastOpenFiles": [
+    "독서",
+    "창업/biz-ai-goldentime-1person-startup-2026-04-17.md",
+    "창업/biz-openclaw-opensource-ai-agent-2026-04-17.md",
+    "창업/biz-solopreneur-ai-era-strategy-2026-04-17.md",
+    "창업/biz-peter-levels-1person-28billion-2026-04-17.md",
+    "창업/biz-creator-saas-1person-2026-04-17.md",
+    "창업/2026 모두의창업 완벽 가이드  5,000명 선발·최대 10억원 지원 총정리.md",
+    "Source.base",
+    "창업/이렇게 구상하세요 제프 베조스의 사업개발 씽킹.md",
+    "창업/biz-bezos-flywheel-2026-04-17.md",
+    "Clippings",
     "AI에이전트/ai-claudecode-llmwiki-namu-2026-04-17.md",
     "글쓰기.md",
     "글쓰기",
     "나/생각/na-생각-mindset-180-2026-04-17.md",
     "나/일기/na-일기-수술전날-2026-04-17.md",
     "나/생각/na-생각-하네스엔지니어링-2026-04-17.md",
-    "Source.base",
     "AI에이전트/ai-agent-learning-data-alchera-2026-04-17.md"
   ]
 }
