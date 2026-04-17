@@ -65,4 +65,6 @@ _시스템 초기화: 2026-04-17_
 
 | 2026-04-17 | ADD | ai-industrial-revolution-ai-2026-04-17 | AI에이전트 | URL 수집: 산업혁명 벼락 부자 — AI혁명 기회, 토큰 이코노미 |
 
-_총 저장 페이지: 24 | 이번 주 추가: 24_
+| 2026-04-17 | ADD | ai-karpathy-llmwiki-claudecode-2026-04-17 | AI에이전트 | URL 수집: 카파시 LLM Wiki + Claude Code 10배 향상 |
+
+_총 저장 페이지: 25 | 이번 주 추가: 25_
