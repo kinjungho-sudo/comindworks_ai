@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>베조스의 플라이휠 — 코마인드웍스 선순환 설계</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: rgba(255,255,255,0.08);
+    --indigo: #6366f1;
+    --indigo-light: #818cf8;
+    --indigo-glow: rgba(99,102,241,0.15);
+    --amber: #f59e0b;
+    --emerald: #10b981;
+    --text: #f8fafc;
+    --muted: rgba(248,250,252,0.45);
+    --dimmed: rgba(248,250,252,0.2);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .deck { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+
+  .slides-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    will-change: auto;
+  }
+
+  .slide {
+    min-width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 80px;
+    position: relative;
+    overflow: hidden;
+    contain: layout paint style;
+  }
+
+  /* ── Slide 1 Background ── */
+  .slide-1 {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 110%, rgba(99,102,241,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(99,102,241,0.08) 0%, transparent 50%),
+      var(--bg);
+  }
+
+  /* ── Slide 2 Background ── */
+  .slide-2 {
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 50%, rgba(99,102,241,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 50%, rgba(16,185,129,0.06) 0%, transparent 50%),
+      var(--bg);
+  }
+
+  /* ── Slide 3 Background ── */
+  .slide-3 {
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 15% 80%, rgba(245,158,11,0.06) 0%, transparent 50%),
+      var(--bg);
+  }
+
+  /* === SLIDE 1 === */
+  .s1-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--indigo-light);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .s1-eyebrow::before, .s1-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--indigo-light);
+    opacity: 0.5;
+  }
+
+  .s1-title {
+    font-size: clamp(44px, 6vw, 72px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .s1-title .accent { color: var(--indigo-light); }
+
+  .s1-subtitle {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 560px;
+  }
+
+  .s1-quote-wrap {
+    background: var(--indigo-glow);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-left: 3px solid var(--indigo);
+    border-radius: 12px;
+    padding: 24px 32px;
+    max-width: 680px;
+    text-align: center;
+  }
+  .s1-quote {
+    font-size: clamp(13px, 1.4vw, 15px);
+    color: rgba(248,250,252,0.7);
+    line-height: 1.75;
+    font-style: italic;
+  }
+  .s1-quote-author {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--indigo-light);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* decorative ring */
+  .deco-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(99,102,241,0.12);
+    pointer-events: none;
+  }
+
+  /* === SLIDE 2 === */
+  .s2-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--indigo-light);
+    margin-bottom: 12px;
+    align-self: flex-start;
+  }
+  .s2-title {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    align-self: flex-start;
+    margin-bottom: 36px;
+  }
+  .s2-title .accent { color: var(--indigo-light); }
+
+  .flywheel-grid {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr 80px 1fr 80px 1fr;
+    align-items: center;
+    width: 100%;
+    max-width: 960px;
+    gap: 0;
+    margin-bottom: 36px;
+  }
+
+  .fw-node {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+  .fw-node:hover { border-color: rgba(99,102,241,0.5); }
+
+  .fw-node.highlight {
+    border-color: rgba(99,102,241,0.4);
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(99,102,241,0.05));
+  }
+
+  .fw-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .fw-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .fw-en {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .fw-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--indigo-light);
+    font-size: 20px;
+    opacity: 0.6;
+  }
+
+  .s2-insight-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 960px;
+  }
+  .s2-insight-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .s2-insight-card .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--indigo);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .s2-insight-text {
+    font-size: 13px;
+    color: rgba(248,250,252,0.7);
+    line-height: 1.6;
+  }
+  .s2-insight-text strong { color: var(--text); font-weight: 700; }
+
+  /* === SLIDE 3 === */
+  .s3-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+    align-self: flex-start;
+  }
+  .s3-title {
+    font-size: clamp(30px, 3.6vw, 46px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    align-self: flex-start;
+    margin-bottom: 32px;
+  }
+  .s3-title .accent { color: var(--indigo-light); }
+
+  .s3-flywheel {
+    display: grid;
+    grid-template-columns: 1fr 56px 1fr 56px 1fr 56px 1fr;
+    align-items: center;
+    width: 100%;
+    max-width: 960px;
+    margin-bottom: 28px;
+  }
+
+  .s3-node {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+  }
+  .s3-node.key-node {
+    border-color: rgba(245,158,11,0.5);
+    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
+  }
+  .s3-node.current-node {
+    border-color: rgba(99,102,241,0.5);
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(99,102,241,0.05));
+    position: relative;
+  }
+  .s3-node.current-node::after {
+    content: '← 지금 여기';
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--indigo-light);
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+
+  .s3-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+  .s3-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .s3-desc { font-size: 10px; color: var(--muted); }
+  .s3-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--indigo-light); font-size: 18px; opacity: 0.5;
+  }
+
+  .s3-cta-wrap {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .s3-cta-main {
+    flex: 2;
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.08));
+    border: 1.5px solid rgba(99,102,241,0.4);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .s3-cta-tag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--indigo-light);
+  }
+  .s3-cta-heading {
+    font-size: clamp(15px, 1.6vw, 18px);
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+  .s3-cta-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 2px;
+  }
+
+  .s3-principles {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .s3-principle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .s3-principle-num {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--indigo);
+    font-variant-numeric: tabular-nums;
+    min-width: 20px;
+  }
+  .s3-principle-text {
+    font-size: 12px;
+    color: rgba(248,250,252,0.75);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .s3-principle-text strong { color: var(--text); }
+
+  /* === SHARED === */
+  .slide-counter {
+    position: fixed;
+    bottom: 24px;
+    right: 32px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--dimmed);
+    z-index: 100;
+    letter-spacing: 0.08em;
+  }
+
+  .progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: rgba(255,255,255,0.06);
+    z-index: 100;
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--indigo), var(--indigo-light));
+    transition: width 0.5s ease;
+    width: 33.33%;
+  }
+
+  .nav-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--dimmed);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="slides-wrapper" id="wrapper">
+
+    <!-- ═══════════════════════════════════
+         SLIDE 1 — 타이틀: 플라이휠이란
+    ════════════════════════════════════ -->
+    <div class="slide slide-1">
+      <!-- decorative rings -->
+      <div class="deco-ring" style="width:600px;height:600px;bottom:-200px;right:-150px;"></div>
+      <div class="deco-ring" style="width:300px;height:300px;top:-80px;left:-80px;"></div>
+
+      <div class="s1-eyebrow">Bezos Flywheel</div>
+
+      <h1 class="s1-title">
+        냅킨 뒷면에 그린<br>
+        <span class="accent">아마존 성장 엔진</span>
+      </h1>
+
+      <p class="s1-subtitle">
+        창업 7년차, 1.5조 적자 위기에서 꺼낸 한 장의 그림 —<br>
+        플라이휠은 어떻게 아마존을 만들었나
+      </p>
+
+      <div class="s1-quote-wrap">
+        <p class="s1-quote">
+          "우리의 임무는 지구에서 가장 고객 중심적인 회사가 되는 것입니다.<br>
+          고객 경험의 모든 중요한 측면을 조금씩 더 좋게 만드는 것이 매일 우리의 임무입니다."
+        </p>
+        <p class="s1-quote-author">— 제프 베조스 (Jeff Bezos), 아마존 창립자</p>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════
+         SLIDE 2 — 아마존 플라이휠 구조
+    ════════════════════════════════════ -->
+    <div class="slide slide-2">
+      <div class="s2-label">Amazon Flywheel</div>
+      <h2 class="s2-title">
+        자기 강화 루프 —<br>
+        <span class="accent">한 곳을 강화하면 전체가 빨라진다</span>
+      </h2>
+
+      <div class="flywheel-grid">
+        <div class="fw-node highlight">
+          <span class="fw-icon">💰</span>
+          <div class="fw-name">낮은 비용 구조</div>
+          <div class="fw-en">Lower Cost</div>
+        </div>
+        <div class="fw-arrow">→</div>
+        <div class="fw-node highlight">
+          <span class="fw-icon">🏷️</span>
+          <div class="fw-name">더 낮은 가격</div>
+          <div class="fw-en">Lower Price</div>
+        </div>
+        <div class="fw-arrow">→</div>
+        <div class="fw-node highlight">
+          <span class="fw-icon">⭐</span>
+          <div class="fw-name">고객 경험 향상</div>
+          <div class="fw-en">Customer Exp.</div>
+        </div>
+        <div class="fw-arrow">→</div>
+        <div class="fw-node">
+          <span class="fw-icon">📈</span>
+          <div class="fw-name">트래픽 증가</div>
+          <div class="fw-en">More Traffic</div>
+        </div>
+      </div>
+
+      <!-- second row reversed -->
+      <div style="display:flex;align-items:center;width:100%;max-width:960px;gap:0;margin-bottom:10px;">
+        <div style="flex:1;"></div>
+        <div style="width:80px;display:flex;align-items:center;justify-content:center;color:var(--indigo-light);font-size:20px;opacity:0.6;">↑</div>
+        <div style="flex:1;"></div>
+        <div style="width:80px;"></div>
+        <div style="flex:1;"></div>
+        <div style="width:80px;display:flex;align-items:center;justify-content:center;color:var(--indigo-light);font-size:20px;opacity:0.6;">↓</div>
+        <div style="flex:1;"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 80px 1fr 80px 1fr 80px 1fr;align-items:center;width:100%;max-width:960px;margin-bottom:28px;">
+        <div class="fw-node">
+          <span class="fw-icon">🔄</span>
+          <div class="fw-name">규모→비용 감소</div>
+          <div class="fw-en">Growth Loop</div>
+        </div>
+        <div class="fw-arrow" style="transform:rotate(180deg)">→</div>
+        <div class="fw-node">
+          <span class="fw-icon">📦</span>
+          <div class="fw-name">상품 다양성</div>
+          <div class="fw-en">Selection</div>
+        </div>
+        <div class="fw-arrow" style="transform:rotate(180deg)">→</div>
+        <div class="fw-node">
+          <span class="fw-icon">🏪</span>
+          <div class="fw-name">셀러 유입</div>
+          <div class="fw-en">More Sellers</div>
+        </div>
+        <div class="fw-arrow" style="transform:rotate(180deg)">→</div>
+        <div class="fw-node" style="opacity:0.3;font-size:11px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;">
+          ↑ 순환
+        </div>
+      </div>
+
+      <div class="s2-insight-row">
+        <div class="s2-insight-card">
+          <div class="dot"></div>
+          <p class="s2-insight-text"><strong>처음엔 느리다.</strong> 아마존도 7년간 적자였다. 플라이휠은 처음 돌리기가 가장 힘들다.</p>
+        </div>
+        <div class="s2-insight-card">
+          <div class="dot"></div>
+          <p class="s2-insight-text"><strong>방향의 일관성.</strong> 이리저리 흔들리면 절대 가속이 안 붙는다. 고객 중심을 절대 타협하지 않았다.</p>
+        </div>
+        <div class="s2-insight-card">
+          <div class="dot"></div>
+          <p class="s2-insight-text"><strong>모든 사업 기획을</strong> 플라이휠에 대입했다. 연결되지 않는 기획은 추진하지 않았다.</p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════
+         SLIDE 3 — 코마인드웍스 플라이휠
+    ════════════════════════════════════ -->
+    <div class="slide slide-3">
+      <div class="s3-label">Comindworks Flywheel</div>
+      <h2 class="s3-title">
+        우리의 플라이휠 —<br>
+        <span class="accent">첫 번째 바퀴를 돌려야 한다</span>
+      </h2>
+
+      <div class="s3-flywheel">
+        <div class="s3-node current-node">
+          <span class="s3-icon">🤖</span>
+          <div class="s3-name">AI 에이전트<br>서비스 제공</div>
+          <div class="s3-desc">코마인드웍스</div>
+        </div>
+        <div class="s3-arrow">→</div>
+        <div class="s3-node key-node">
+          <span class="s3-icon">📊</span>
+          <div class="s3-name">클라이언트<br>성과</div>
+          <div class="s3-desc">시간 절감·매출</div>
+        </div>
+        <div class="s3-arrow">→</div>
+        <div class="s3-node">
+          <span class="s3-icon">📝</span>
+          <div class="s3-name">케이스스터디<br>레퍼런스</div>
+          <div class="s3-desc">증거 자산</div>
+        </div>
+        <div class="s3-arrow">→</div>
+        <div class="s3-node">
+          <span class="s3-icon">📱</span>
+          <div class="s3-name">콘텐츠·유튜브<br>확산</div>
+          <div class="s3-desc">신뢰 확장</div>
+        </div>
+      </div>
+
+      <!-- bottom row -->
+      <div style="display:flex;align-items:center;width:100%;max-width:960px;margin-bottom:24px;">
+        <div style="flex:1;"></div>
+        <div style="width:56px;display:flex;align-items:center;justify-content:center;color:var(--indigo-light);font-size:18px;opacity:0.5;">↑</div>
+        <div style="flex:1;"></div>
+        <div style="width:56px;"></div>
+        <div style="flex:1;"></div>
+        <div style="width:56px;"></div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:13px;color:var(--indigo-light);font-weight:700;letter-spacing:-0.01em;padding:6px 12px;background:rgba(99,102,241,0.1);border-radius:8px;border:1px solid rgba(99,102,241,0.3);">
+            신규 클라이언트 유입 →
+          </div>
+        </div>
+      </div>
+
+      <!-- bottom: cta + principles -->
+      <div class="s3-cta-wrap">
+        <div class="s3-cta-main">
+          <div class="s3-cta-tag">지금 해야 할 것</div>
+          <div class="s3-cta-heading">
+            첫 클라이언트의 성과 케이스를 만드는 것
+          </div>
+          <div class="s3-cta-body">
+            베조스도 7년 걸렸다. 하지만 AI 시대에는 속도가 달라졌다.<br>
+            Sell by Chat → 첫 성과 → 레퍼런스 → 다음 클라이언트.<br>
+            플라이휠은 <strong style="color:var(--text);">첫 번째 바퀴</strong>를 돌려야 자동으로 돌아간다.
+          </div>
+        </div>
+
+        <div class="s3-principles">
+          <div class="s3-principle">
+            <span class="s3-principle-num">01</span>
+            <span class="s3-principle-text"><strong>처음엔 느리다</strong>는 걸 받아들일 것</span>
+          </div>
+          <div class="s3-principle">
+            <span class="s3-principle-num">02</span>
+            <span class="s3-principle-text"><strong>방향의 일관성</strong> — 흔들리면 가속 불가</span>
+          </div>
+          <div class="s3-principle">
+            <span class="s3-principle-num">03</span>
+            <span class="s3-principle-text"><strong>고객 경험</strong>이 항상 출발점</span>
+          </div>
+          <div class="s3-principle">
+            <span class="s3-principle-num">04</span>
+            <span class="s3-principle-text">각 요소가 <strong>다음 요소를 당기는</strong> 구조인가</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slides-wrapper -->
+</div><!-- /deck -->
+
+<!-- UI -->
+<div class="slide-counter">
+  <span id="current">1</span> / <span id="total">3</span>
+</div>
+<div class="progress"><div id="progress-bar"></div></div>
+<div class="nav-hint">← → 방향키 이동 &nbsp;·&nbsp; F 전체화면</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  document.getElementById('total').textContent = total;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, total - 1));
+    const wrapper = document.getElementById('wrapper');
+    wrapper.style.willChange = 'transform';
+    wrapper.style.transform  = `translateX(${-current * 100}vw)`;
+    wrapper.addEventListener('transitionend', () => {
+      wrapper.style.willChange = 'auto';
+    }, { once: true });
+    document.getElementById('current').textContent = current + 1;
+    document.getElementById('progress-bar').style.width = `${((current + 1) / total) * 100}%`;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+    if (e.key === 'ArrowRight' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft')                   goTo(current - 1);
+    if (e.key === 'Home')                        goTo(0);
+    if (e.key === 'End')                         goTo(total - 1);
+    if (e.key === 'f' || e.key === 'F')          toggleFullscreen();
+  });
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? goTo(current + 1) : goTo(current - 1);
+  });
+
+  goTo(0);
+</script>
+</body>
+</html>
