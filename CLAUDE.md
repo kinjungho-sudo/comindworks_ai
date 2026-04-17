@@ -196,6 +196,43 @@ auto-n8n-workflow-basic-2026-04-17.md
 
 ---
 
+## Git 자동 동기화 규칙
+
+모든 작업 완료 후 반드시 아래 순서로 Git 커밋 & 푸시한다:
+
+```bash
+# 1. 변경사항 확인
+git status
+
+# 2. 전체 추가
+git add .
+
+# 3. 커밋 (작업 내용 요약)
+git commit -m "feat: [작업 내용 한 줄 요약]"
+
+# 4. 푸시
+git push origin master
+```
+
+### 트리거 조건
+- `수집` 완료 후 → 자동 git push
+- 파일 생성/수정/삭제 후 → 자동 git push
+- 작업 세션 종료 전 → 반드시 git push
+
+### 커밋 메시지 규칙
+- `feat:` 새 기능 추가
+- `fix:` 오류 수정
+- `docs:` 문서 수정
+- `wiki:` Wiki 페이지 추가/수정
+
+### Mac Mini 동기화
+Mac Mini에서는 작업 시작 전 항상:
+```bash
+git pull origin master
+```
+
+---
+
 ## 기존 CLAUDE.md 기능 (유지)
 
 이 파일은 LLM Wiki 오케스트레이터 전용이다.
