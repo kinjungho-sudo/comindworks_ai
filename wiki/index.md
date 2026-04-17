@@ -13,6 +13,7 @@ _마지막 업데이트: 2026-04-17 | 총 페이지: 19_
 - [[ai-jensen-token-engineer-2026-04-17]] - 젠슨 황: 연봉 7억 엔지니어는 토큰을 절반 써야 한다, 에이전트 AI + 로보틱스 시대 #젠슨황 #에이전트AI #토큰경제
 - [[ai-danmartell-3levels-ai-2026-04-17]] - 댄 마텔: AI 3단계 레벨, 99%는 챗봇(Level 1)에 갇혀있다 #AI3단계 #프론티어AI #지능양극화
 - [[ai-agentops-2layer-system-2026-04-17]] - 비개발자 1개월 AI 에이전트 실전 운용: ClaudeCode+OpenClo 2층 시스템, 하네스 엔지니어링, 오토리서치 #실전운용 #하네스엔지니어링 #오토리서치 #ClaudeCode
+- [[ai-claudecode-token-save-6tips-2026-04-17]] - 클로드 코드 토큰 절약 필승 설정 7가지: Sonnet 고정·컨텍스트 정리·MCP 제어 #ClaudeCode #토큰절약 #비용최적화
 
 ---
 
