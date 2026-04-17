@@ -6,7 +6,7 @@ router = APIRouter()
 
 WIKI_ROOT = os.environ.get(
     "WIKI_ROOT",
-    os.path.join(os.path.dirname(__file__), "../../../../wiki")
+    os.path.join(os.path.dirname(__file__), "../../../llm-wiki/data")
 )
 
 

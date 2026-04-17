@@ -127,5 +127,5 @@ def generate_report(wiki_dir: str) -> str:
 
 if __name__ == "__main__":
     import sys
-    wiki_dir = sys.argv[1] if len(sys.argv) > 1 else "wiki/wiki"
+    wiki_dir = sys.argv[1] if len(sys.argv) > 1 else "projects/llm-wiki/data/wiki"
     print(generate_report(wiki_dir))

@@ -6,7 +6,7 @@ import anthropic
 
 WIKI_ROOT = os.environ.get(
     "WIKI_ROOT",
-    os.path.join(os.path.dirname(__file__), "../../../../wiki")
+    os.path.join(os.path.dirname(__file__), "../../../llm-wiki/data")
 )
 
 CATEGORIES = ["AI에이전트", "자동화", "창업", "콘텐츠", "개발", "리서치", "나", "기타"]
