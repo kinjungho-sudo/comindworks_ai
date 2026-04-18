@@ -19,6 +19,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-18 | ADD | ai-claudecode-routines-2026-04-18 | AI에이전트 | URL 수집: Claude Code Routines 3종 트리거 (YouTube 시청만진철) |
 | 2026-04-18 | ADD | biz-wealth-ladder-maggiulli-2026-04-18 | 창업 | URL 수집: 부의 사다리 닉 매기울리 (하와이대저택) |
 | 2026-04-18 | ADD | biz-sunny-job-youtube-90days-2026-04-18 | 창업 | URL 수집: Sunny Lenarduzzi 직장인 유튜브 시작 90일 로드맵 |
+| 2026-04-18 | ADD | ai-claudecode-marketing-agent-team-2026-04-18 | AI에이전트 | URL 수집: JOSHUA Claude Code 마케팅 에이전트 팀 (하네스 95% + 서브에이전트 + MCP + Buffer) |
 
 ---
 

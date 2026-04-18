@@ -1,12 +1,13 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-04-18 | 총 페이지: 36_
+_마지막 업데이트: 2026-04-18 | 총 페이지: 37_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (12)
+## 📁 AI에이전트 (13)
 
+- [[ai-claudecode-marketing-agent-team-2026-04-18]] - JOSHUA: Claude Code 마케팅 에이전트 팀 - 하네스 세팅 95% + 서브에이전트 + 나노바나나 MCP + Buffer API 완전 자동화 #ClaudeCode #서브에이전트 #MCP #BufferAPI #하네스엔지니어링 #마케팅자동화
 - [[ai-claudecode-routines-2026-04-18]] - Claude Code Routines: 3종 트리거(Schedule/API/Local)로 진화한 업무 자동화 시스템 #ClaudeCode #Routines #자동화 #트리거 #API연동
 - [[ai-llm-wiki-youtube-2026-04-17]] - 상위 0.1프로만 쓰는 현 시점 AI를 가장 똑똑하게 쓰는 방법 #LLM #Wiki #지식관리 #카르파시
 - [[ai-agent-learning-data-alchera-2026-04-17]] - AI 에이전트 학습 데이터 수집·전처리·관리 완전 가이드 #학습데이터 #전처리 #에이전트설계
