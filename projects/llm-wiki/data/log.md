@@ -18,6 +18,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-17 | ADD | ai-llm-wiki-youtube-2026-04-17 | AI에이전트 | URL 수집: 상위 0.1프로 AI 활용법 (LLM Wiki) |
 | 2026-04-18 | ADD | ai-claudecode-routines-2026-04-18 | AI에이전트 | URL 수집: Claude Code Routines 3종 트리거 (YouTube 시청만진철) |
 | 2026-04-18 | ADD | biz-wealth-ladder-maggiulli-2026-04-18 | 창업 | URL 수집: 부의 사다리 닉 매기울리 (하와이대저택) |
+| 2026-04-18 | ADD | biz-sunny-job-youtube-90days-2026-04-18 | 창업 | URL 수집: Sunny Lenarduzzi 직장인 유튜브 시작 90일 로드맵 |
 
 ---
 
