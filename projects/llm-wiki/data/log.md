@@ -22,6 +22,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-18 | ADD | ai-claudecode-marketing-agent-team-2026-04-18 | AI에이전트 | URL 수집: JOSHUA Claude Code 마케팅 에이전트 팀 (하네스 95% + 서브에이전트 + MCP + Buffer) |
 | 2026-04-19 | ADD | ai-kimdeukjin-ai-trends-claude-2026-04-19 | AI에이전트 | URL 수집: 김덕진 소장 상위 0.1% AI 활용법 (주식아지트 EP.2, 1h 23m) |
 | 2026-04-20 | ADD | biz-evan-carmichael-business-fundamentals-2026-04-20 | 창업 | 텍스트 수집: 에반 카마이클 비즈니스 총정리 5-Layer 프레임 |
+| 2026-04-22 | ADD | biz-jachung-money-3-principles-2026-04-22 | 창업 | URL 수집: 자청 월 3천의 3가지 공식 (시청 필요, 설명란 프로모션 위주) |
 
 ---
 
