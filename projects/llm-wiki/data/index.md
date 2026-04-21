@@ -1,5 +1,5 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-04-22 | 총 페이지: 40_
+_마지막 업데이트: 2026-04-22 | 총 페이지: 42_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
@@ -30,8 +30,10 @@ _마지막 업데이트: 2026-04-22 | 총 페이지: 40_
 
 ---
 
-## 📁 창업 (19)
+## 📁 창업 (21)
 
+- [[biz-sabri-subi-ai-5side-hustles-2026-04-22]] - Sabri Subi: 하루 300만원 2026 AI 자동화 부업 5가지 (Hidden Riches 200+ 아이디어) - 시청 필요, 영어권 벤치마크 #SabriSubi #AI부업 #해외사업 #HiddenRiches #시청필요
+- [[biz-modeuui-changup-qa-14questions-2026-04-22]] - 모두의 창업 공고 Q&A 14개: 자격·중복신청·직장인·지원서 작성 팩트체크 - 시청 필요, 지원 전 필수 확인 #모두의창업 #정부지원사업 #QnA #지원서작성 #시청필요
 - [[biz-jachung-money-3-principles-2026-04-22]] - 자청: 월 3천의 3가지 공식 (마케팅 부트캠프 프로모션) - 시청 필요, 프로모션 훅·Product Ladder 벤치마크 #자청 #마케팅부트캠프 #3가지공식 #시청필요
 - [[biz-evan-carmichael-business-fundamentals-2026-04-20]] - 에반 카마이클: 비즈니스 총정리 5-Layer 프레임 - 제1원칙·5가지 필수요소·7 Powers·Identity Shift·5가지 고소득 기술 #에반카마이클 #제1원칙 #7Powers #역포지셔닝 #IdentityShift #비즈니스기초
 - [[biz-sunny-job-youtube-90days-2026-04-18]] - Sunny Lenarduzzi: 직장인일 때 YouTube 시작이 가장 안전, 90일 오너드 오디언스 엔진으로 Asset Owner 전환 #직장인창업 #유튜브전략 #오디언스 #90일로드맵 #AssetOwner
