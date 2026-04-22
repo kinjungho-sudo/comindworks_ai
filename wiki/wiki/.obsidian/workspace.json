@@ -11,17 +11,27 @@
             "id": "f35011a23c22d207",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "그래프 뷰"
+            }
+          },
+          {
+            "id": "38c20a577cf7d6c6",
+            "type": "leaf",
+            "state": {
+              "type": "bases",
               "state": {
-                "file": "창업/이렇게 구상하세요 제프 베조스의 사업개발 씽킹.md",
-                "mode": "source",
-                "source": false
+                "file": "Source.base",
+                "viewName": "표"
               },
-              "icon": "lucide-file",
-              "title": "이렇게 구상하세요 제프 베조스의 사업개발 씽킹"
+              "icon": "lucide-table",
+              "title": "Source"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -185,6 +195,16 @@
   },
   "active": "6ecbf5b39d53a922",
   "lastOpenFiles": [
+    "창업/biz-thinking-fast-slow-summary-2026-04-22.md",
+    "무제.md",
+    "Source.base",
+    "yt_transcript3.txt",
+    "yt_transcript2.txt",
+    "yt_transcript.txt",
+    "창업/biz-danmartell-zero-to-1m-2026-04-17.md",
+    "독서/가난한 사람의 3가지 습관, 부자 되려면 절대 하면 안됩니다.md",
+    "창업/biz-psychology-of-money-3habits-2026-04-17.md",
+    "창업/이렇게 구상하세요 제프 베조스의 사업개발 씽킹.md",
     "독서",
     "창업/biz-ai-goldentime-1person-startup-2026-04-17.md",
     "창업/biz-openclaw-opensource-ai-agent-2026-04-17.md",
@@ -192,8 +212,6 @@
     "창업/biz-peter-levels-1person-28billion-2026-04-17.md",
     "창업/biz-creator-saas-1person-2026-04-17.md",
     "창업/2026 모두의창업 완벽 가이드  5,000명 선발·최대 10억원 지원 총정리.md",
-    "Source.base",
-    "창업/이렇게 구상하세요 제프 베조스의 사업개발 씽킹.md",
     "창업/biz-bezos-flywheel-2026-04-17.md",
     "Clippings",
     "AI에이전트/ai-claudecode-llmwiki-namu-2026-04-17.md",
