@@ -25,6 +25,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-22 | ADD | biz-jachung-money-3-principles-2026-04-22 | 창업 | URL 수집: 자청 월 3천의 3가지 공식 (시청 필요, 설명란 프로모션 위주) |
 | 2026-04-22 | ADD | biz-modeuui-changup-qa-14questions-2026-04-22 | 창업 | URL 수집: 모두의 창업 공고 Q&A 14개 (시청 필요) |
 | 2026-04-22 | ADD | biz-sabri-subi-ai-5side-hustles-2026-04-22 | 창업 | URL 수집: Sabri Subi 하루 300만원 AI 부업 5가지 (시청 필요) |
+| 2026-04-23 | ADD | ai-claude-design-prototype-2026-04-23 | AI에이전트 | Web 수집: Claude Design 완벽 정리 (GPTers editor_소연, 2026-04-18 출시 Anthropic 디자인 도구) |
 
 ---
 

@@ -1,12 +1,13 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-04-22 | 총 페이지: 42_
+_마지막 업데이트: 2026-04-23 | 총 페이지: 43_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (14)
+## 📁 AI에이전트 (15)
 
+- [[ai-claude-design-prototype-2026-04-23]] - Claude Design (2026-04-18 출시): 자연어로 프로토타입·슬라이드·랜딩 생성, 실시간 슬라이더 + Claude Code 핸드오프가 킬러 기능 #ClaudeDesign #Anthropic #ClaudeOpus47 #프로토타입 #디자인시스템 #MVP
 - [[ai-kimdeukjin-ai-trends-claude-2026-04-19]] - 김덕진 소장: 상위 0.1% AI 활용법 - Anthropic 철학·Claude 성능 비결·미국 AI 대전·AI 시대 정체성 (1h 23m) #김덕진 #Anthropic #Claude #AI트렌드 #AI프롬프트 #피지컬AI
 - [[ai-claudecode-marketing-agent-team-2026-04-18]] - JOSHUA: Claude Code 마케팅 에이전트 팀 - 하네스 세팅 95% + 서브에이전트 + 나노바나나 MCP + Buffer API 완전 자동화 #ClaudeCode #서브에이전트 #MCP #BufferAPI #하네스엔지니어링 #마케팅자동화
 - [[ai-claudecode-routines-2026-04-18]] - Claude Code Routines: 3종 트리거(Schedule/API/Local)로 진화한 업무 자동화 시스템 #ClaudeCode #Routines #자동화 #트리거 #API연동
