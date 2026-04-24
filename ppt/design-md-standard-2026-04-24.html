@@ -154,6 +154,43 @@
     .step p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
     .step-arrow { color: var(--accent2); font-size: 1.4rem; margin-top: 14px; }
 
+    /* === Struct Rows (Slide 6) === */
+    .struct-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(99,102,241,0.07);
+      border: 1.5px solid rgba(99,102,241,0.2);
+      border-radius: 12px;
+      padding: 14px 20px;
+    }
+    .struct-num {
+      min-width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .struct-title {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .struct-desc {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
     /* === Action List === */
     .action-list { list-style: none; width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 14px; }
     .action-list li {
@@ -262,7 +299,7 @@
     <section class="slide slide-light">
       <div class="label">What is DESIGN.md</div>
       <h2 style="color: #1e1b4b;">DESIGN.md 정의 & 기존 방식 비교</h2>
-      <p style="margin-bottom: 28px; max-width: 700px; text-align: center; color: #6b7280;">
+      <p style="margin-bottom: 28px; max-width: 700px; text-align: center; color: #4b5563;">
         "인공지능 에이전트가 이해할 수 있는 언어로 작성된 <strong style="color:#1e1b4b;">평문 마크다운 형식의 디자인 시스템 문서</strong>"
       </p>
       <table class="compare-table">
@@ -335,21 +372,19 @@
     </section>
 
     <!-- SLIDE 6: 9가지 구성 요소 -->
-    <section class="slide slide-dark">
+    <section class="slide slide-dark" style="padding: 48px 80px;">
       <div class="label">Structure</div>
-      <h2>DESIGN.md 9가지 구성 요소</h2>
-      <div class="code-block">
-<span class="cm"># DESIGN.md</span>
-
-<span class="kw">1.</span> 시각적 테마 및 분위기    <span class="cm">← 감성/톤 정의 ("미니멀하고 신뢰감 있는")</span>
-<span class="kw">2.</span> 색상 팔레트 및 역할      <span class="cm">← Primary / Secondary / Neutral / Error</span>
-<span class="kw">3.</span> 타이포그래피 규칙        <span class="cm">← 폰트 패밀리, 크기 스케일, 자간</span>
-<span class="kw">4.</span> 컴포넌트 스타일링        <span class="cm">← 버튼, 카드, 인풋, 모달 등</span>
-<span class="kw">5.</span> 레이아웃 및 간격         <span class="cm">← Grid 시스템, Spacing 토큰</span>
-<span class="kw">6.</span> 깊이 및 고도             <span class="cm">← Shadow 레벨, z-index 체계</span>
-<span class="kw">7.</span> 권장 및 금지 사항        <span class="cm">← Do / Don't 명시</span>
-<span class="kw">8.</span> 반응형 동작              <span class="cm">← Breakpoint별 규칙</span>
-<span class="kw">9.</span> 에이전트 프롬프트 가이드  <span class="cm">← AI에게 줄 힌트 & 컨텍스트</span>
+      <h2 style="margin-bottom: 28px;">DESIGN.md 9가지 구성 요소</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 860px;">
+        <div class="struct-row"><span class="struct-num">1</span><div><span class="struct-title">시각적 테마 및 분위기</span><span class="struct-desc">감성/톤 정의 — "미니멀하고 신뢰감 있는"</span></div></div>
+        <div class="struct-row"><span class="struct-num">2</span><div><span class="struct-title">색상 팔레트 및 역할</span><span class="struct-desc">Primary / Secondary / Neutral / Error</span></div></div>
+        <div class="struct-row"><span class="struct-num">3</span><div><span class="struct-title">타이포그래피 규칙</span><span class="struct-desc">폰트 패밀리, 크기 스케일, 자간</span></div></div>
+        <div class="struct-row"><span class="struct-num">4</span><div><span class="struct-title">컴포넌트 스타일링</span><span class="struct-desc">버튼, 카드, 인풋, 모달 등</span></div></div>
+        <div class="struct-row"><span class="struct-num">5</span><div><span class="struct-title">레이아웃 및 간격</span><span class="struct-desc">Grid 시스템, Spacing 토큰</span></div></div>
+        <div class="struct-row"><span class="struct-num">6</span><div><span class="struct-title">깊이 및 고도</span><span class="struct-desc">Shadow 레벨, z-index 체계</span></div></div>
+        <div class="struct-row"><span class="struct-num">7</span><div><span class="struct-title">권장 및 금지 사항</span><span class="struct-desc">Do / Don't 명시</span></div></div>
+        <div class="struct-row"><span class="struct-num">8</span><div><span class="struct-title">반응형 동작</span><span class="struct-desc">Breakpoint별 규칙</span></div></div>
+        <div class="struct-row" style="grid-column: 1 / -1;"><span class="struct-num" style="background: #818cf8;">9</span><div><span class="struct-title">에이전트 프롬프트 가이드</span><span class="struct-desc">AI에게 줄 힌트 & 컨텍스트 — 가장 중요한 섹션</span></div></div>
       </div>
     </section>
 
@@ -359,7 +394,7 @@
       <h2 style="color: #1e1b4b;">Google Stitch 사례</h2>
       <div class="big-quote" style="border-color: #6366f1; margin-bottom: 32px;">
         "스트라이프처럼 우아하고 미니멀한 느낌"<br>
-        <span style="font-size: 0.9em; color: #6b7280; font-weight: 400;">→ AI가 DESIGN.md를 기반으로 즉시 시각적으로 구현</span>
+        <span style="font-size: 0.9em; color: #4b5563; font-weight: 400;">→ AI가 DESIGN.md를 기반으로 즉시 시각적으로 구현</span>
       </div>
       <div class="card-grid col2" style="max-width: 760px;">
         <div class="card fragment">
@@ -373,7 +408,7 @@
           <p>음성 명령으로 디자인 수정. DESIGN.md가 일관성 가드레일 역할</p>
         </div>
       </div>
-      <p style="margin-top: 24px; font-size: 0.9rem; color: #9ca3af;" class="fragment">
+      <p style="margin-top: 24px; font-size: 0.9rem; color: #4b5563;" class="fragment">
         ✅ DESIGN.md 전면 도입한 <strong style="color: #1e1b4b;">AI 네이티브 UI 디자인 플랫폼</strong>
       </p>
     </section>
