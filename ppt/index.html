@@ -5,16 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>코마인드웍스 PPT 아카이브</title>
   <style>
-    body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #0f0f0f; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-    .wrap { text-align: center; }
-    h1 { font-size: 2rem; font-weight: 800; color: #6366f1; margin-bottom: 12px; }
-    p { color: rgba(255,255,255,0.45); font-size: 1rem; }
+    body { font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; background: #0a0a0f; color: #f8fafc; margin: 0; padding: 64px 40px; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2.4rem; font-weight: 800; color: #6366f1; margin-bottom: 8px; letter-spacing: -1px; }
+    .sub { color: rgba(255,255,255,0.45); font-size: 1rem; margin-bottom: 48px; }
+    .deck-list { display: grid; gap: 16px; }
+    .deck-card { display: block; background: #12121a; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px 28px; text-decoration: none; color: inherit; transition: transform 0.15s, border-color 0.15s; }
+    .deck-card:hover { transform: translateY(-2px); border-color: #6366f1; }
+    .deck-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+    .deck-date { font-size: 0.85rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; }
+    .deck-desc { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.5; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>코마인드웍스 PPT 아카이브</h1>
-    <p>매일 마무리 루틴으로 생성된 슬라이드가 이곳에 쌓입니다.</p>
+    <div class="sub">매일 마무리 루틴으로 생성된 슬라이드가 이곳에 쌓입니다.</div>
+
+    <div class="deck-list">
+      <a href="unlearning-3years-2026-04-25.html" class="deck-card">
+        <div class="deck-title">3년 × 언러닝 — AI 시대 생존 공식</div>
+        <div class="deck-date">2026-04-25 · 7 slides</div>
+        <div class="deck-desc">1조 기업 회장이 말하는 AI 시대의 진짜 생존 공식 — 3년 집중 + 언러닝 학습법 + 코마인드웍스 3년 로드맵</div>
+      </a>
+      <a href="bezos-flywheel-2026-04-17.html" class="deck-card">
+        <div class="deck-title">베조스의 플라이휠 — 코마인드웍스 선순환 설계</div>
+        <div class="deck-date">2026-04-17 · 8 slides</div>
+        <div class="deck-desc">아마존 냅킨 플라이휠의 원리를 코마인드웍스 사업에 적용</div>
+      </a>
+    </div>
   </div>
 </body>
 </html>
