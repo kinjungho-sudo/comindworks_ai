@@ -21,13 +21,14 @@
             "id": "38c20a577cf7d6c6",
             "type": "leaf",
             "state": {
-              "type": "bases",
+              "type": "markdown",
               "state": {
-                "file": "Source.base",
-                "viewName": "표"
+                "file": "나/생각/na-생각-왜창업했는가-2026-04-17.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-table",
-              "title": "Source"
+              "icon": "lucide-file",
+              "title": "na-생각-왜창업했는가-2026-04-17"
             }
           }
         ],
@@ -193,11 +194,11 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "6ecbf5b39d53a922",
+  "active": "38c20a577cf7d6c6",
   "lastOpenFiles": [
+    "Source.base",
     "창업/biz-thinking-fast-slow-summary-2026-04-22.md",
     "무제.md",
-    "Source.base",
     "yt_transcript3.txt",
     "yt_transcript2.txt",
     "yt_transcript.txt",
