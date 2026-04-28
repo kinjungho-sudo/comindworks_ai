@@ -1,0 +1,60 @@
+name: Sync Books to Reading Notes
+
+on:
+  push:
+    paths:
+      - 'books/**.md'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout comindworks_ai
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed book files
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'books/*.md' || true)
+          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          echo "Changed files: $CHANGED"
+
+      - name: Checkout starter-kit
+        if: steps.changed.outputs.files != ''
+        uses: actions/checkout@v4
+        with:
+          repository: kinjungho-sudo/starter-kit
+          token: ${{ secrets.STARTER_KIT_PAT }}
+          path: starter-kit
+
+      - name: Copy book md files to analysis
+        if: steps.changed.outputs.files != ''
+        run: |
+          DEST_DIR="starter-kit/src/content/analysis"
+          mkdir -p "$DEST_DIR"
+
+          for FILE in ${{ steps.changed.outputs.files }}; do
+            FILENAME=$(basename "$FILE")
+
+            # 이미 등록된 파일은 건너뜀
+            if [ -f "$DEST_DIR/$FILENAME" ]; then
+              echo "이미 등록됨: $FILENAME"
+              continue
+            fi
+
+            cp "$FILE" "$DEST_DIR/$FILENAME"
+            echo "복사: $FILENAME"
+          done
+
+      - name: Commit and push to starter-kit
+        if: steps.changed.outputs.files != ''
+        run: |
+          cd starter-kit
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/content/analysis/
+          git diff --cached --quiet && echo "변경 없음" && exit 0
+          git commit -m "auto: 독서 노트 동기화 $(date '+%Y-%m-%d')"
+          git push
