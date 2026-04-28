@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'ppt/**.html'
+  schedule:
+    - cron: '*/15 * * * *'  # 15분마다 실행
 
 jobs:
   sync:
@@ -14,13 +16,18 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Get changed PPT files
+      - name: Get PPT files to sync
         id: changed
         run: |
-          # push된 .html 파일 목록 (ppt/ 폴더만)
-          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'ppt/*.html' | grep -v '^ppt/index.html' || true)
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # cron 실행: ppt/ 전체 파일 스캔
+            CHANGED=$(ls ppt/*.html 2>/dev/null | grep -v '^ppt/index.html' || true)
+          else
+            # push 실행: 변경된 파일만
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'ppt/*.html' | grep -v '^ppt/index.html' || true)
+          fi
           echo "files=$CHANGED" >> $GITHUB_OUTPUT
-          echo "Changed files: $CHANGED"
+          echo "Target files: $CHANGED"
 
       - name: Checkout starter-kit
         if: steps.changed.outputs.files != ''
@@ -80,5 +87,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/content/gallery/
           git diff --cached --quiet && echo "변경 없음" && exit 0
-          git commit -m "auto: PPT 갤러리 등록 $(date '+%Y-%m-%d')"
+          git commit -m "auto: PPT 갤러리 동기화 $(date '+%Y-%m-%d %H:%M')"
           git push
