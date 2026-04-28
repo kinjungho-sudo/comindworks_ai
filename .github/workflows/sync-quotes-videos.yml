@@ -1,0 +1,67 @@
+name: Sync Quotes & Videos to AAA Site
+
+on:
+  push:
+    paths:
+      - 'wiki/wiki/좋은글/**.md'
+      - 'wiki/wiki/유튜브/**.md'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout comindworks_ai
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed files
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'wiki/wiki/좋은글/*.md' 'wiki/wiki/유튜브/*.md' || true)
+          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          echo "Changed: $CHANGED"
+
+      - name: Checkout starter-kit
+        if: steps.changed.outputs.files != ''
+        uses: actions/checkout@v4
+        with:
+          repository: kinjungho-sudo/starter-kit
+          token: ${{ secrets.STARTER_KIT_PAT }}
+          path: starter-kit
+
+      - name: Copy files to correct collection
+        if: steps.changed.outputs.files != ''
+        run: |
+          QUOTES_DIR="starter-kit/src/content/quotes"
+          VIDEOS_DIR="starter-kit/src/content/videos"
+          mkdir -p "$QUOTES_DIR" "$VIDEOS_DIR"
+
+          for FILE in ${{ steps.changed.outputs.files }}; do
+            FILENAME=$(basename "$FILE")
+
+            if echo "$FILE" | grep -q "좋은글"; then
+              DEST="$QUOTES_DIR/$FILENAME"
+            else
+              DEST="$VIDEOS_DIR/$FILENAME"
+            fi
+
+            if [ -f "$DEST" ]; then
+              echo "이미 등록됨: $FILENAME"
+              continue
+            fi
+
+            cp "$FILE" "$DEST"
+            echo "복사: $FILE → $DEST"
+          done
+
+      - name: Commit and push to starter-kit
+        if: steps.changed.outputs.files != ''
+        run: |
+          cd starter-kit
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/content/quotes/ src/content/videos/
+          git diff --cached --quiet && echo "변경 없음" && exit 0
+          git commit -m "auto: 좋은글/유튜브 동기화 $(date '+%Y-%m-%d')"
+          git push
