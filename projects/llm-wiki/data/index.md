@@ -1,12 +1,14 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-04-25 | 총 페이지: 44_
+_마지막 업데이트: 2026-04-30 | 총 페이지: 47_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (15)
+## 📁 AI에이전트 (17)
 
+- [[ai-joshua-claude-design-system-prd-2026-04-30]] - JOSHUA: Claude Design 잘 쓰는 법 — 디자인 시스템 + PRD 2단계 세팅이 99% 차이를 만든다 (원티드·머티리얼3·카카오T) #ClaudeDesign #JOSHUA #PRD #디자인시스템 #원티드 #하네스엔지니어링디자인
+- [[ai-inflearn-obsidian-claudecode-wiki-course-2026-04-29]] - 인프런 Obsidian × Claude Code LLM Wiki 강의 (실용주의개발) - 우리가 이미 만든 시스템과 비교, 시장 검증 신호 #Inflearn #ObsidianClaudeCode #LLMWiki #3LayerArchitecture #실용주의개발 #시장검증
 - [[ai-claude-design-prototype-2026-04-23]] - Claude Design (2026-04-18 출시): 자연어로 프로토타입·슬라이드·랜딩 생성, 실시간 슬라이더 + Claude Code 핸드오프가 킬러 기능 #ClaudeDesign #Anthropic #ClaudeOpus47 #프로토타입 #디자인시스템 #MVP
 - [[ai-kimdeukjin-ai-trends-claude-2026-04-19]] - 김덕진 소장: 상위 0.1% AI 활용법 - Anthropic 철학·Claude 성능 비결·미국 AI 대전·AI 시대 정체성 (1h 23m) #김덕진 #Anthropic #Claude #AI트렌드 #AI프롬프트 #피지컬AI
 - [[ai-claudecode-marketing-agent-team-2026-04-18]] - JOSHUA: Claude Code 마케팅 에이전트 팀 - 하네스 세팅 95% + 서브에이전트 + 나노바나나 MCP + Buffer API 완전 자동화 #ClaudeCode #서브에이전트 #MCP #BufferAPI #하네스엔지니어링 #마케팅자동화
@@ -31,8 +33,9 @@ _마지막 업데이트: 2026-04-25 | 총 페이지: 44_
 
 ---
 
-## 📁 창업 (22)
+## 📁 창업 (23)
 
+- [[biz-bill-gurley-ai-survival-90percent-2026-04-30]] - Bill Gurley: "10년 안에 90% 사라진다" AI 시대 4가지 생존 요소 (호기심·집요함·실행력·AI 활용 능력) - 시청 필요, PPT 생성됨 #BillGurley #AI생존 #90vs10 #호기심 #집요함 #실행력 #시청필요
 - [[biz-rokit-unlearning-3years-2026-04-25]] - "딱 3년만 미친듯이" 1조 기업 회장의 AI 시대 생존 공식 + 언러닝 학습법 (윤소정 생각구독 3월호) - 시청 필요, PPT 생성됨 #언러닝 #3년원칙 #로킷헬스케어 #윤소정 #AI생존 #시청필요
 - [[biz-sabri-subi-ai-5side-hustles-2026-04-22]] - Sabri Subi: 하루 300만원 2026 AI 자동화 부업 5가지 (Hidden Riches 200+ 아이디어) - 시청 필요, 영어권 벤치마크 #SabriSubi #AI부업 #해외사업 #HiddenRiches #시청필요
 - [[biz-modeuui-changup-qa-14questions-2026-04-22]] - 모두의 창업 공고 Q&A 14개: 자격·중복신청·직장인·지원서 작성 팩트체크 - 시청 필요, 지원 전 필수 확인 #모두의창업 #정부지원사업 #QnA #지원서작성 #시청필요
