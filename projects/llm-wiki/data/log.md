@@ -32,6 +32,8 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-30 | ADD | ai-joshua-claude-design-system-prd-2026-04-30 | AI에이전트 | URL 수집: JOSHUA Claude Design 잘 쓰는 법 (디자인 시스템 + PRD 2단계 세팅) |
 | 2026-04-30 | ADD | biz-bill-gurley-ai-survival-90percent-2026-04-30 | 창업 | URL 수집: Bill Gurley "10년 90% 사라진다" AI 생존 4요소 (호기심·집요함·실행력·AI활용) |
 | 2026-04-30 | PPT | bill-gurley-ai-survival-2026-04-30.html | ppt | 90% vs 10% — Bill Gurley AI 생존 4요소 7 slides 생성 |
+| 2026-05-01 | FIX | bill-gurley-ai-survival-2026-04-30.html | ppt | PPT 재빌드 (초기 transform·IIFE 스코프·CSS 정리) |
+| 2026-05-01 | ADD | biz-opus-clip-yan-30days-pmf-2026-05-01 | 창업 | URL 수집: Opus Clip CEO Yan 30일 AI 창업 플레이북 (PMF·초니치) |
 
 ---
 
