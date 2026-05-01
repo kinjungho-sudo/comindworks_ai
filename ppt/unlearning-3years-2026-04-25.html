@@ -348,6 +348,18 @@
     letter-spacing: 1px;
     z-index: 10;
   }
+
+  /* === Print: all 7 slides as separate pages === */
+  @media print {
+    @page { size: 1920px 1080px; margin: 0; }
+    html, body { width: 1920px; height: auto; overflow: visible; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .deck { width: 1920px; height: auto; overflow: visible; }
+    .slides-wrapper { display: block; transform: none !important; width: 1920px; height: auto; }
+    .slide { min-width: 1920px; width: 1920px; height: 1080px; page-break-after: always; page-break-inside: avoid; break-after: page; }
+    .slide:last-child { page-break-after: auto; break-after: auto; }
+    .slide-counter, .nav-hint { display: none !important; }
+  }
 </style>
 </head>
 <body>
