@@ -18,6 +18,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-04-17 | ADD | ai-llm-wiki-youtube-2026-04-17 | AI에이전트 | URL 수집: 상위 0.1프로 AI 활용법 (LLM Wiki) |
 | 2026-05-02 | ADD | biz-psst-startup-gov-support-guide-2026-05-02 | 창업 | PDF 수집: PSST 프레임워크 + 정부지원사업 전략 + AI시대 BM 실행법 |
 | 2026-05-06 | ADD | ai-claudecode-800hours-9tips-2026-05-06 | AI에이전트 | URL 수집: Jay Choi — Claude Code 800시간 실전 꿀팁 9가지 |
+| 2026-05-10 | ADD | ai-ontology-b2b-core-tech-2026-05-10 | AI에이전트 | 텍스트 수집: 온톨로지 — 코마인드웍스 B2B 차별화 핵심 기술 (학습 노트, 만료 없음) |
 
 ---
 

@@ -1,11 +1,11 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-05-06 | 총 페이지: 45_
+_마지막 업데이트: 2026-05-10 | 총 페이지: 46_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (14)
+## 📁 AI에이전트 (15)
 
 - [[ai-llm-wiki-youtube-2026-04-17]] - 상위 0.1프로만 쓰는 현 시점 AI를 가장 똑똑하게 쓰는 방법 #LLM #Wiki #지식관리 #카르파시
 - [[ai-agent-learning-data-alchera-2026-04-17]] - AI 에이전트 학습 데이터 수집·전처리·관리 완전 가이드 #학습데이터 #전처리 #에이전트설계
@@ -21,6 +21,7 @@ _마지막 업데이트: 2026-05-06 | 총 페이지: 45_
 - [[ai-design-md-standard-2026-04-24]] - AI 디자이너의 새로운 표준: DESIGN.md — 색상·타이포·컴포넌트를 LLM이 읽는 선언적 문서로, GoogleStitch·awesome-design-md 사례 #DESIGN.md #AI디자인 #디자인시스템 #LLM #ClaudeCode
 - [[ai-5g-physical-ai-2026-04-28]] - [제조 AX 사례] Physical AI 필수 인프라, 5G 특화망 도입 사례와 전략 #PhysicalAI #5G특화망 #제조AX ⚠️link-only
 - [[ai-claudecode-800hours-9tips-2026-05-06]] - Jay Choi: Claude Code 800시간 실전에서 깨달은 꿀팁 9가지 — 하지 말 것·해야 할 것·매일 쓰는 팁 #ClaudeCode #꿀팁 #실전활용 #인디해커 #CLAUDE.md
+- [[ai-ontology-b2b-core-tech-2026-05-10]] - 온톨로지 코마인드웍스 B2B 차별화 핵심기술: Class·Instance·Property·Axiom + 벡터DB·그래프DB 비교 + 영업 템플릿 + IR 메시지 #온톨로지 #GraphRAG #ExplainableAI #B2B #AI기본법 #KnowledgeDNA
 
 ---
 
