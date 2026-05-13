@@ -8,3 +8,9 @@
 한줄평: 설득의 기법을 실험을 통해 과학적인 방법으로 풀이하여 상세하게 알려주는 조금 어렵지만 재밌는 책
 완독일: 2023년 2월 19일
 순서: 27
+
+---
+
+## 관련 Wiki 페이지
+- [[biz-psychology-of-money-3habits-2026-04-17]]
+- [[biz-neilpatel-million-dollar-roadmap-2026-04-17]]
