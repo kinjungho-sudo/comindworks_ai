@@ -1,12 +1,13 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-05-19 | 총 페이지: 54_
+_마지막 업데이트: 2026-05-19 | 총 페이지: 55_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (20)
+## 📁 AI에이전트 (21)
 
+- [[ai-cmdspace-kuyohan-obsidian-second-brain-2026-05-19]] - 구요한 (커맨드스페이스): 옵시디언 세컨드 브레인 + PKM 컨퍼런스 2025 한국 PKM 커뮤니티 허브 #구요한 #커맨드스페이스 #옵시디언 #세컨드브레인 #PKM #한국커뮤니티
 - [[ai-graphify-claudecode-knowledge-graph-2026-05-19]] - Graphify: Claude Code 토큰 27배 절감 (코드베이스→지식그래프), 카파시 raw-folder 영감, Obsidian/Neo4j/MCP 동시 출력 #Graphify #ClaudeCode #지식그래프 #토큰절감 #MCPserver #Karpathy
 - [[ai-ai-slop-design-system-prevent-2026-05-19]] - AI 슬롭 방지 = 디자인 시스템 - 원티드 몽타주·쿨리콘즈·Pretendard + Design.md 5단계 워크플로우 (메이커 에반) #AISlop #디자인시스템 #원티드몽타주 #Pretendard #DesignMD #한국어UI
 - [[ai-claude-live-artifacts-mcp-dashboard-2026-05-03]] - Claude Live Artifacts + Play MCP(카카오): 비개발자도 말로 만드는 실시간 대시보드 (한국 주식 모닝 브리핑 사례) #ClaudeLiveArtifacts #MCP #PlayMCP #카카오 #DART #대시보드자동화 #SaaS대체

@@ -41,6 +41,8 @@ _시스템 초기화: 2026-04-17_
 | 2026-05-07 | ADD | biz-danmartell-20-ways-ai-money-2026-05-07 | 창업 | 텍스트 수집: Dan Martell 20가지 AI 수익화 S/A/B/F Tier + 5단계 런칭 |
 | 2026-05-19 | ADD | ai-ai-slop-design-system-prevent-2026-05-19 | AI에이전트 | 텍스트 수집: AI Slop 방지 = 디자인 시스템 (메이커 에반, 한국어 디테일) |
 | 2026-05-19 | ADD | ai-graphify-claudecode-knowledge-graph-2026-05-19 | AI에이전트 | URL 수집: Graphify Claude Code 토큰 27배 절감 (지식 그래프, Eric ex-Amazon/MS) |
+| 2026-05-19 | INSTALL | graphify v0.8.13 | tool | uv tool install graphifyy + Claude Code hook (CLAUDE.md + .claude/settings.json) — 첫 빌드 2234 노드/2157 엣지/187 커뮤니티 |
+| 2026-05-19 | ADD | ai-cmdspace-kuyohan-obsidian-second-brain-2026-05-19 | AI에이전트 | URL 수집: 구요한(커맨드스페이스) 옵시디언 세컨드 브레인 + PKM 컨퍼런스 2025 |
 
 ---
 
