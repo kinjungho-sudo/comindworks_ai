@@ -37,6 +37,10 @@ _시스템 초기화: 2026-04-17_
 | 2026-05-01 | PDF | bill-gurley·unlearning *.pdf | ppt | @media print CSS + Chrome headless로 7-page PDF 변환 |
 | 2026-05-03 | ADD | biz-startup-government-funding-psst-2026-05-03 | 창업 | 텍스트 수집: 정부 지원 사업 PSST 종합 가이드 (30개 선정 전문가) |
 | 2026-05-03 | ADD | ai-claude-live-artifacts-mcp-dashboard-2026-05-03 | AI에이전트 | URL 수집: Claude Live Artifacts + 카카오 Play MCP 대시보드 |
+| 2026-05-04 | ADD | biz-comindworks-philosophy-roadmap-2026-05-04 ★ | 창업 | 텍스트 수집: 코마인드웍스 창업 철학 & 로드맵 (영구 보존, expires: never) |
+| 2026-05-07 | ADD | biz-danmartell-20-ways-ai-money-2026-05-07 | 창업 | 텍스트 수집: Dan Martell 20가지 AI 수익화 S/A/B/F Tier + 5단계 런칭 |
+| 2026-05-19 | ADD | ai-ai-slop-design-system-prevent-2026-05-19 | AI에이전트 | 텍스트 수집: AI Slop 방지 = 디자인 시스템 (메이커 에반, 한국어 디테일) |
+| 2026-05-19 | ADD | ai-graphify-claudecode-knowledge-graph-2026-05-19 | AI에이전트 | URL 수집: Graphify Claude Code 토큰 27배 절감 (지식 그래프, Eric ex-Amazon/MS) |
 
 ---
 

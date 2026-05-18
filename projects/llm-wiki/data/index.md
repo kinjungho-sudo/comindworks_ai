@@ -1,12 +1,14 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-05-03 | 총 페이지: 50_
+_마지막 업데이트: 2026-05-19 | 총 페이지: 54_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (18)
+## 📁 AI에이전트 (20)
 
+- [[ai-graphify-claudecode-knowledge-graph-2026-05-19]] - Graphify: Claude Code 토큰 27배 절감 (코드베이스→지식그래프), 카파시 raw-folder 영감, Obsidian/Neo4j/MCP 동시 출력 #Graphify #ClaudeCode #지식그래프 #토큰절감 #MCPserver #Karpathy
+- [[ai-ai-slop-design-system-prevent-2026-05-19]] - AI 슬롭 방지 = 디자인 시스템 - 원티드 몽타주·쿨리콘즈·Pretendard + Design.md 5단계 워크플로우 (메이커 에반) #AISlop #디자인시스템 #원티드몽타주 #Pretendard #DesignMD #한국어UI
 - [[ai-claude-live-artifacts-mcp-dashboard-2026-05-03]] - Claude Live Artifacts + Play MCP(카카오): 비개발자도 말로 만드는 실시간 대시보드 (한국 주식 모닝 브리핑 사례) #ClaudeLiveArtifacts #MCP #PlayMCP #카카오 #DART #대시보드자동화 #SaaS대체
 - [[ai-joshua-claude-design-system-prd-2026-04-30]] - JOSHUA: Claude Design 잘 쓰는 법 — 디자인 시스템 + PRD 2단계 세팅이 99% 차이를 만든다 (원티드·머티리얼3·카카오T) #ClaudeDesign #JOSHUA #PRD #디자인시스템 #원티드 #하네스엔지니어링디자인
 - [[ai-inflearn-obsidian-claudecode-wiki-course-2026-04-29]] - 인프런 Obsidian × Claude Code LLM Wiki 강의 (실용주의개발) - 우리가 이미 만든 시스템과 비교, 시장 검증 신호 #Inflearn #ObsidianClaudeCode #LLMWiki #3LayerArchitecture #실용주의개발 #시장검증
@@ -34,8 +36,10 @@ _마지막 업데이트: 2026-05-03 | 총 페이지: 50_
 
 ---
 
-## 📁 창업 (25)
+## 📁 창업 (27)
 
+- [[biz-danmartell-20-ways-ai-money-2026-05-07]] - Dan Martell 20가지 AI 수익화(2026) - S/A/B/F Tier 등급 + 5단계 런칭 블루프린트, 인터페이스의 종말·노동력 대체·Niche #DanMartell #AI수익화 #S_Tier #5단계블루프린트 #AI컨설팅 #AI에이전트개발
+- [[biz-comindworks-philosophy-roadmap-2026-05-04]] ★ - CoMindWorks 창업 철학 & 로드맵 - 지식은 공평하지 않다·시니어도 쓸 수 있는가·3단계 사업 모델·살아낸 이야기 (영구 보존) #코마인드웍스 #창업철학 #사명 #시니어 #3단계로드맵 #브랜드정체성
 - [[biz-startup-government-funding-psst-2026-05-03]] - 정부 지원 사업 PSST 종합 가이드 - 사용자/고객 분리·아이디어 부패 법칙·AI에 전문성 얹기·모멘텀 (30개 선정 전문가) #PSST #정부지원사업 #사용자고객분리 #아이디어부패 #AI전문성 #모멘텀
 - [[biz-opus-clip-yan-30days-pmf-2026-05-01]] - Opus Clip CEO Yan: 30일 AI 창업 플레이북 - 진짜 문제·30일 PMF·초니치 시장·대기업 잠식 회피 #OpusClip #Yan #30일플레이북 #PMF #초니치 #AI창업 #시청필요
 - [[biz-bill-gurley-ai-survival-90percent-2026-04-30]] - Bill Gurley: "10년 안에 90% 사라진다" AI 시대 4가지 생존 요소 (호기심·집요함·실행력·AI 활용 능력) - 시청 필요, PPT 생성됨 #BillGurley #AI생존 #90vs10 #호기심 #집요함 #실행력 #시청필요
