@@ -119,12 +119,20 @@ export default function HomePage() {
         <span className="text-sm font-black tracking-tight text-indigo-400 uppercase">
           LLM Wiki
         </span>
-        <Link
-          href="/dashboard"
-          className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-zinc-800"
-        >
-          대시보드 →
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/wiki"
+            className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-zinc-800"
+          >
+            Wiki 목록
+          </Link>
+          <Link
+            href="/dashboard"
+            className="text-xs font-semibold text-zinc-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-zinc-800"
+          >
+            대시보드 →
+          </Link>
+        </div>
       </header>
 
       <main className="max-w-xl mx-auto px-4 py-10 space-y-8">
