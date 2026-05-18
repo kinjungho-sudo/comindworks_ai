@@ -8,3 +8,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 node_modules/
+
+# Graphify generated knowledge graph (regenerable)
+graphify-out/
