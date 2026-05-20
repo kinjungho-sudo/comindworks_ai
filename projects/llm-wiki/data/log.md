@@ -44,6 +44,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-05-19 | INSTALL | graphify v0.8.13 | tool | uv tool install graphifyy + Claude Code hook (CLAUDE.md + .claude/settings.json) — 첫 빌드 2234 노드/2157 엣지/187 커뮤니티 |
 | 2026-05-19 | ADD | ai-cmdspace-kuyohan-obsidian-second-brain-2026-05-19 | AI에이전트 | URL 수집: 구요한(커맨드스페이스) 옵시디언 세컨드 브레인 + PKM 컨퍼런스 2025 |
 | 2026-05-19 | ADD | ai-claudecode-goal-command-tristen-2026-05-17 | AI에이전트 | URL 수집: Claude Code /goal 명령어 — Auto Mode + Boss·Worker 2층 자율 실행 (Tristen O'Brien) |
+| 2026-05-21 | ADD | na-huberman-motivation-neuroscience-2026-05-21 | 나/생각 | URL 수집: Andrew Huberman 동기부여 필요 없는 신경과학적 자기 시스템 (위대한 뇌과학) |
 
 ---
 
