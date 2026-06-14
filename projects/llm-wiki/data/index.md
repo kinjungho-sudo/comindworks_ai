@@ -1,12 +1,13 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-05-21 | 총 페이지: 58_
+_마지막 업데이트: 2026-06-14 | 총 페이지: 59_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (22)
+## 📁 AI에이전트 (23)
 
+- [[ai-hermes-agent-ai-team-2026-06-14]] - Hermes Agent(Nous Research)로 나만의 AI 직원 팀 만들기 — Workspace+공유 메모리+LLM Wiki 멀티에이전트, 메신저 상시 가동 (시청 필요) #HermesAgent #NousResearch #AI직원팀 #공유메모리 #LLMWiki #시청필요
 - [[ai-claudecode-goal-command-tristen-2026-05-17]] - Tristen O'Brien: Claude Code /goal 명령어 — Auto Mode + Boss·Worker 2층 구조로 자율 목표 완수, 비용 경고 3룰 #ClaudeCode #goal명령어 #AutoMode #Boss워커패턴 #자율실행 #소상공인
 - [[ai-cmdspace-kuyohan-obsidian-second-brain-2026-05-19]] - 구요한 (커맨드스페이스): 옵시디언 세컨드 브레인 + PKM 컨퍼런스 2025 한국 PKM 커뮤니티 허브 #구요한 #커맨드스페이스 #옵시디언 #세컨드브레인 #PKM #한국커뮤니티
 - [[ai-graphify-claudecode-knowledge-graph-2026-05-19]] - Graphify: Claude Code 토큰 27배 절감 (코드베이스→지식그래프), 카파시 raw-folder 영감, Obsidian/Neo4j/MCP 동시 출력 #Graphify #ClaudeCode #지식그래프 #토큰절감 #MCPserver #Karpathy

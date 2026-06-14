@@ -46,6 +46,7 @@ _시스템 초기화: 2026-04-17_
 | 2026-05-19 | ADD | ai-claudecode-goal-command-tristen-2026-05-17 | AI에이전트 | URL 수집: Claude Code /goal 명령어 — Auto Mode + Boss·Worker 2층 자율 실행 (Tristen O'Brien) |
 | 2026-05-21 | ADD | na-huberman-motivation-neuroscience-2026-05-21 | 나/생각 | URL 수집: Andrew Huberman 동기부여 필요 없는 신경과학적 자기 시스템 (위대한 뇌과학) |
 | 2026-05-21 | ADD | biz-kwakbongjun-ai-1person-overseas-launch-2026-05-20 | 창업 | URL 수집: 곽봉준 주말 이틀 Claude Code 바이브코딩 + 해외 런칭 (한국 350원 vs 해외 9원/클릭) |
+| 2026-06-14 | ADD | ai-hermes-agent-ai-team-2026-06-14 | AI에이전트 | URL 수집: Hermes 에이전트로 나만의 AI 직원 팀 만들기 (Workspace+공유메모리+LLM Wiki, 트랜스크립트 막혀 시청 필요) |
 
 ---
 
