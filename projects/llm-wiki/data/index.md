@@ -1,12 +1,13 @@
 # LLM Wiki 전체 목차
-_마지막 업데이트: 2026-06-15 | 총 페이지: 60_
+_마지막 업데이트: 2026-06-19 | 총 페이지: 61_
 
 > **선별 읽기 핵심**: 질문/글쓰기 요청 시 이 파일만 먼저 읽고 관련 페이지 7~8개만 로드. 나머지는 읽지 않음.
 
 ---
 
-## 📁 AI에이전트 (23)
+## 📁 AI에이전트 (24)
 
+- [[ai-builderjosh-hermes-agent-720h-review-2026-06-19]] - 빌더 조슈: 5인 회사 운영하며 헤르메스 에이전트 720시간(30일) 돌려본 실전 후기 — Slack 지시 + Hostinger VPS 상시 가동, 개념편의 실증판 (시청 필요) #HermesAgent #빌더조슈 #720시간 #5인회사 #Slack #HostingerVPS #실전운영후기 #시청필요
 - [[ai-hermes-agent-ai-team-2026-06-14]] - Hermes Agent(Nous Research)로 나만의 AI 직원 팀 만들기 — Workspace+공유 메모리+LLM Wiki 멀티에이전트, 메신저 상시 가동 (시청 필요) #HermesAgent #NousResearch #AI직원팀 #공유메모리 #LLMWiki #시청필요
 - [[ai-claudecode-goal-command-tristen-2026-05-17]] - Tristen O'Brien: Claude Code /goal 명령어 — Auto Mode + Boss·Worker 2층 구조로 자율 목표 완수, 비용 경고 3룰 #ClaudeCode #goal명령어 #AutoMode #Boss워커패턴 #자율실행 #소상공인
 - [[ai-cmdspace-kuyohan-obsidian-second-brain-2026-05-19]] - 구요한 (커맨드스페이스): 옵시디언 세컨드 브레인 + PKM 컨퍼런스 2025 한국 PKM 커뮤니티 허브 #구요한 #커맨드스페이스 #옵시디언 #세컨드브레인 #PKM #한국커뮤니티
