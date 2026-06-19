@@ -12,6 +12,8 @@ _시스템 초기화: 2026-04-17_
 
 ## 이력
 
+[2026-06-19] CREATE biz-ai-native-startup-6steps-2026-06-19 | 창업 | AI-네이티브 스타트업 구축 6단계 프레임워크 (news.hada.io)
+
 [2026-05-13] ADD ai-hermes-agent-intro-2026-05-13 | AI에이전트 | Hermes Agent NousResearch 오픈소스 에이전트 — 위키독스 334920
 [2026-05-15] ADD ai-agent-memory-architecture-2026-05-15 | AI에이전트 | 에이전트 메모리 아키텍처 — arxiv 2603.07670 실무자 해설 (직접입력)
 
