@@ -11,3 +11,18 @@ node_modules/
 
 # Graphify generated knowledge graph (regenerable)
 graphify-out/
+
+# CoMind Works Company OS — keep source media and sensitive raw material local/Drive only
+company/08_sources/meetings/audio/
+company/08_sources/meetings/uploads/
+company/08_sources/meetings/transcripts/
+
+# Large or raw meeting/media files should not be committed
+*.m4a
+*.mp3
+*.wav
+*.aac
+*.flac
+*.mp4
+*.mov
+*.webm
