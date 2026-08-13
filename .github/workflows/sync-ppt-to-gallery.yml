@@ -26,7 +26,11 @@ jobs:
             # push 실행: 변경된 파일만
             CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'ppt/*.html' | grep -v '^ppt/index.html' || true)
           fi
-          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          {
+            echo 'files<<EOF'
+            printf '%s\n' "$CHANGED"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           echo "Target files: $CHANGED"
 
       - name: Checkout starter-kit
@@ -89,3 +93,4 @@ jobs:
           git diff --cached --quiet && echo "변경 없음" && exit 0
           git commit -m "auto: PPT 갤러리 동기화 $(date '+%Y-%m-%d %H:%M')"
           git push
+
