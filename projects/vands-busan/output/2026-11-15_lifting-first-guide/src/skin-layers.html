@@ -1,0 +1,89 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#FBF8F4}
+svg{display:block;font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+</style></head><body>
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="fat" width="36" height="30" patternUnits="userSpaceOnUse">
+      <ellipse cx="18" cy="15" rx="15" ry="11" fill="#F6E7C9" stroke="#E8D3A8" stroke-width="1.5"/>
+    </pattern>
+    <pattern id="fiber" width="40" height="14" patternUnits="userSpaceOnUse">
+      <path d="M0 7 Q10 2 20 7 T40 7" fill="none" stroke="#E6B8AE" stroke-width="1.6"/>
+    </pattern>
+    <radialGradient id="dot" r="0.5"><stop offset="0" stop-color="#C8553D"/><stop offset="0.55" stop-color="#E07A5F" stop-opacity="0.85"/><stop offset="1" stop-color="#E07A5F" stop-opacity="0"/></radialGradient>
+    <linearGradient id="rf" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#E07A5F" stop-opacity="0.15"/><stop offset="0.5" stop-color="#E07A5F" stop-opacity="0.55"/><stop offset="1" stop-color="#E07A5F" stop-opacity="0.15"/></linearGradient>
+  </defs>
+
+  <text x="40" y="62" font-size="34" font-weight="700" fill="#2E2A27">리프팅 방식별 작용 깊이</text>
+  <text x="40" y="100" font-size="19" fill="#6B625B">피부 단면을 단순화한 도식이에요</text>
+
+  <!-- layers -->
+  <rect x="240" y="150" width="920" height="30" fill="#F3D9CF"/>
+  <rect x="240" y="180" width="920" height="150" fill="#F8E4DD"/>
+  <rect x="240" y="180" width="920" height="150" fill="url(#fiber)" opacity="0.7"/>
+  <rect x="240" y="330" width="920" height="190" fill="#FCF1DC"/>
+  <rect x="240" y="330" width="920" height="190" fill="url(#fat)"/>
+  <rect x="240" y="520" width="920" height="56" fill="#D9C2B5"/>
+  <rect x="240" y="576" width="920" height="124" fill="#C98F84"/>
+  <g stroke="#FBF8F4" stroke-width="3" opacity="0.5">
+    <line x1="240" y1="610" x2="1160" y2="610"/><line x1="240" y1="642" x2="1160" y2="642"/><line x1="240" y1="674" x2="1160" y2="674"/>
+  </g>
+
+  <!-- layer labels -->
+  <g font-size="20" fill="#2E2A27" font-weight="600">
+    <text x="40" y="172">표피</text>
+    <text x="40" y="262">진피</text>
+    <text x="40" y="430">피하 지방층</text>
+    <text x="40" y="555">근막층(SMAS)</text>
+    <text x="40" y="645">근육</text>
+  </g>
+  <g stroke="#B9AFA6" stroke-width="1"><line x1="200" y1="165" x2="236" y2="165"/><line x1="200" y1="255" x2="236" y2="255"/><line x1="200" y1="425" x2="236" y2="425"/><line x1="200" y1="548" x2="236" y2="548"/><line x1="200" y1="638" x2="236" y2="638"/></g>
+
+  <!-- column dividers -->
+  <g stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6 6" opacity="0.9"><line x1="547" y1="130" x2="547" y2="700"/><line x1="853" y1="130" x2="853" y2="700"/></g>
+
+  <!-- column headers -->
+  <g font-size="22" font-weight="700" fill="#2E2A27" text-anchor="middle">
+    <text x="393" y="135">초음파</text><text x="700" y="135">고주파</text><text x="1007" y="135">실</text>
+  </g>
+
+  <!-- ultrasound: focused points in dermis and SMAS -->
+  <g>
+    <g fill="url(#dot)">
+      <circle cx="300" cy="250" r="16"/><circle cx="360" cy="250" r="16"/><circle cx="420" cy="250" r="16"/><circle cx="480" cy="250" r="16"/>
+      <circle cx="330" cy="548" r="18"/><circle cx="393" cy="548" r="18"/><circle cx="456" cy="548" r="18"/>
+    </g>
+    <path d="M393 152 L393 225" stroke="#C8553D" stroke-width="2.5" stroke-dasharray="4 5" fill="none"/>
+    <path d="M393 270 L393 432" stroke="#C8553D" stroke-width="2.5" stroke-dasharray="4 5" fill="none"/><path d="M393 498 L393 525" stroke="#C8553D" stroke-width="2.5" stroke-dasharray="4 5" fill="none"/>
+    <rect x="300" y="438" width="186" height="54" rx="10" fill="#FFFFFF" opacity="0.92"/>
+    <text x="393" y="462" font-size="16" fill="#2E2A27" text-anchor="middle">한 점에 모은 열을</text>
+    <text x="393" y="483" font-size="16" fill="#2E2A27" text-anchor="middle">진피~근막층에 전달</text>
+  </g>
+
+  <!-- radiofrequency: broad heat band in dermis -->
+  <g>
+    <rect x="575" y="192" width="250" height="126" rx="18" fill="url(#rf)"/>
+    <g fill="none" stroke="#C8553D" stroke-width="2.2" opacity="0.8">
+      <path d="M590 232 q15 -10 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0"/>
+      <path d="M590 262 q15 -10 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0"/>
+      <path d="M590 292 q15 -10 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0"/>
+    </g>
+    <rect x="607" y="438" width="186" height="54" rx="10" fill="#FFFFFF" opacity="0.92"/>
+    <text x="700" y="462" font-size="16" fill="#2E2A27" text-anchor="middle">전류가 열로 바뀌어</text>
+    <text x="700" y="483" font-size="16" fill="#2E2A27" text-anchor="middle">진피층에 넓게 전달</text>
+  </g>
+
+  <!-- thread: line with cogs in fat layer -->
+  <g>
+    <path d="M880 470 C 940 440, 1010 405, 1135 370" stroke="#5B6C8F" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <g stroke="#5B6C8F" stroke-width="3" stroke-linecap="round">
+      <line x1="915" y1="452" x2="903" y2="436"/><line x1="950" y1="435" x2="938" y2="419"/><line x1="985" y1="419" x2="973" y2="403"/>
+      <line x1="1020" y1="405" x2="1009" y2="389"/><line x1="1055" y1="393" x2="1045" y2="377"/><line x1="1090" y1="382" x2="1081" y2="366"/>
+    </g>
+    <rect x="970" y="444" width="186" height="54" rx="10" fill="#FFFFFF" opacity="0.92"/>
+    <text x="1063" y="468" font-size="16" fill="#2E2A27" text-anchor="middle">녹는 실이 피하 지방층</text>
+    <text x="1063" y="489" font-size="16" fill="#2E2A27" text-anchor="middle">조직을 받쳐 줌</text>
+  </g>
+
+  <text x="40" y="752" font-size="16" fill="#6B625B">※ 실제 작용 깊이는 장비·설정·시술 부위에 따라 달라질 수 있어요. 이해를 돕기 위한 단순화한 그림입니다.</text>
+</svg></body></html>
