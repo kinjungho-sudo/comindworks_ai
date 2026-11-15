@@ -35,6 +35,14 @@ python3 tools/medad_check.py output/<폴더>/<원고>.md
 - **수동 확인 항목**은 결과 보고에 그대로 남겨 원장님 확인·사전심의 단계로 넘긴다.
 - 규칙은 `tools/medad_rules.json`에서 고친다. 자동 검사는 1차 거름망이며 사전심의·법률 검토를 대신하지 않는다.
 
+## 이미지 제작 (2026-11-15 정호님 지시)
+
+- 블로그 이미지는 **Codex CLI 또는 빠나나AI**로 생성한다. 기본은 빠나나 `GPT Image 2.6 Sunburst`(high·2K, 장당 2.7크레딧).
+- AI 이미지에는 글자를 넣지 않는다(`No text, no letters`). 라벨·설명은 `src/*-ai.html`에서 얹어 Chrome으로 PNG 렌더.
+- 의학적 위치(시술 깊이 등)는 AI에 맡기지 않고 오버레이로 직접 그린다. AI가 그린 내용은 원고와 육안 대조.
+- 원본은 `images/raw/`에, 생성 기록은 `images/raw/PROVENANCE.md`(모델·작업 ID·SHA-256)에 남긴다.
+- 실제 인물 사진풍·시술 장면·전후 비교 금지. 일러스트·도식만.
+
 ## 폴더 구조
 
 ```

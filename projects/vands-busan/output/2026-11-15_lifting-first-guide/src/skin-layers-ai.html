@@ -1,0 +1,54 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:#FCEFDC}svg{display:block;font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+</style></head><body>
+<svg width="1200" height="830" viewBox="0 0 1200 830" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <radialGradient id="dot" r="0.5"><stop offset="0" stop-color="#FFF6E8"/><stop offset="0.35" stop-color="#E4572E"/><stop offset="1" stop-color="#E4572E" stop-opacity="0"/></radialGradient>
+    <linearGradient id="rf" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#E4572E" stop-opacity="0.12"/><stop offset="0.5" stop-color="#E4572E" stop-opacity="0.45"/><stop offset="1" stop-color="#E4572E" stop-opacity="0.12"/></linearGradient>
+    <filter id="sh" x="-10%" y="-20%" width="120%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>
+  </defs>
+  <image x="230" y="130" width="940" height="628.6" xlink:href="../images/raw/skin-layers-ai.jpg" preserveAspectRatio="none"/>
+
+  <text x="40" y="62" font-size="34" font-weight="700" fill="#2E2A27">리프팅 방식별 작용 깊이</text>
+  <text x="40" y="100" font-size="19" fill="#6B625B">피부 단면을 단순화한 그림이에요</text>
+
+  <g font-size="20" font-weight="600" fill="#2E2A27">
+    <text x="40" y="269">표피</text><text x="40" y="365">진피</text><text x="40" y="529">피하 지방층</text><text x="40" y="632">근막층(SMAS)</text><text x="40" y="707">근육</text>
+  </g>
+  <g stroke="#B9AFA6" stroke-width="1"><line x1="196" y1="262" x2="226" y2="262"/><line x1="196" y1="358" x2="226" y2="358"/><line x1="196" y1="522" x2="226" y2="522"/><line x1="196" y1="625" x2="226" y2="625"/><line x1="196" y1="700" x2="226" y2="700"/></g>
+
+  <g stroke="#FFFFFF" stroke-width="2.5" stroke-dasharray="7 7" opacity="0.85"><line x1="543" y1="150" x2="543" y2="758"/><line x1="857" y1="150" x2="857" y2="758"/></g>
+  <g font-size="23" font-weight="700" fill="#2E2A27" text-anchor="middle"><text x="387" y="205">초음파</text><text x="700" y="205">고주파</text><text x="1013" y="205">실</text></g>
+
+  <!-- 초음파: 진피·근막층에 점 형태 -->
+  <path d="M387 246 L387 340 M387 376 L387 608" stroke="#C0391B" stroke-width="2.5" stroke-dasharray="4 5" fill="none"/>
+  <g fill="url(#dot)">
+    <circle cx="297" cy="358" r="19"/><circle cx="357" cy="358" r="19"/><circle cx="417" cy="358" r="19"/><circle cx="477" cy="358" r="19"/>
+    <circle cx="327" cy="625" r="20"/><circle cx="387" cy="625" r="20"/><circle cx="447" cy="625" r="20"/>
+  </g>
+  <!-- 고주파: 진피층에 넓게 -->
+  <rect x="568" y="292" width="264" height="132" rx="20" fill="url(#rf)"/>
+  <g fill="none" stroke="#C0391B" stroke-width="2.4" opacity="0.85">
+    <path d="M586 328 q16 -11 32 0 t32 0 t32 0 t32 0 t32 0 t32 0 t32 0"/>
+    <path d="M586 358 q16 -11 32 0 t32 0 t32 0 t32 0 t32 0 t32 0 t32 0"/>
+    <path d="M586 388 q16 -11 32 0 t32 0 t32 0 t32 0 t32 0 t32 0 t32 0"/>
+  </g>
+  <!-- 실: 피하 지방층 -->
+  <path d="M880 575 C 940 545, 1010 505, 1145 470" stroke="#3E4F7A" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+  <g stroke="#3E4F7A" stroke-width="3.2" stroke-linecap="round">
+    <line x1="915" y1="557" x2="903" y2="540"/><line x1="950" y1="539" x2="938" y2="522"/><line x1="985" y1="522" x2="973" y2="505"/>
+    <line x1="1020" y1="508" x2="1009" y2="491"/><line x1="1055" y1="496" x2="1045" y2="479"/><line x1="1090" y1="485" x2="1081" y2="468"/>
+  </g>
+
+  <!-- 설명 상자 (근육층 위) -->
+  <g filter="url(#sh)" fill="#FFFFFF" opacity="0.95">
+    <rect x="294" y="672" width="186" height="56" rx="10"/><rect x="607" y="672" width="186" height="56" rx="10"/><rect x="920" y="672" width="186" height="56" rx="10"/>
+  </g>
+  <g font-size="16" fill="#2E2A27" text-anchor="middle">
+    <text x="387" y="696">한 점에 모은 열을</text><text x="387" y="717">진피~근막층에 전달</text>
+    <text x="700" y="696">전류가 열로 바뀌어</text><text x="700" y="717">진피층에 넓게 전달</text>
+    <text x="1013" y="696">녹는 실이 피하 지방층</text><text x="1013" y="717">조직을 받쳐 줌</text>
+  </g>
+
+  <text x="40" y="800" font-size="16" fill="#6B625B">※ 실제 작용 깊이는 장비·설정·시술 부위에 따라 달라질 수 있어요. 이해를 돕기 위한 단순화한 그림입니다.</text>
+</svg></body></html>
