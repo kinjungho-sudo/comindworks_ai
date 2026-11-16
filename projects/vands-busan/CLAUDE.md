@@ -17,6 +17,11 @@ _프로젝트 규칙 — v0.1_
 - 이 폴더에서 `/blog write` 등을 실행하면 claude-blog 스킬이 두 파일을 자동으로 읽는다.
 - 수정은 `/blog brand update`.
 
+## 품질 기준서 (필수)
+
+- 글을 쓰기 전에 [docs/blog-standard.md](docs/blog-standard.md)를 따른다. 통과 기준: `tools/medad_check.py` block 0 → `tools/geo_check.py` 85점 이상 → 독자·심의 시뮬레이션 반영.
+- 검수 기록은 `docs/reviews/<날짜>_<슬러그>.md`에 남긴다.
+
 ## 실명 비공개 (2026-11-16 정호님 지시)
 
 - 글·이미지·파일명·frontmatter에 병원 실명과 지점명을 쓰지 않는다. 병원은 "저희 병원"으로만 지칭.

@@ -1,0 +1,1 @@
+Created with the image generation tool using your prompt and saved to `./images/raw/pigment-laser-ai.png` (1536 × 1024, 3:2). No other workspace files were changed.
