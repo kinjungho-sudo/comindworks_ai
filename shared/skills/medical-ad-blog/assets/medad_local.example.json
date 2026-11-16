@@ -1,0 +1,17 @@
+{
+  "_about": "병원 폴더 맨 위에 medad_local.json 이름으로 복사해 쓴다. 공통 규칙(scripts/medad_rules.json)에 덧붙는다.",
+  "pattern_rules": [
+    {
+      "id": "N-realname",
+      "law": "운영 규칙 (병원 실명 비공개)",
+      "title": "병원 실명 노출",
+      "severity": "block",
+      "patterns": ["○○의원", "○○피부과"]
+    }
+  ],
+  "structure_rules": {
+    "procedure_terms": [],
+    "sideeffect_terms": []
+  },
+  "manual_checklist": []
+}

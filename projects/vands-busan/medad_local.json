@@ -1,0 +1,17 @@
+{
+  "_about": "서면점 병원별 규칙. medical-ad-blog 스킬의 공통 규칙에 덧붙는다.",
+  "pattern_rules": [
+    {
+      "id": "N-realname",
+      "law": "서면점 운영 규칙 (2026-11-16: 병원 실명 비공개)",
+      "title": "병원 실명 노출",
+      "severity": "block",
+      "patterns": [
+        "밴스",
+        "V\\s*&\\s*S",
+        "브이앤에스",
+        "[Vv]ands"
+      ]
+    }
+  ]
+}
