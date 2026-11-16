@@ -21,7 +21,7 @@ BRAND_PATH = HERE.parent / "BRAND.md"
 IMG_RE = re.compile(r"!\[([^\]]*)\]\(([^)]*)\)")
 LINK_RE = re.compile(r"\]\([^)]*\)")
 URL_RE = re.compile(r"https?://\S+")
-MARKER_RE = re.compile(r"\[(IMAGE|CHART|VIDEO|추후 기입)[^\]]*\]")
+MARKER_RE = re.compile(r"\[(IMAGE|CHART|VIDEO|추후 기입|원장님 확인)[^\]]*\]")
 
 
 def load_rules():
