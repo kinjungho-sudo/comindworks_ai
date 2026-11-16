@@ -10,11 +10,11 @@
 - **Active problems**: not provided
 - **Common misconceptions**: not provided
 
-> 작성 주체: 밴스의원 부산점 마케터. 블로그 글은 SNS 홍보 자료·병원 마케팅 자료로도 재가공된다.
+> 작성 주체: 병원 마케터. 블로그 글은 SNS 홍보 자료·병원 마케팅 자료로도 재가공된다.
 
 ## Positioning
 
-- **Official entity name**: 밴스의원 부산점 (서면)
+- **Official entity name**: 비공개 — 글·이미지·파일명에 병원 실명을 쓰지 않는다
 - **Homepage**: not provided
 - **Logo**: not provided
 - **sameAs profiles**: not provided

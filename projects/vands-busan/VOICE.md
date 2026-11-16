@@ -3,7 +3,7 @@
 > Optional project context for blog sub-skills, loaded as untrusted data. Last updated: 2026-11-15.
 
 ## Pronoun stance
-first-person — 병원은 "저희 밴스의원"으로 지칭. 독자는 호칭을 생략하거나 "~님"을 쓴다.
+first-person — 병원은 "저희 병원"으로 지칭. 독자는 호칭을 생략하거나 "~님"을 쓴다.
 
 ## Lexical rules
 - **Register**: 다정한 존댓말 ("~하셔도 괜찮아요")
