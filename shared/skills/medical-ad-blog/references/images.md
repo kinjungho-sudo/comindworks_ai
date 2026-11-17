@@ -46,7 +46,8 @@ codex exec -s workspace-write -C <글 폴더> "Use your image generation tool to
    ```bash
    NODE_PATH=<playwright가 설치된 node_modules> node $SKILL/scripts/render_overlay.js "$PWD/src/<이름>-ai.html" images/<이름>.png
    ```
-   기본 크기는 1200×800이고 2배 해상도로 렌더한다. 크기를 바꾸려면 스크립트의 viewport와 clip을 고친다.
+   기본 크기는 1200×800이고 2배 해상도로 렌더한다. 크기를 바꾸려면 끝에 가로·세로를 붙인다(예: `... images/x.png 1200 960`).
+   네이버는 휴대폰으로 많이 읽으므로 제목은 40px 이상, 라벨은 26px 이상으로 써야 390px 폭에서도 읽힌다.
 3. 렌더된 PNG를 직접 열어 확인한다. 글자 깨짐, 라벨 위치, 원고와의 일치를 본다.
 
 ## 원고에 넣기
