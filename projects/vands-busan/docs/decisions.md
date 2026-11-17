@@ -6,3 +6,4 @@
 - 2026-11-17: 원장님 확인 질문지 작성(docs/director-questionnaire.md) — 자리표시 31곳을 질문 17개로 묶음. 답 받으면 일괄 반영.
 - 2026-11-17: 스킬 초안 medical-ad-blog를 shared/skills/에 만듦. 공통 규칙은 스킬, 서면점 실명 규칙은 medad_local.json으로 분리. 프로젝트 tools/는 스킬 확정 전까지 유지(결과 동일 확인).
 - 2026-11-17: 모공 글을 blog-write(claude-blog, 설치 수 2.7K·BRAND/VOICE 연동) + medical-ad-blog 게이트로 작성. PicPost(picpo.app)는 사진·메모 기반 후기형 초안 도구이고 네이버 입력기는 Windows 전용이라 이번 글에는 쓰지 않음(크레딧 사용 0). 네이버 게시 묶음(naver_export.py) 도입.
+- 2026-11-17: 네이버 블로그는 카드형이 기본(카드 7~8장 + 짧은 글, 에이투지체). 긴 글은 홈페이지 칼럼형. geo_check에 format: card 기준 추가. (정호님 지적: 칼럼 같다, 글만 빼곡하다)

@@ -53,6 +53,7 @@ def check(path):
     fm, main, refs = parse(text)
     secs = sections(main)
     qa = [s for s in secs if s[0].startswith("Q") or s[0].endswith("?") or s[0].endswith("요?")]
+    card = fm.get("format", "") == "card"   # 카드형 블로그: 카드 이미지 중심, 본문 번호 인용 없이 글 끝 참고 문헌
     results = []
 
     def item(cid, weight, ok, detail):
@@ -73,10 +74,11 @@ def check(path):
     first = first_sentence(lead_paras[0]) if lead_paras else ""
     item("G03-definition-first", 8, bool(re.search(r"(는|은)\s.{3,90}(예요|이에요|입니다|말해요|뜻해요|가리켜요)", first)),
          f"첫 문장이 정의문: '{first[:40]}…'")
-    item("G04-summary", 6, "핵심 정리" in main or "Key Takeaways" in main, "핵심 정리 박스")
+    item("G04-summary", 6, any(k in main for k in ("핵심 정리", "한눈에 보기", "Key Takeaways")), "핵심 정리 박스")
 
     # 3. 질문형 소제목 + 직답
-    item("G05-question-headings", 6, len(qa) >= 5, f"질문형 소제목 {len(qa)}개 (5개 이상)")
+    need_q = 4 if card else 5
+    item("G05-question-headings", 6, len(qa) >= need_q, f"질문형 소제목 {len(qa)}개 ({need_q}개 이상)")
     direct = [s for s in qa if len(first_sentence(s[1])) <= 120]
     item("G06-answer-first", 8, qa and len(direct) / len(qa) >= 0.8,
          f"질문 섹션 첫 문장 직답 비율 {len(direct)}/{len(qa)}")
@@ -86,8 +88,11 @@ def check(path):
 
     # 4. 근거
     cites = CITE_RE.findall(main)
-    item("G09-citations", 8, len(cites) >= 6, f"본문 인용 표시 {len(cites)}개 (6개 이상)")
     ref_items = re.findall(r"^\d+\.\s*\[(.+?)\]\((https?://[^)]+)\)", refs, re.M)
+    if card:
+        item("G09-citations", 8, len(ref_items) >= 5, f"카드형: 글 끝 참고 문헌 {len(ref_items)}건 (5건 이상, 본문 번호 생략)")
+    else:
+        item("G09-citations", 8, len(cites) >= 6, f"본문 인용 표시 {len(cites)}개 (6개 이상)")
     item("G10-references", 6, len(ref_items) >= 3, f"참고 문헌 {len(ref_items)}건 (3건 이상)")
     full = [t for t, u in ref_items if re.search(r"(19|20)\d{2}", t) and "(" in t]
     item("G11-ref-format", 4, ref_items and len(full) == len(ref_items), f"서지(저자·학술지·연도) 완전 {len(full)}/{len(ref_items)}")
@@ -98,11 +103,17 @@ def check(path):
         window = main[max(0, m.start() - 400):m.end() + 120]
         if not CITE_RE.search(window):
             uncited.append(m.group(0))
-    item("G13-numbers-cited", 5, not uncited, f"출처 없는 수치 {len(uncited)}개")
+    if card:
+        item("G13-numbers-cited", 5, bool(ref_items), "카드형: 수치 근거는 글 끝 참고 문헌으로 (원문 대조는 검수 기록에)")
+    else:
+        item("G13-numbers-cited", 5, not uncited, f"출처 없는 수치 {len(uncited)}개")
 
     # 5. 구조화
-    item("G14-table", 4, bool(re.search(r"^\|.+\|\s*$\n^\|[-| :]+\|", main, re.M)), "비교·정리 표")
     imgs = IMG_RE.findall(main)
+    if card:
+        item("G14-table", 4, len(imgs) >= 6, f"카드형: 이미지 {len(imgs)}장 (6장 이상)")
+    else:
+        item("G14-table", 4, bool(re.search(r"^\|.+\|\s*$\n^\|[-| :]+\|", main, re.M)), "비교·정리 표")
     item("G15-image-alt", 3, imgs and all(len(a) >= 20 for a, _ in imgs), "이미지 설명(alt) 20자 이상")
 
     # 6. 신뢰 신호
@@ -120,7 +131,8 @@ def check(path):
     plain = re.sub(r"\]\([^)]*\)", "]", plain)
     plain = re.sub(r"^\[IMAGE[^\]]*\]", "", plain, flags=re.M)
     n_chars = len(re.sub(r"[\s|*#>\-]", "", plain))
-    item("G23-length", 5, 2500 <= n_chars <= 4000, f"본문 {n_chars}자 (공백 제외, 2,500~4,000자)")
+    lo, hi = (1500, 3000) if card else (2500, 4000)
+    item("G23-length", 5, lo <= n_chars <= hi, f"본문 {n_chars}자 (공백 제외, {lo:,}~{hi:,}자)")
 
     # 7. 완성도
     markers = MARKER_RE.findall(text)
