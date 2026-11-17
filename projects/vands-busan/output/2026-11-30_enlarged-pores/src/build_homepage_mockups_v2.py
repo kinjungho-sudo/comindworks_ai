@@ -65,7 +65,7 @@ sec = {}
 for ch in chunks[1:]:
     head, *rest = ch.split("\n")
     m = re.match(r"Q(\d+)\. (.+)", head)
-    sec[int(m[1]) if m else 0] = {"q": m[2] if m else head, "html": blocks(rest)}
+    sec[int(m[1]) if m else 0] = {"q": m[2] if m else head, "html": blocks(rest), "lines": rest}
 refs = [(int(n), inline(r)) for n, r in (l.split(". ", 1) for l in ref_part.split("\n") if re.match(r"\d+\. ", l))]
 REFS = "".join(f'<li id="ref-{n}">{t}</li>' for n, t in refs)
 DISC = html.escape(next(l for l in ref_part.split("\n") if l.startswith("※")))
@@ -226,10 +226,95 @@ CTA = ('<div class="cta"><div><h3>내 모공은 어떤 원인일까요?</h3><p>�
 
 # ---------- 시안 D: 그림 가이드형 ----------
 nav = "".join(f'<a href="#q{n}">{LABEL[n]}</a>' for n in range(1, 9))
+
+# 원고를 요소 단위로 나눈다: ("p", 문단) / ("table", 행들) / ("ul", 항목들)
+def elems(lines):
+    out, i = [], 0
+    while i < len(lines):
+        ln = lines[i].rstrip()
+        if not ln.strip():
+            i += 1; continue
+        if ln.startswith("!["):
+            i += 1
+            if i < len(lines) and lines[i].startswith("*") and not lines[i].startswith("**"):
+                i += 1
+            continue
+        if ln.startswith("|"):
+            rows = []
+            while i < len(lines) and lines[i].startswith("|"):
+                rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")]); i += 1
+            out.append(("table", [r for r in rows[1:] if not re.fullmatch(r"[-: ]+", "".join(r))])); continue
+        if ln.startswith("- "):
+            items = []
+            while i < len(lines) and lines[i].startswith("- "):
+                items.append(lines[i][2:].strip()); i += 1
+            out.append(("ul", items)); continue
+        para = []
+        while i < len(lines) and lines[i].strip() and not re.match(r"(\||- |!\[)", lines[i]):
+            para.append(lines[i].strip()); i += 1
+        out.append(("p", " ".join(para)))
+    return out
+
+
+def txt(t, cls="txt"):
+    """문단을 두 문장씩 끊어 짧은 덩어리로 보여 준다(내용은 원고 그대로)."""
+    sents = re.split(r"(?<=[.?!])\s+(?=\S)", t)
+    ps = "".join(f"<p>{inline(' '.join(sents[k:k + 2]))}</p>" for k in range(0, len(sents), 2))
+    return f'<div class="{cls}">{ps}</div>'
+
+
+def kv(item):  # "**세안**: 내용" → ("세안", "내용")
+    m = re.match(r"\*\*(.+?)\*\*:?\s*(.*)", item)
+    return (m[1], m[2]) if m else ("", item)
+
+
+def tile3(icon, title, desc, memo=""):
+    mm = f'<span class="m">{memo}</span>' if memo else ""
+    return f'<div class="tile"><span class="tic">{I[icon]}</span><b>{title}</b><span class="d">{desc}</span>{mm}</div>'
+
+
+def build_q(n):
+    E = elems(sec[n]["lines"])
+    P = [x[1] for x in E if x[0] == "p" and not re.fullmatch(r"\*\*.+\*\*", x[1])]
+    T = next((x[1] for x in E if x[0] == "table"), None)
+    U = next((x[1] for x in E if x[0] == "ul"), None)
+    if n == 1:
+        return txt(P[0]) + VIS[1] + txt(P[1])
+    if n == 2:
+        tiles = "".join(tile3(ic_, inline(r[0]), inline(r[1]), "관리: " + inline(r[2])) for ic_, r in zip(["drop", "sag", "ring", "clog"], T))
+        note = P[1].replace("표는", "위 카드는", 1)
+        return (txt(P[0]) + f'<div class="tiles t4">{tiles}</div>' + f'<p class="fine">{inline(note)}</p>'
+                + img("images/pore-types.png", TYPES_ALT, "wide", DIAG))
+    if n == 3:
+        return txt(P[0]) + VIS[3] + txt(P[1])
+    if n == 4:
+        checks = VIS[4].split('<div class="checks">')[1].split('<p class="alert">')[0]
+        return (f'<div class="split">{img("images/raw/spot-check-ai.png", "수채화 그림: 손거울과 체크박스가 그려진 메모장, 연필", "still", STILL)}'
+                f'<div>{txt(P[0])}<div class="checks">{checks}</div></div></div>'
+                + txt(P[1], "txt alertbox"))
+    if n == 5:
+        tiles = "".join(tile3(ic_, inline(r[0]), inline(r[1]), inline(r[2])) for ic_, r in zip(["tube", "layers", "dots", "needle"], T))
+        return (txt(P[0]) + f'<div class="tiles t4 tall">{tiles}</div>' + txt(P[1]) + txt(P[2])
+                + '<p class="banner">그래서 목표는 <b>\'없애기\'</b>보다 <b>\'덜 보이게\'</b>가 현실적이에요.</p>')
+    if n == 6:
+        cards = "".join(f'<div><b>{html.escape(k)}</b><p>{inline(v)}</p></div>' for k, v in map(kv, U))
+        return (VIS[6] + '<h3 class="sub3">방법별로 알아둘 점</h3>' + f'<div class="mcards">{cards}</div>' + txt(P[0]))
+    if n == 7:
+        tiles = "".join(tile3(ic_, html.escape(k), inline(v)) for ic_, (k, v) in zip(["wash", "bottle", "moon", "flask", "sun", "nohand"], map(kv, U)))
+        return (f'<div class="split">{img("images/raw/spot-homecare-ai.png", "수채화 그림: 수건, 세안 거품, 튜브와 스포이트 병", "still", STILL)}'
+                f'<div>{txt(P[0])}</div></div><div class="tiles t3">{tiles}</div>' + txt(P[1], "txt myth"))
+    if n == 8:
+        ask = "".join(f"<li>{inline(x)}</li>" for x in U)
+        return (f'<div class="split">{img("images/raw/spot-consult-ai.png", "수채화 그림: 창가의 둥근 테이블과 의자 두 개, 펼친 노트", "still", STILL)}'
+                f'<div>{txt(P[0])}<p class="asklead">상담 때 이렇게 물어보세요</p><ol class="ask">{ask}</ol></div></div>')
+
+
+END = elems(sec[0]["lines"])
+END_P = [x[1] for x in END if x[0] == "p" and not x[1].startswith("[추후")]
 qs = ""
 for n in range(1, 9):
     qs += (f'<section class="q" id="q{n}"><div class="in"><p class="qn">Q{n} · {LABEL[n]}</p><h2>{html.escape(sec[n]["q"])}</h2>'
-           f'<p class="short">{html.escape(SHORT[n])}</p><div class="vis">{VIS[n]}</div>{more(n)}</div></section>')
+           f'<p class="short">{html.escape(SHORT[n])}</p><div class="body">{build_q(n)}</div></div></section>')
 D_CSS = """
 .hero{background:var(--warm)}.hero .in{max-width:1120px;margin:0 auto;padding:56px 20px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 .hero figure img{border-radius:24px}.cat{display:inline-block;font-size:13px;font-weight:700;color:var(--accent);background:#fff;border-radius:999px;padding:6px 12px}
@@ -268,7 +353,7 @@ figure.wide{margin-top:26px}figure.wide img{border-radius:18px;background:#fff}
 .split{display:grid;grid-template-columns:300px 1fr;gap:32px;align-items:center}
 figure.still img{border-radius:22px}figure.still figcaption{text-align:center}
 .checks{display:flex;flex-direction:column;gap:10px}
-.checks>div{display:flex;justify-content:space-between;align-items:center;gap:14px;background:#fff;border-radius:14px;padding:16px 18px}
+.checks>div{display:flex;justify-content:space-between;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .checks .k{font-size:15.5px}.checks b{flex:none;background:var(--accent2);color:var(--accent);border-radius:999px;padding:5px 12px;font-size:14px}
 .alert{background:#FFF7E0;border-radius:14px;padding:14px 18px;font-size:14.5px;line-height:1.6;margin:4px 0 0}.alert b{color:#9A6B00}
 .banner{margin:22px 0 0;background:var(--ink);color:#fff;border-radius:16px;padding:20px 24px;font-size:18px;text-align:center}.banner b{color:#F5B9A5}
@@ -286,9 +371,25 @@ figure.still img{border-radius:22px}figure.still figcaption{text-align:center}
 .ask li{counter-increment:a;background:#fff;border-radius:12px;padding:12px 16px 12px 50px;position:relative;font-size:15.5px;line-height:1.5}
 .ask li::before{content:counter(a);position:absolute;left:14px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--accent2);color:var(--accent);font-weight:800;font-size:13px;display:grid;place-items:center}
 .end{max-width:880px;margin:0 auto;padding:60px 20px 0}
-.end .close{font-size:18px;line-height:1.75;text-align:center;margin:0 0 30px}
+.endh{font-size:24px;text-align:center;margin:0 0 14px}.end .close{font-size:17px;text-align:center;margin:0 0 30px}
 .cta{background:var(--ink);color:#fff;border-radius:24px;padding:34px 36px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
 .cta h3{margin:0 0 6px;font-size:22px}.cta p{margin:0 0 10px;color:#d9cfc6}.cta .btn{background:var(--accent);color:#fff;border-radius:999px;padding:14px 26px;font-weight:700;text-decoration:none;white-space:nowrap}
+.body{margin-top:26px;display:flex;flex-direction:column;gap:24px}
+.txt{font-size:16.5px;line-height:1.85;color:#4a3f3a}.txt p{margin:0 0 10px}.txt p:last-child{margin:0}
+.short{font-weight:600}
+.tile .d{font-size:14px;color:var(--sub);line-height:1.55}.tile .m{font-size:13.5px;line-height:1.55;color:var(--ink);border-top:1px dashed var(--line);padding-top:8px;margin-top:4px}
+.t3{grid-template-columns:repeat(3,1fr)}.tall .tile{justify-content:flex-start}
+.alertbox{background:#FFF7E0;border-radius:16px;padding:16px 20px;font-size:15.5px}
+.myth{background:var(--warm);border-radius:16px;padding:16px 20px;font-size:15.5px}.q:nth-of-type(even) .myth{background:#fff}
+.sub3{font-size:18px;margin:6px 0 -8px}
+.mcards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mcards div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.q:nth-of-type(odd) .mcards div{background:var(--warm);border-color:transparent}
+.mcards b{display:inline-block;font-size:14px;color:var(--accent);background:var(--accent2);border-radius:999px;padding:3px 10px;margin-bottom:8px}.mcards p{margin:0;font-size:14.5px;line-height:1.7;color:#4a3f3a}
+.mcards div:last-child:nth-child(odd){grid-column:1/-1}
+.asklead{font-weight:800;margin:16px 0 10px;font-size:15.5px}
+.split>div{min-width:0}
+@media(max-width:860px){.t3{grid-template-columns:1fr 1fr}.mcards{grid-template-columns:1fr}}
+@media(max-width:480px){.t3{grid-template-columns:1fr}}
 @media(max-width:860px){.hero .in{grid-template-columns:1fr;gap:28px;padding:34px 20px 60px}.glance .g{grid-template-columns:1fr}.glance .g div+div{border-left:0;border-top:1px solid var(--line)}
 .t4{grid-template-columns:1fr 1fr}.split{grid-template-columns:minmax(0,1fr)}figure.still{max-width:260px;margin:0 auto}.steps,.scale{grid-template-columns:1fr}.scale div{min-height:0;flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;padding:16px}.scale i{margin:0 10px 0 0;flex:none}.scale div>span{flex:1}
 .cta{grid-template-columns:1fr}.q{padding:52px 0}.short{font-size:17px}}
@@ -300,8 +401,8 @@ D_MAIN = f"""<section class="hero"><div class="in">{img("images/pore-mirror.png"
 <div class="glance"><div class="g"><div><em>원인</em><b>피지 · 탄력 · 모낭 크기<br>여기에 막힘과 자극</b></div><div><em>관리</em><b>원인이 섞여 있어<br>원인에 맞춰 정해요</b></div><div><em>시술</em><b>줄이는 효과는 크지 않고<br>부작용도 알아 둬요</b></div></div></div>
 <nav class="qnav"><div class="in">{nav}</div></nav>
 {qs}
-<div class="end"><p class="close">모공은 아주 흔한 피부 구조예요.<br>헷갈리신다면 피부 상태부터 확인해 보셔도 괜찮아요.</p>{CTA}{REFBOX}</div>"""
-(OUT / "option-d-visual.html").write_text(page("D", "그림 가이드형", D_CSS, D_MAIN))
+<div class="end"><h2 class="endh">마무리하며</h2>{txt(" ".join(END_P), "txt close")}{CTA}{REFBOX}</div>"""
+(OUT / "option-d-visual.html").write_text(page("D", "그림 가이드형 · 설명 글 포함", D_CSS, D_MAIN))
 
 # ---------- 시안 E: 카드 슬라이드형 ----------
 slides = "".join(f'<li>{img(f"images/cards/pores-0{k}.png", card_alt[k])}</li>' for k in range(1, 9))
@@ -346,13 +447,12 @@ E_MAIN = f"""<div class="top"><span class="cat">피부 칼럼 · 모공</span><h
 
 # 의료광고 검사용: 화면에 보이는 글자 + 접힌 원고는 이미 검사된 원고와 같으므로 보이는 부분만 뽑는다
 def visible_text():
-    parts = [meta["title"], "모공이 넓어 보이는 이유는 사람마다 달라요. 원인부터 알면 관리 방향이 보여요.",
-             "피지 · 탄력 · 모낭 크기 여기에 막힘과 자극", "원인이 섞여 있어 원인에 맞춰 정해요", "줄이는 효과는 크지 않고 부작용도 알아 둬요",
-             "카드 8장으로 먼저 보고, 궁금한 질문만 펼쳐 보세요.", "내 모공은 어떤 원인일까요? 피부 상태를 보고 원인과 관리 방향을 함께 정해요.",
-             "모공은 아주 흔한 피부 구조예요. 헷갈리신다면 피부 상태부터 확인해 보셔도 괜찮아요.", html.unescape(DISC)]
-    for n in range(1, 9):
-        parts += [f"## {sec[n]['q']}", SHORT[n], re.sub(r"<[^>]+>", " ", VIS[n])]
-    return "\n\n".join(re.sub(r"[ \t]+", " ", p).strip() for p in parts)
+    d = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", D_MAIN, flags=re.S)
+    d = re.sub(r"</(p|h2|h3|div|li|b|section)>", "\n", d)
+    d = html.unescape(re.sub(r"<[^>]+>", " ", d))
+    extra = ["카드 8장으로 먼저 보고, 궁금한 질문만 펼쳐 보세요.", html.unescape(DISC)] + [SHORT[n] for n in range(1, 9)]
+    lines = [re.sub(r"[ \t]+", " ", l).strip() for l in (d + "\n" + "\n".join(extra)).split("\n")]
+    return "\n\n".join(l for l in lines if l)
 
 
 (HERE / "homepage-v2-visible.md").write_text("---\ntitle: 시안 D·E 화면 글자\n---\n\n" + visible_text() + "\n")
