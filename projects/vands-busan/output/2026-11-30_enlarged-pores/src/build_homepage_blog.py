@@ -5,7 +5,8 @@
 #   좁은 한 단, 흰 바탕, 분류·날짜·제목·작성자, 한두 줄 요약, 대표 그림, 목차,
 #   질문형 소제목 + 첫 문장 강조, 한두 문장 문단, 소제목마다 큰 그림 1장 + 설명 캡션,
 #   단순 표, 상담 안내 상자, 참고 자료, 함께 읽으면 좋은 글.
-import html, json, re
+import html, json, re, sys
+STYLE = sys.argv[1] if len(sys.argv) > 1 else "f"  # f: 블로그형, g: 네이버 블로그 느낌
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -29,6 +30,18 @@ def sentences(t):
     return [x for x in re.split(r"(?<=[.!?])\s+(?=\S)", t.strip()) if x]
 
 
+def brk(h):
+    """쉼표 뒤에서 줄을 나눈다(앞 덩어리가 너무 짧으면 나누지 않음)."""
+    parts, cur = [], ""
+    for seg in re.split(r"(?<=,) ", h):
+        if cur and len(re.sub(r"<[^>]+>", "", cur)) >= 14 and cur.count("(") == cur.count(")"):
+            parts.append(cur); cur = seg
+        else:
+            cur = (cur + " " + seg).strip()
+    parts.append(cur)
+    return "<br>".join(parts)
+
+
 def paras(text, lead=False):
     """원고 문단을 한두 문장씩 끊어 블로그 문단으로. lead=True면 첫 문장을 강조."""
     ss, out, i = sentences(text), [], 0
@@ -39,7 +52,11 @@ def paras(text, lead=False):
         # 한 문장이 길면 혼자 둔다
         if len(chunk) == 2 and len(chunk[0]) + len(chunk[1]) > 150:
             chunk = chunk[:1]
-        out.append(f"<p>{inline(' '.join(chunk))}</p>"); i += len(chunk)
+        if STYLE == "g":
+            out.append("<p>" + "<br>".join(brk(inline(x)) for x in chunk) + "</p>")
+        else:
+            out.append(f"<p>{inline(' '.join(chunk))}</p>")
+        i += len(chunk)
     return "".join(out)
 
 
@@ -171,7 +188,13 @@ for l in intro_lines:
 SUMMARY = "".join(f"<li>{inline(x)}</li>" for x in summary_lines)
 
 TOC = "".join(f'<li><a href="#q{n}"><span>{n}</span>{html.escape(sec[n]["q"])}</a></li>' for n in range(1, 9))
+HL = ["피지 분비가 많은 것", "모공 주변 피부의 탄력이 떨어진 것", "모낭 자체가 큰 것",
+      "40세 무렵부터는 크기가 더 늘지 않고", "진료로 피부를 보고 원인을 가려야", "피지샘 증식증",
+      "효과가 크지 않다고", "덜 눈에 띄게 관리하는 쪽", "염증 후 색소침착", "바로 병원에 알려 주세요",
+      "뜨거운 물이 피부를 자극해", "논코메도제닉"]
 SECTIONS = "".join(section_html(n) for n in range(1, 9))
+for ph in HL:
+    SECTIONS = re.sub(r"(<p>(?:(?!</p>).)*?)" + re.escape(ph), lambda m: m[1] + f'<em class="hl">{ph}</em>', SECTIONS, count=1, flags=re.S)
 END = render(sec[0]["lines"], lead=False)
 REFS = "".join(f'<li id="ref-{n}">{t}</li>' for n, t in refs)
 
@@ -261,14 +284,31 @@ mark.ph{background:#fff1b8;padding:1px 4px;border-radius:3px;font-size:14px}
 .rel em{font-style:normal;color:var(--acc);font-size:13px;font-weight:700;margin-right:10px}
 footer{background:#f4f4f4;color:#888;font-size:13px;padding:30px;text-align:center}
 .badge{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:#222;color:#fff;font-size:12px;padding:7px 14px;border-radius:999px;opacity:.85}
+em.hl{font-style:normal;font-weight:700;color:#2f6f8f;background:linear-gradient(transparent 62%,#e3f0f6 62%)}
 @media(max-width:640px){body{font-size:15.5px}h1{font-size:24px}h2{font-size:19px}.gnb nav{display:none}.summary,.toc{padding:18px 18px}figure.card img{max-width:100%}}
 """
 
+
+G_CSS = """
+.wrap{max-width:700px}
+section p,section .note p{text-align:center;line-height:2}
+section p{margin:0 0 30px}
+p.lead{font-size:17px}
+h2{text-align:center;border:0;padding:0;margin:0 0 30px;font-size:21px}
+h2 .qn{display:block;width:max-content;margin:0 auto 14px;background:var(--acc);color:#fff;font-size:13px;padding:3px 12px;border-radius:999px}
+h2:before{content:"“";display:block;font-size:46px;line-height:.6;color:#d9b8a9;font-family:Georgia,serif;margin-bottom:10px}
+h2:after{content:"";display:block;width:1px;height:34px;background:#ccc;margin:20px auto 0}
+section{margin-bottom:80px}
+.note{border-left:0;border-radius:8px;text-align:center}
+.desc{text-align:center;line-height:2}
+"""
+PAGE_CSS = CSS + (G_CSS if STYLE == "g" else "")
+BADGE = "시안 G · 네이버 블로그 느낌" if STYLE == "g" else "시안 F · 블로그형 칼럼"
 PAGE = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(meta['title'])} | {SITE} 피부 칼럼</title>
 <meta name="description" content="{html.escape(meta['description'])}">
 <script type="application/ld+json">{LD}</script>
-<style>{CSS}</style></head><body>
+<style>{PAGE_CSS}</style></head><body>
 <header class="gnb"><b>{SITE}</b><nav><span>병원 소개</span><span>진료 안내</span><span class="on">피부 칼럼</span><span>예약·상담</span></nav></header>
 <main class="wrap">
 <div class="crumb">홈 › 피부 칼럼 › 모공</div>
@@ -288,11 +328,12 @@ PAGE = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name
 <div class="rel"><b>함께 읽으면 좋은 글</b><ul>{REL}</ul></div>
 </main>
 <footer>{SITE} · <mark class="ph">추후 기입: 위치·진료 시간·연락처</mark></footer>
-<div class="badge">시안 F · 블로그형 칼럼</div>
+<div class="badge">{BADGE}</div>
 </body></html>"""
 
 OUT.mkdir(exist_ok=True)
-(OUT / "option-f-blog.html").write_text(PAGE)
+NAME = "option-g-naverstyle.html" if STYLE == "g" else "option-f-blog.html"
+(OUT / NAME).write_text(PAGE)
 
 # 검사기용 화면 글자
 vis = re.sub(r"<script.*?</script>|<style.*?</style>", "", PAGE, flags=re.S)
@@ -300,5 +341,5 @@ vis = re.sub(r"<sup.*?</sup>", "", vis, flags=re.S)
 vis = re.sub(r"<(br|/p|/li|/h\d|/figcaption|/div|/b)>", "\n", vis)
 vis = html.unescape(re.sub(r"<[^>]+>", "", vis))
 vis = "\n".join(l.strip() for l in vis.split("\n") if l.strip())
-(HERE / "homepage-f-visible.md").write_text("# 시안 F 화면 글자 (검사용)\n\n" + vis + "\n")
+(HERE / f"homepage-{STYLE}-visible.md").write_text(f"# 시안 {STYLE.upper()} 화면 글자 (검사용)\n\n" + vis + "\n")
 print("ok", len(PAGE))
