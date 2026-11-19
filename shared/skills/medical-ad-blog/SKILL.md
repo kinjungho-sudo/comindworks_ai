@@ -142,12 +142,20 @@ python3 $SKILL/scripts/medad_selftest.py
 
 병원 한 곳에만 해당하는 규칙(실명, 지점명)은 공통 규칙이 아니라 그 병원 폴더의 `medad_local.json`에 넣는다.
 
+## 법 근거 확인 (조문 원문)
+
+- 검사 결과의 각 항목 아래에 **조문 원문**이 찍힌다(`references/law/medical_ad_law.json`, 국가법령정보센터에서 받은 것). 사용자에게 "왜 안 되는지" 설명할 때는 기억이 아니라 이 원문을 인용한다.
+- "이거 의료법 몇 조야?", "사전심의 받아야 해?" 같은 질문에는 [references/medical-ad-law.md](references/medical-ad-law.md)의 채널별 표와 원문으로 답한다. 조문 하나 보기: `python3 $SKILL/scripts/law_sync.py show 법57-1-4`
+- **법이 바뀌었는지 확인**: 월 1회 또는 큰 발행 전에 `python3 $SKILL/scripts/law_sync.py --check`. 종료 코드 1이면 인자 없이 다시 돌려 갱신하고, 바뀐 조문에 걸린 규칙(`cite`)과 참고 문서를 고친 뒤 회귀 시험을 돌린다.
+- 새 규칙을 만들면 `cite`에 원문 키(`법56-2-8`, `령23-1-2` 형식)를 넣는다. 원문에 없는 내용(심의 실무, 운영 규칙)은 `law`에 그렇다고 적는다.
+
 ## 참고 파일
 
 | 파일 | 언제 읽나 |
 |---|---|
 | [references/standard.md](references/standard.md) | 원고를 쓰거나 고칠 때마다 (구조·문장·네이버 형식) |
-| [references/medical-ad-law.md](references/medical-ad-law.md) | 표현이 위반인지 판단할 때, 규칙을 고칠 때 |
+| [references/medical-ad-law.md](references/medical-ad-law.md) | 표현이 위반인지 판단할 때, 사전심의 대상인지 볼 때, 규칙을 고칠 때 |
+| [references/law/조문_원문.md](references/law/조문_원문.md) | 근거 조문을 그대로 인용할 때 (손으로 고치지 않음, `law_sync.py`가 만듦) |
 | [references/simulations.md](references/simulations.md) | 6단계 에이전트를 띄울 때 |
 | [references/images.md](references/images.md) | 이미지를 만들 때 |
 | [references/project-setup.md](references/project-setup.md) | 새 병원 폴더를 만들 때 |

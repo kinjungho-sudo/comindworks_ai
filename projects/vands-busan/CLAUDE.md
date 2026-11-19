@@ -30,7 +30,8 @@ _프로젝트 규칙 — v0.1_
 ## 의료광고 주의
 
 - 치료경험담·후기, 효과 보장·최상급 표현, 타 병원 비교·비방 금지 (BRAND.md Never do).
-- 공개 전 의료광고 사전심의 대상 여부를 확인한다.
+- 공개 전 의료광고 사전심의 대상 여부를 확인한다. **네이버 블로그·인스타그램·유튜브는 심의 대상**(일평균 이용자 10만 명 이상 매체, 의료법 제57조 제1항·시행령 제24조), 병원 자체 홈페이지는 대상 아님(제56조 금지 내용은 적용). 채널별 표: `../../shared/skills/medical-ad-blog/references/medical-ad-law.md` 3장.
+- 법 근거는 기억이 아니라 원문으로 말한다. 검사 결과에 조문 원문이 함께 찍힌다. 법 개정 확인: `python3 ../../shared/skills/medical-ad-blog/scripts/law_sync.py --check` (월 1회·큰 발행 전).
 
 ### 의료광고 사전 검사 (필수)
 
@@ -44,7 +45,7 @@ python3 tools/medad_check.py output/<폴더>/<원고>.md
 - **warn**: 해당 줄을 읽고 문제없으면 통과. 결과 보고에 warn 목록과 판단 이유를 적는다.
 - **수동 확인 항목**은 결과 보고에 그대로 남겨 원장님 확인·사전심의 단계로 넘긴다.
 - 규칙은 `tools/medad_rules.json`에서 고친다. 자동 검사는 1차 거름망이며 사전심의·법률 검토를 대신하지 않는다.
-- 규칙을 고친 뒤에는 `python3 tools/medad_selftest.py`(회귀 시험 46문장)가 전부 맞아야 한다. 새로 놓친 표현은 `tools/medad_cases.json`에 추가.
+- 규칙을 고친 뒤에는 `python3 tools/medad_selftest.py`(회귀 시험 64문장)가 전부 맞아야 한다. 새로 놓친 표현은 `tools/medad_cases.json`에 추가.
 
 ### 시뮬레이션 검수 (2026-11-17 정호님 지시, 글마다)
 

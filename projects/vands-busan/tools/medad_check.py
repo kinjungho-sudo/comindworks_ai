@@ -16,6 +16,28 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 RULES_PATH = HERE / "medad_rules.json"
+
+
+def load_law():
+    """law_sync.py가 받아 둔 조문 원문 (없으면 빈 사전). 검사 결과에 근거 조문을 붙이는 데 쓴다."""
+    for p in (HERE.parent / "references" / "law" / "medical_ad_law.json",
+              HERE.parents[2] / "shared" / "skills" / "medical-ad-blog" / "references" / "law" / "medical_ad_law.json"):
+        if p.is_file():
+            return json.loads(p.read_text(encoding="utf-8"))
+    return {}
+
+
+LAW = load_law()
+
+
+def cite_text(keys, width=110):
+    out = []
+    for k in keys:
+        a = LAW.get("articles", {}).get(k)
+        if a:
+            t = a["text"].split("\n")[0]
+            out.append(f"{a['label']}: {t if len(t) <= width else t[:width] + '…'}")
+    return out
 BRAND_PATH = HERE.parent / "BRAND.md"
 
 IMG_RE = re.compile(r"!\[([^\]]*)\]\(([^)]*)\)")
@@ -91,6 +113,7 @@ def check_file(path, rules, taboo):
             "severity": severity or rule["severity"],
             "id": rule["id"] if rule else "S",
             "law": rule["law"] if rule else "",
+            "cite": rule.get("cite", []) if rule else [],
             "title": title or rule["title"],
             "line": ln + 1,
             "excerpt": snippet,
@@ -132,12 +155,12 @@ def check_file(path, rules, taboo):
     has_proc = any(t in body_text for t in st["procedure_terms"])
     if has_proc and not any(t in body_text for t in st["sideeffect_terms"]):
         add({"id": "S07-sideeffect", "law": "제56조 제2항 제7호 / 시행령 제23조 제1항 제7호",
-             "severity": "block", "title": "시술을 다루면서 부작용 정보가 없음"}, start, "(본문 전체)")
+             "cite": ["법56-2-7", "령23-1-7"], "severity": "block", "title": "시술을 다루면서 부작용 정보가 없음"}, start, "(본문 전체)")
     if has_proc and not any(t in text for t in st["disclaimer_terms"]):
         add({"id": "S-disclaimer", "law": "서면점 운영 규칙", "severity": "warn",
              "title": "개인차 고지 문구 없음"}, start, "(본문 전체)")
     if re.search(r"\d+(\.\d+)?\s*%", body_text) and ref_at == len(lines):
-        add({"id": "S-sources", "law": "제56조 제2항 제8호 — 원문 대조 필요", "severity": "warn",
+        add({"id": "S-sources", "law": "제56조 제2항 제8호 (객관적 사실 과장)", "cite": ["법56-2-8"], "severity": "warn",
              "title": "수치가 있는데 참고 문헌 섹션이 없음"}, start, "(본문 전체)")
     for i in range(start, len(lines)):
         for m in MARKER_RE.finditer(lines[i]):
@@ -152,6 +175,7 @@ def check_file(path, rules, taboo):
         key = (f["id"], f["line"])
         if key not in seen:
             seen.add(key)
+            f["cite_text"] = cite_text(f["cite"])
             merged.append(f)
     return merged
 
@@ -168,9 +192,14 @@ def print_report(path, findings, rules):
         print(f"         └ {f['excerpt']}")
         if f["law"]:
             print(f"           근거: {f['law']}")
+        for c in f.get("cite_text", []):
+            print(f"           조문: {c}")
     print("\n 수동 확인 (자동 검사로 못 잡는 항목):")
     for item in rules["manual_checklist"]:
         print(f"   [ ] {item}")
+    if LAW:
+        vers = " · ".join(x["version"].split("]")[0] + "]" for x in LAW.get("_sources", []))
+        print(f" 조문 원문: law.go.kr {vers} (받은 날 {LAW.get('_fetched')}) — 갱신: law_sync.py")
     print(" ※ 자동 검사는 1차 거름망이며 사전심의·법률 검토를 대신하지 않습니다.")
 
 
