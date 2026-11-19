@@ -256,3 +256,11 @@ p { margin: 0; }
   .setting { flex-direction: column; align-items: stretch; }
   .input.sm { width: 100%; }
 }
+
+/* 원문·통역문 두 줄 (모든 화면 공통) */
+.row .line { display: flex; gap: 10px; align-items: baseline; font-size: clamp(21px, 2.8vw, 28px); line-height: 1.45; font-weight: 600; color: var(--ink-2); white-space: pre-wrap; word-break: keep-all; overflow-wrap: anywhere; }
+.row .line + .line { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.row .line.strong { color: var(--ink); font-weight: 750; }
+.row .line .flag { flex: 0 0 auto; font-size: .8em; }
+.row .line .txt { flex: 1; min-width: 0; }
+.row.staff, .row.guest { max-width: min(980px, 100%); width: 100%; }

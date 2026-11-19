@@ -537,7 +537,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         {msgs.map((m) => <MsgRow key={m.id} m={m} mode={mode} G={G} speaking={speakingId === m.id} onReplay={() => speak(m, true)} />)}
         {liveList.map(([d, l]) => (
           <div key={d} className={`row live ${l.speaker}`}>
-            <span className="who">{l.speaker === "staff" ? (guestView ? "Staff" : "직원") : guestView ? "You" : "손님"}</span>
+            <span className="who">{l.speaker === "staff" ? (guestView ? "Staff" : "직원") : guestView ? "Guest" : "손님"}</span>
             <p className="primary">{l.text}<span className="caret" /></p>
           </div>
         ))}
@@ -620,36 +620,27 @@ function ListenPill({ state, level, remote, speaking, guest }: { state: ListenSt
 }
 
 function MsgRow({ m, mode, G, speaking, onReplay }: { m: Msg; mode: Mode; G: (typeof GUEST_UI)[GuestLang]; speaking: boolean; onReplay: () => void }) {
-  const pending = m.status === "translating" && !m.tgt;
+  // 어느 화면이든 한 메시지에 원문과 통역문을 둘 다 같은 크기로 보여준다 (데스크·손님 화면이 같은 대화를 본다)
   const dots = <span className="dots"><i /><i /><i /></span>;
-  if (mode === "solo") {
-    // 한 화면: 한국어 줄과 손님 언어 줄을 모두 크게
-    const ko = m.srcLang === "ko" ? m.src : m.tgt;
-    const fx = m.srcLang === "ko" ? m.tgt : m.src;
-    const fxLang = m.srcLang === "ko" ? m.tgtLang : m.srcLang;
-    return (
-      <div className={`row ${m.speaker} ${speaking ? "speaking" : ""}`}>
-        <span className="who">{m.speaker === "staff" ? "직원" : "손님"} <em>{LANG_META[fxLang].flag}</em></span>
-        <p className="primary" lang="ko">{ko || dots}</p>
-        <p className="primary alt" lang={LANG_META[fxLang].html}>{fx || dots}</p>
-        {m.status === "error" && <p className="err">⚠︎ 통역 실패</p>}
-        {m.status === "done" && <button className="replay" onClick={onReplay} aria-label="다시 듣기">{speaking ? "🔊" : "▶︎"}</button>}
-      </div>
-    );
-  }
-  const viewerIsGuest = mode === "guest";
-  const mine = viewerIsGuest ? m.speaker === "guest" : m.speaker === "staff";
-  const primary = mine ? m.src : m.tgt;
-  const secondary = mine ? m.tgt : m.src;
-  const canReplay = !mine && m.status === "done";
-  const who = viewerIsGuest ? (m.speaker === "staff" ? "Staff" : "You") : m.speaker === "staff" ? "직원" : `손님 ${LANG_META[m.srcLang].flag}`;
+  const guestView = mode === "guest";
+  const who = m.speaker === "staff" ? (guestView ? "Staff" : "직원") : guestView ? "Guest" : "손님";
+  const lines: { lang: Lang; text: string; orig: boolean }[] = [
+    { lang: m.srcLang, text: m.src, orig: true },
+    { lang: m.tgtLang, text: m.tgt, orig: false },
+  ];
+  // 보는 사람 언어 줄을 진하게
+  const mine = (l: Lang) => (guestView ? l !== "ko" : mode === "desk" ? l === "ko" : true);
   return (
-    <div className={`row ${m.speaker} ${mine ? "mine" : "theirs"} ${speaking ? "speaking" : ""}`}>
+    <div className={`row ${m.speaker} ${speaking ? "speaking" : ""}`}>
       <span className="who">{who}</span>
-      <p className="primary">{pending ? dots : primary}</p>
-      {m.status === "error" ? <p className="err">⚠︎ {viewerIsGuest ? "Error" : "통역 실패 — 다시 말씀해 주세요"}</p>
-        : secondary ? <p className="secondary">{!mine && <span className="tag">{viewerIsGuest ? G.original : "원문"}</span>}{secondary}</p> : null}
-      {canReplay && <button className="replay" onClick={onReplay} aria-label={viewerIsGuest ? G.replay : "다시 듣기"}>{speaking ? "🔊" : "▶︎"}</button>}
+      {lines.map((ln, i) => (
+        <p key={i} className={`line ${mine(ln.lang) ? "strong" : ""}`} lang={LANG_META[ln.lang].html}>
+          <span className="flag">{LANG_META[ln.lang].flag}</span>
+          <span className="txt">{ln.text || (m.status === "error" ? "" : dots)}</span>
+        </p>
+      ))}
+      {m.status === "error" && <p className="err">⚠︎ {guestView ? "Interpretation failed. Please say it again." : "통역 실패 — 다시 말씀해 주세요"}</p>}
+      {m.status === "done" && <button className="replay" onClick={onReplay} aria-label={guestView ? G.replay : "다시 듣기"}>{speaking ? "🔊" : "▶︎"}</button>}
     </div>
   );
 }
