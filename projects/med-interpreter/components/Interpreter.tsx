@@ -17,6 +17,7 @@ type Card = { id: string; title: string; keywords: string | null };
 type Shown = { type: "card"; id: string; title: string; titleTr?: string } | { type: "amount"; value: number } | null;
 type Role = "staff" | "guest" | "any";
 type Ear = { role: Role; mic: MicEngine; l: Listener };
+type Current = { kind: "live"; speaker: Side; text: string } | { kind: "msg"; m: Msg } | null;
 type Phrase = { id: string; category: string; ko: string } & Partial<Record<Lang, string | null>>;
 type Boot = { settings: Settings; phrases: Phrase[]; realtime: { url: string; key: string } };
 type Msg = {
@@ -575,72 +576,76 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     );
   }
 
+  // 지금 크게 보여줄 것: 말하는 중인 자막이 있으면 그것, 없으면 마지막 메시지
+  const liveNow = liveList.sort((a, b) => b[1].at - a[1].at)[0]?.[1];
+  const lastMsg = msgs[msgs.length - 1];
+  const current: Current = liveNow ? { kind: "live", speaker: liveNow.speaker, text: liveNow.text } : lastMsg ? { kind: "msg", m: lastMsg } : null;
+  const history = current?.kind === "msg" ? msgs.slice(0, -1) : msgs;
+  const empty = !current;
+
   return (
     <div className={`conv ${mode}`} lang={guestView ? LANG_META[guestLang].html : "ko"}>
       <header className="topbar">
         <div className="bar-left">
           {guestView ? (
-            <button className="chip as-btn" onClick={() => setSheet("lang")}>{LANG_META[guestLang].flag} {LANG_META[guestLang].native} ▾</button>
+            <button className="lang-chip" onClick={() => setSheet("lang")}><span className="flag">{LANG_META[guestLang].flag}</span>{LANG_META[guestLang].native}<Icon n="chev" /></button>
           ) : (
             <>
+              <span className="brand-dot" aria-hidden><img src="/brand.svg" alt="" width={30} height={30} /></span>
               <b className="bar-title">{settings.hospital_name}</b>
-              <button className="chip as-btn" onClick={() => setSheet("lang")} title="손님 언어 (자동 인식)">손님 {LANG_META[guestLang].flag} {LANG_META[guestLang].korean} ▾</button>
+              <button className="lang-chip" onClick={() => setSheet("lang")} title="손님 언어 (말하면 자동으로 바뀜)"><span className="muted-sm">손님</span><span className="flag">{LANG_META[guestLang].flag}</span>{LANG_META[guestLang].korean}<Icon n="chev" /></button>
             </>
           )}
         </div>
         <ListenPill state={listen} level={level} speaking={!!speakingId} guest={guestView ? G : null} ears={earCount} />
         <div className="bar-right">
           {mode === "desk" && (
-            <button className={`peer ${peerOnline ? "on" : ""}`} onClick={() => setSheet("connect")}>
-              {peerOnline ? "● 손님 화면 연결됨" : roomOk ? "○ 손님 화면 연결하기" : "연결 중…"}
+            <button className={`status-chip ${peerOnline ? "ok" : "warn"}`} onClick={() => setSheet("connect")}>
+              <i />{peerOnline ? "손님 화면 연결됨" : roomOk ? "손님 화면 연결하기" : "연결 중…"}
             </button>
           )}
-          {mode !== "desk" && session.consent === true && <span className="badge on">● {guestView ? G.saving : "기록 저장 중"}</span>}
-          {mode === "desk" && <span className={`badge ${session.consent ? "on" : ""}`}>{session.consent ? "● 기록 저장 중" : session.consent === false ? "기록 안 함" : "기록 동의 전"}</span>}
-          <button className={`icon-btn ${muted ? "off" : ""}`} onClick={() => setMuted((v) => !v)} aria-label="마이크">🎤</button>
-          <button className={`icon-btn ${soundOn ? "" : "off"}`} onClick={() => { setSoundOn((v) => !v); player.current?.stop(); }} aria-label="소리">{soundOn ? "🔊" : "🔇"}</button>
-          <button className="icon-btn" onClick={() => setSheet("menu")} aria-label="메뉴">⋯</button>
+          {!guestView && <span className={`status-chip ${session.consent ? "ok" : ""}`}><i />{session.consent ? "기록 저장 중" : session.consent === false ? "기록 안 함" : "기록 동의 전"}</span>}
+          {guestView && session.consent === true && <span className="status-chip ok"><i />{G.saving}</span>}
+          <button className={`round-btn ${muted ? "off" : ""}`} onClick={() => setMuted((v) => !v)} aria-label="마이크 켜기/끄기"><Icon n={muted ? "micOff" : "mic"} /></button>
+          <button className={`round-btn ${soundOn ? "" : "off"}`} onClick={() => { setSoundOn((v) => !v); player.current?.stop(); }} aria-label="소리 켜기/끄기"><Icon n={soundOn ? "sound" : "soundOff"} /></button>
+          <button className="round-btn" onClick={() => setSheet("menu")} aria-label="메뉴"><Icon n="menu" /></button>
         </div>
       </header>
 
-      {shown && <ShowPanel shown={shown} guestLang={guestLang} guestView={guestView} G={G} onClose={authority ? () => void show(null) : undefined} />}
-
-      <div className="feed" ref={feed}>
-        {!msgs.length && !liveList.length && (
-          guestView ? (
-            <div className="empty-guest">
-              <div className="welcome-multi">{GUEST_LANGS.map((l) => <span key={l} lang={LANG_META[l].html}>{GUEST_UI[l].welcome}</span>)}</div>
-              <div className="speak-hints">{GUEST_LANGS.map((l) => <p key={l} lang={LANG_META[l].html} dir={LANG_META[l].rtl ? "rtl" : undefined}>{GUEST_UI[l].justSpeak}</p>)}</div>
-            </div>
+      <main className={`stage ${empty ? "empty" : ""}`}>
+        <section className="history" ref={feed} aria-label={guestView ? "History" : "대화 기록"}>
+          {history.map((m) => <HistoryRow key={m.id} m={m} mode={mode} G={G} speaking={speakingId === m.id} onReplay={() => speak(m, true)} />)}
+        </section>
+        <section className="now">
+          {shown && <ShowPanel shown={shown} guestLang={guestLang} guestView={guestView} G={G} onClose={authority ? () => void show(null) : undefined} />}
+          {empty ? (
+            guestView ? <GuestWelcome level={level} /> : (
+              <div className="empty-desk">
+                <Orb level={level} state={listen} />
+                <h2>말씀하시면 바로 통역됩니다</h2>
+                <p>한국어로 말하면 손님 언어로, 손님이 말하면 한국어로. 손님 언어(10개)는 자동으로 알아냅니다.</p>
+                {mode === "desk" && !peerOnline && <button className="btn ghost" onClick={() => setSheet("connect")}><Icon n="qr" /> 손님 화면 연결하기</button>}
+              </div>
+            )
           ) : (
-            <div className="empty-desk">
-              <h2>말씀하시면 바로 통역됩니다</h2>
-              <p>한국어로 말하면 손님 언어로, 손님이 말하면 한국어로 바뀝니다. 손님 언어(10개)는 자동으로 알아냅니다.</p>
-              {mode === "desk" && !peerOnline && <button className="btn ghost" onClick={() => setSheet("connect")}>손님 화면 연결하기 (QR)</button>}
-            </div>
-          )
-        )}
-        {msgs.map((m) => <MsgRow key={m.id} m={m} mode={mode} G={G} speaking={speakingId === m.id} onReplay={() => speak(m, true)} />)}
-        {liveList.map(([d, l]) => (
-          <div key={d} className={`row live ${l.speaker}`}>
-            <span className="who">{l.speaker === "staff" ? (guestView ? G.staff : "직원") : guestView ? G.guest : "손님"}</span>
-            <p className="primary">{l.text}<span className="caret" /></p>
-          </div>
-        ))}
-      </div>
+            <NowCaption current={current!} mode={mode} G={G} speaking={current?.kind === "msg" && speakingId === current.m.id} onReplay={() => current?.kind === "msg" && speak(current.m, true)} />
+          )}
+        </section>
+      </main>
 
       {micError && <div className="notice warn">{micError}</div>}
       {!guestView && humanAsked && (
-        <div className="alert-bar urgent"><span>🙋 손님이 <b>사람 통역</b>을 요청했습니다.</span><button className="btn primary sm" onClick={() => setSheet("human")}>통역 연결하기</button><button className="btn ghost sm" onClick={() => setHumanAsked(false)}>닫기</button></div>
+        <div className="alert-bar urgent"><Icon n="person" /><span>손님이 <b>사람 통역</b>을 요청했습니다.</span><button className="btn primary sm" onClick={() => setSheet("human")}>통역 연결하기</button><button className="btn ghost sm" onClick={() => setHumanAsked(false)}>닫기</button></div>
       )}
       {showRisk && (
-        <div className="alert-bar"><span>⚕︎ 진료·약·검사 같은 <b>의료 내용</b>이 나왔어요. 정확한 설명이 필요하면 사람 통역을 연결하세요.</span><button className="btn primary sm" onClick={() => setSheet("human")}>사람 통역</button><button className="btn ghost sm" onClick={() => setRiskDismissed(riskyMsg!.id)}>괜찮아요</button></div>
+        <div className="alert-bar"><Icon n="alert" /><span>진료·약·검사 같은 <b>의료 내용</b>이 나왔어요. 정확한 설명이 필요하면 사람 통역을 연결하세요.</span><button className="btn primary sm" onClick={() => setSheet("human")}>사람 통역</button><button className="btn ghost sm" onClick={() => setRiskDismissed(riskyMsg!.id)}>괜찮아요</button></div>
       )}
       {!guestView && suggest && (
-        <div className="alert-bar soft"><span>🖼 안내 자료 <b>‘{suggest.title}’</b>를 손님 화면에 띄울까요?</span><button className="btn primary sm" onClick={() => void show({ type: "card", id: suggest.id, title: suggest.title })}>띄우기</button><button className="btn ghost sm" onClick={() => setSuggest(null)}>아니요</button></div>
+        <div className="alert-bar soft"><Icon n="image" /><span>안내 자료 <b>‘{suggest.title}’</b>를 손님 화면에 띄울까요?</span><button className="btn primary sm" onClick={() => void show({ type: "card", id: suggest.id, title: suggest.title })}>띄우기</button><button className="btn ghost sm" onClick={() => setSuggest(null)}>아니요</button></div>
       )}
       {showConsent && (
         <div className="consent-bar" lang={LANG_META[guestLang].html} dir={LANG_META[guestLang].rtl ? "rtl" : undefined}>
+          <Icon n="lock" />
           <p>{G.saveAsk(settings.retention_days)}</p>
           <div className="consent-btns">
             <button className="btn primary" onClick={() => applyConsent(true)}>{G.saveYes}</button>
@@ -649,22 +654,23 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         </div>
       )}
 
-      <footer className="foot">
+      <footer className="dock">
         {guestView ? (
           <>
             <p className="disclaimer">{G.disclaimer}</p>
-            <button className="btn ghost" onClick={() => { room.current?.send("human-request", {}); setHumanAsked(true); setTimeout(() => setHumanAsked(false), 6000); }}>{humanAsked ? `✓ ${G.humanAsked}` : `🧑‍💼 ${G.humanBtn}`}</button>
-            {lastTheirs && <button className="btn ghost" onClick={() => speak(lastTheirs, true)}>↻ {G.replay}</button>}
+            {lastTheirs && <DockBtn icon="replay" label={G.replay} onClick={() => speak(lastTheirs, true)} />}
+            <DockBtn icon="person" label={humanAsked ? `✓ ${G.humanAsked}` : G.humanBtn} tone="rose" onClick={() => { room.current?.send("human-request", {}); setHumanAsked(true); setTimeout(() => setHumanAsked(false), 6000); }} />
           </>
         ) : (
           <>
-            <button className="btn ghost" onClick={() => setSheet("phrases")}>☰ 자주 쓰는 문장</button>
-            <button className="btn ghost" onClick={() => setSheet("keyboard")}>⌨ 글자 입력</button>
-            <button className="btn ghost" onClick={() => setSheet("cards")}>🖼 안내 자료·금액</button>
-            <button className="btn ghost" onClick={() => setSheet("summary")} disabled={!msgs.some((m) => m.status === "done")}>📝 요약</button>
-            <button className="btn ghost human" onClick={() => setSheet("human")}>🧑‍💼 사람 통역</button>
+            <DockBtn icon="list" label="자주 쓰는 문장" onClick={() => setSheet("phrases")} />
+            <DockBtn icon="keyboard" label="글자 입력" onClick={() => setSheet("keyboard")} />
+            <DockBtn icon="image" label="안내 자료·금액" onClick={() => setSheet("cards")} />
+            <DockBtn icon="note" label="요약" onClick={() => setSheet("summary")} disabled={!msgs.some((m) => m.status === "done")} />
+            <span className="dock-sep" />
+            <DockBtn icon="person" label="사람 통역" tone="rose" onClick={() => setSheet("human")} />
             <span className="grow" />
-            <button className="btn end" onClick={newGuest}>새 손님</button>
+            <DockBtn icon="refresh" label="새 손님" onClick={newGuest} />
           </>
         )}
       </footer>
@@ -735,29 +741,124 @@ function ListenPill({ state, level, speaking, guest, ears }: { state: ListenStat
   );
 }
 
-function MsgRow({ m, mode, G, speaking, onReplay }: { m: Msg; mode: Mode; G: (typeof GUEST_UI)[GuestLang]; speaking: boolean; onReplay: () => void }) {
-  // 어느 화면이든 한 메시지에 원문과 통역문을 둘 다 같은 크기로 보여준다 (데스크·손님 화면이 같은 대화를 본다)
-  const dots = <span className="dots"><i /><i /><i /></span>;
+const ICONS: Record<string, string> = {
+  mic: "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3",
+  micOff: "M9 9v3a3 3 0 0 0 5.1 2.1M15 9.3V6a3 3 0 0 0-5.7-1.3M5 11a7 7 0 0 0 11.6 5.3M19 11a7 7 0 0 1-.6 2.8M12 18v3M3 3l18 18",
+  sound: "M4 9v6h4l5 4V5L8 9H4zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12",
+  soundOff: "M4 9v6h4l5 4V5L8 9H4zM17 9l5 5M22 9l-5 5",
+  menu: "M5 12h.01M12 12h.01M19 12h.01",
+  chev: "M6 9l6 6 6-6",
+  list: "M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01",
+  keyboard: "M3 6h18v12H3zM7 10h.01M11 10h.01M15 10h.01M7 14h10",
+  image: "M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15.5 9.5h.01",
+  note: "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5",
+  person: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0",
+  refresh: "M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7",
+  replay: "M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5",
+  play: "M8 5v14l11-7z",
+  alert: "M12 3l10 18H2zM12 10v5M12 18h.01",
+  lock: "M6 11h12v10H6zM8.5 11V7.5a3.5 3.5 0 0 1 7 0V11",
+  qr: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2",
+};
+function Icon({ n, size = 20 }: { n: string; size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill={n === "play" ? "currentColor" : "none"} stroke="currentColor" strokeWidth={n === "menu" ? 3.2 : 1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d={ICONS[n] ?? ""} />
+    </svg>
+  );
+}
+
+function DockBtn({ icon, label, onClick, disabled, tone }: { icon: string; label: string; onClick: () => void; disabled?: boolean; tone?: "rose" }) {
+  return (
+    <button className={`dock-btn ${tone ?? ""}`} onClick={onClick} disabled={disabled}>
+      <span className="dock-ico"><Icon n={icon} size={22} /></span>
+      <span className="dock-label">{label}</span>
+    </button>
+  );
+}
+
+// 말소리에 반응하는 원 (마이크가 듣고 있다는 신호)
+function Orb({ level, state }: { level: number; state: ListenState }) {
+  const s = 1 + Math.min(0.6, level * 7);
+  return (
+    <div className={`orb ${state}`} aria-hidden>
+      <span className="orb-ring" style={{ transform: `scale(${s})` }} />
+      <span className="orb-ring r2" style={{ transform: `scale(${1 + (s - 1) * 1.8})` }} />
+      <span className="orb-core"><Icon n="mic" size={34} /></span>
+    </div>
+  );
+}
+
+// 손님 화면 첫 화면: 10개 언어 인사를 하나씩 크게 돌려 보여준다
+function GuestWelcome({ level }: { level: number }) {
+  const [i, setI] = useState(0);
+  useEffect(() => { const t = setInterval(() => setI((x) => (x + 1) % GUEST_LANGS.length), 2600); return () => clearInterval(t); }, []);
+  const l = GUEST_LANGS[i];
+  return (
+    <div className="guest-welcome">
+      <Orb level={level} state="idle" />
+      <div key={l} className="gw-text" lang={LANG_META[l].html} dir={LANG_META[l].rtl ? "rtl" : undefined}>
+        <h1>{GUEST_UI[l].welcome}</h1>
+        <p>{GUEST_UI[l].justSpeak}</p>
+      </div>
+      <div className="gw-flags">{GUEST_LANGS.map((x, k) => <span key={x} className={k === i ? "on" : ""} title={LANG_META[x].native}>{LANG_META[x].flag}</span>)}</div>
+    </div>
+  );
+}
+
+const whoLabel = (speaker: Side, guestView: boolean, G: (typeof GUEST_UI)[GuestLang]) => speaker === "staff" ? (guestView ? G.staff : "직원") : guestView ? G.guest : "손님";
+// 보는 사람 기준 "큰 줄"(내 언어)과 "작은 줄"(상대 언어)
+function viewLines(m: Msg, mode: Mode) {
+  const a = { lang: m.srcLang, text: m.src }, b = { lang: m.tgtLang, text: m.tgt };
+  if (mode === "solo") return m.srcLang === "ko" ? [a, b] : [b, a]; // 한 화면: 한국어 줄이 항상 위
+  const mineIsKo = mode === "desk";
+  const primary = (mineIsKo ? m.srcLang === "ko" : m.srcLang !== "ko") ? a : b;
+  return [primary, primary === a ? b : a];
+}
+
+// 지금 하는 말을 자막처럼 크게
+function NowCaption({ current, mode, G, speaking, onReplay }: { current: NonNullable<Current>; mode: Mode; G: (typeof GUEST_UI)[GuestLang]; speaking: boolean; onReplay: () => void }) {
   const guestView = mode === "guest";
-  const who = m.speaker === "staff" ? (guestView ? G.staff : "직원") : guestView ? G.guest : "손님";
-  const lines: { lang: Lang; text: string }[] = [{ lang: m.srcLang, text: m.src }, { lang: m.tgtLang, text: m.tgt }];
-  const mine = (l: Lang) => (guestView ? l !== "ko" : mode === "desk" ? l === "ko" : true);
-  // 역번역: 직원에게만, 원문과 뜻이 많이 다르면 경고
+  const dots = <span className="dots"><i /><i /><i /></span>;
+  if (current.kind === "live") {
+    return (
+      <div className={`caption ${current.speaker} live`}>
+        <span className="cap-who"><i className="rec" />{whoLabel(current.speaker, guestView, G)}</span>
+        <p className="cap-main">{current.text}<span className="caret" /></p>
+        <p className="cap-sub">{dots}</p>
+      </div>
+    );
+  }
+  const m = current.m;
+  const [p, q] = viewLines(m, mode);
   const backOff = !!m.back && m.backOk === false;
   return (
-    <div className={`row ${m.speaker} ${speaking ? "speaking" : ""}`}>
-      <span className="who">{who}{m.kind === "phrase" && !guestView ? " · 자주 쓰는 문장" : ""}</span>
-      {lines.map((ln, i) => (
-        <p key={i} className={`line ${mine(ln.lang) ? "strong" : ""}`} lang={LANG_META[ln.lang].html} dir={LANG_META[ln.lang].rtl ? "rtl" : undefined}>
-          <span className="flag">{LANG_META[ln.lang].flag}</span>
-          <span className="txt">{ln.text || (m.status === "error" ? "" : dots)}</span>
-        </p>
-      ))}
-      {!guestView && m.back && (
-        <p className={`back ${backOff ? "off" : ""}`}><span className="tag">{backOff ? "⚠︎ 뜻 확인" : "역번역 ✓"}</span>{m.back}{backOff && m.backIssue && <><br /><b>{m.backIssue}</b> — 다시 말하거나 사람 통역을 쓰세요.</>}</p>
-      )}
+    <div className={`caption ${m.speaker} ${speaking ? "speaking" : ""}`}>
+      <span className="cap-who">{whoLabel(m.speaker, guestView, G)}<em>{LANG_META[m.srcLang].flag} → {LANG_META[m.tgtLang].flag}</em></span>
+      <p className="cap-main" lang={LANG_META[p.lang].html} dir={LANG_META[p.lang].rtl ? "rtl" : undefined}>{p.text || dots}</p>
+      <p className={`cap-sub ${mode === "solo" ? "solo" : ""}`} lang={LANG_META[q.lang].html} dir={LANG_META[q.lang].rtl ? "rtl" : undefined}>{q.text || (m.status === "error" ? "" : dots)}</p>
+      {!guestView && m.back && <p className={`cap-back ${backOff ? "off" : ""}`}><b>{backOff ? "⚠ 뜻 확인" : "역번역 ✓"}</b> {m.back}{backOff && m.backIssue ? ` — ${m.backIssue}` : ""}</p>}
       {m.status === "error" && <p className="err">⚠︎ {guestView ? G.failed : "통역 실패 — 다시 말씀해 주세요"}</p>}
-      {m.status === "done" && <button className="replay" onClick={onReplay} aria-label={guestView ? G.replay : "다시 듣기"}>{speaking ? "🔊" : "▶︎"}</button>}
+      {m.status === "done" && <button className="cap-replay" onClick={onReplay} aria-label={guestView ? G.replay : "다시 듣기"}><Icon n={speaking ? "sound" : "play"} size={22} /></button>}
+    </div>
+  );
+}
+
+// 지난 대화 (작게)
+function HistoryRow({ m, mode, G, speaking, onReplay }: { m: Msg; mode: Mode; G: (typeof GUEST_UI)[GuestLang]; speaking: boolean; onReplay: () => void }) {
+  const guestView = mode === "guest";
+  const [p, q] = viewLines(m, mode);
+  const backOff = !!m.back && m.backOk === false;
+  return (
+    <div className={`hrow ${m.speaker} ${speaking ? "speaking" : ""}`}>
+      <span className="h-ava">{m.speaker === "staff" ? (guestView ? "S" : "직원") : LANG_META[m.srcLang].flag}</span>
+      <div className="h-body">
+        <p className="h-main" lang={LANG_META[p.lang].html} dir={LANG_META[p.lang].rtl ? "rtl" : undefined}>{p.text}</p>
+        <p className="h-sub" lang={LANG_META[q.lang].html} dir={LANG_META[q.lang].rtl ? "rtl" : undefined}>{q.text}</p>
+        {!guestView && backOff && <p className="h-warn">⚠ 뜻 확인 — {m.backIssue || m.back}</p>}
+        {m.status === "error" && <p className="err">⚠︎ {guestView ? G.failed : "통역 실패"}</p>}
+      </div>
+      {m.status === "done" && <button className="h-replay" onClick={onReplay} aria-label={guestView ? G.replay : "다시 듣기"}><Icon n={speaking ? "sound" : "play"} size={16} /></button>}
     </div>
   );
 }
