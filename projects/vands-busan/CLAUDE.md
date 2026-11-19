@@ -21,6 +21,7 @@ _프로젝트 규칙 — v0.1_
 
 - 글을 쓰기 전에 [docs/blog-standard.md](docs/blog-standard.md)를 따른다. 통과 기준: `tools/medad_check.py` block 0 → `tools/geo_check.py` 85점 이상 → 독자·심의 시뮬레이션 반영.
 - 검수 기록은 `docs/reviews/<날짜>_<슬러그>.md`에 남긴다.
+- **발행 전 마무리 점검(한 번에):** `python3 ../../shared/skills/medical-ad-blog/scripts/final_check.py output/<폴더>/<원고>.md` → 의료광고·GEO·출처(문헌 실재·서지·인용 번호) 검사 + `docs/reviews/<날짜>_<원고>_final-check.md`·`_sources.md`(본문 문장↔실제 초록 대조표). 대조표는 심의 시뮬레이션 에이전트가 채운다.
 
 ## 실명 비공개 (2026-11-16 정호님 지시)
 

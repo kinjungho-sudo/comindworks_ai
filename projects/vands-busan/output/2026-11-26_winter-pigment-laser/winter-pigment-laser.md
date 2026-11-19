@@ -106,9 +106,9 @@ status: "draft — 의료광고 심의 전"
 ---
 
 **참고 문헌**
-1. [Importance of Using Sunscreen After Light or Laser Facial Treatment: A Literature Review (Life, 2025)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12471997/)
+1. [Lee KWA, Chan LKW, Song JK, et al., Importance of Using Sunscreen After Light or Laser Facial Treatment: A Literature Review (Life (Basel), 2025;15(9))](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12471997/)
 2. [Agbai et al., Laser Treatments for Postinflammatory Hyperpigmentation: A Systematic Review (JAMA Dermatology, 2017)](https://pubmed.ncbi.nlm.nih.gov/27973642/)
-3. [Kim et al., A Split-Face, Single-Blinded, Randomized Controlled Comparison of a 532-nm Picosecond Laser and a 532-nm Q-Switched Nd:YAG Laser for Solar Lentigines (Annals of Dermatology, 2020;32(1):8–13)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7992642)
+3. [Kim JY, Yang J, Huh G, et al., A Split-Face, Single-Blinded, Randomized Controlled Comparison of 532 nm Picosecond Neodymium-Doped Yttrium Aluminum Garnet Laser versus 532 nm Q-Switched Neodymium-Doped Yttrium Aluminum Garnet Laser in the Treatment of Solar Lentigines (Ann Dermatol, 2020;32(1):8–13)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7992642)
 4. [American Academy of Dermatology, Survey shows sun protection lacking in winter (AAD, 2024)](https://www.aad.org/news/survey-shows-sun-protection-lacking-in-winter)
 5. [Trivedi MK, Yang FC, Cho BK, A review of laser and light therapy in melasma (International Journal of Women's Dermatology, 2017;3(1):11–20)](https://pmc.ncbi.nlm.nih.gov/articles/PMC5418955)
 6. [Ogbechie-Godec OA, Elbuluk N, Melasma: an Up-to-Date Comprehensive Review (Dermatology and Therapy, 2017)](https://link.springer.com/article/10.1007/s13555-017-0194-1)
