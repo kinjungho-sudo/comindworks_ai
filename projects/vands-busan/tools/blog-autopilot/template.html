@@ -1,0 +1,523 @@
+<title>병원 칼럼 자동 작성기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 왼쪽 작업대(주제·단계), 오른쪽 원고 책상(미리보기·원고·검사) — 진료 차트처럼 정돈된 도구 화면 */
+:root{
+  --bg:#f3f5f4; --panel:#ffffff; --ink:#1d2523; --sub:#5b6663; --mute:#8a9491; --line:#dfe4e2;
+  --accent:#1f6f66; --accent-soft:#e3f0ee; --block:#b4382c; --block-soft:#fbe9e6; --warn:#a16a07; --warn-soft:#fdf3dc; --ok:#2f7d45; --ok-soft:#e5f3e8;
+  --mark:#fff1b8; --mark-ink:#5b4a00;
+  --ui:"IBM Plex Sans KR","Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;
+  --read:"Noto Sans KR","IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141917; --panel:#1c2321; --ink:#e7ecea; --sub:#a7b2af; --mute:#7d8885; --line:#2f3936;
+  --accent:#5cc2b5; --accent-soft:#1f3532; --block:#f08a7e; --block-soft:#3a2321; --warn:#e7b85a; --warn-soft:#382f1b; --ok:#7ccf91; --ok-soft:#1f3326;
+  --mark:#4a4220; --mark-ink:#f5e7a6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141917; --panel:#1c2321; --ink:#e7ecea; --sub:#a7b2af; --mute:#7d8885; --line:#2f3936;
+  --accent:#5cc2b5; --accent-soft:#1f3532; --block:#f08a7e; --block-soft:#3a2321; --warn:#e7b85a; --warn-soft:#382f1b; --ok:#7ccf91; --ok-soft:#1f3326;
+  --mark:#4a4220; --mark-ink:#f5e7a6; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.6;word-break:keep-all}
+.shell{max-width:1320px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px;margin-bottom:16px}
+header.top h1{font-size:22px;margin:0;letter-spacing:-.02em;text-wrap:balance}
+header.top p{margin:0;color:var(--sub);font-size:13.5px}
+.grid{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.panel h2{font-size:13px;letter-spacing:.06em;color:var(--sub);margin:0 0 12px;font-weight:600}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
+label small{font-weight:400;color:var(--mute);margin-left:4px}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:9px 11px}
+textarea{resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1;border:0;background:var(--bg);color:var(--sub);font:inherit;font-size:13.5px;padding:8px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+button.go{width:100%;margin-top:16px;border:0;border-radius:8px;background:var(--accent);color:#fff;font:inherit;font-weight:700;font-size:15.5px;padding:13px;cursor:pointer}
+button.go:disabled{opacity:.55;cursor:default}
+button.ghost{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-size:13.5px;border-radius:7px;padding:7px 12px;cursor:pointer}
+button.ghost:hover{border-color:var(--accent);color:var(--accent)}
+button.ghost:disabled{opacity:.5;cursor:default}
+.steps{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:6px}
+.steps li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:13.5px;padding:8px 10px;border-radius:7px;background:var(--bg)}
+.steps li .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;color:var(--mute);background:var(--panel)}
+.steps li b{display:block;font-weight:600}
+.steps li span.s{color:var(--mute);font-size:12.5px}
+.steps li[data-st=run]{background:var(--accent-soft)}
+.steps li[data-st=run] .dot{border-color:var(--accent);color:var(--accent);animation:pulse 1.2s ease-in-out infinite}
+.steps li[data-st=done] .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.steps li[data-st=fail] .dot{background:var(--block);border-color:var(--block);color:#fff}
+@keyframes pulse{50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){.steps li[data-st=run] .dot{animation:none}}
+.note{font-size:12.5px;color:var(--sub);background:var(--bg);border-radius:7px;padding:10px 12px;margin-top:14px;line-height:1.6}
+.banner{display:none;font-size:13.5px;background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+.banner.on{display:block}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);margin:-4px 0 14px}
+.tabs button{border:0;background:none;font:inherit;font-size:14px;color:var(--sub);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--ink);font-weight:700;border-color:var(--accent)}
+.tabs .cnt{display:inline-block;min-width:18px;font-size:11px;padding:0 5px;border-radius:9px;margin-left:4px;background:var(--bg);color:var(--sub)}
+.tabs .cnt.b{background:var(--block-soft);color:var(--block)}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px}
+.toolbar .sp{flex:1}
+.status{font-size:12.5px;color:var(--mute)}
+.verdict{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;padding:10px 12px;border-radius:8px;margin-bottom:12px}
+.verdict.pass{background:var(--ok-soft);color:var(--ok)}
+.verdict.fail{background:var(--block-soft);color:var(--block)}
+.verdict.idle{background:var(--bg);color:var(--sub)}
+#editor{min-height:560px;font-family:var(--read);font-size:14px;line-height:1.75}
+.findings{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.findings li{border:1px solid var(--line);border-left-width:4px;border-radius:7px;padding:10px 12px;font-size:13.5px}
+.findings li.block{border-left-color:var(--block)}
+.findings li.warn{border-left-color:var(--warn)}
+.findings .sev{font-size:11.5px;font-weight:700;letter-spacing:.04em;margin-right:6px}
+.findings li.block .sev{color:var(--block)} .findings li.warn .sev{color:var(--warn)}
+.findings q{display:block;quotes:none;color:var(--sub);margin-top:4px;font-family:var(--read)}
+.findings .law{display:block;color:var(--mute);font-size:12px;margin-top:3px}
+.manual{margin-top:18px;font-size:13px;color:var(--sub)}
+.manual li{margin:4px 0}
+/* 미리보기: 병원 칼럼 블로그 틀 (한 단, 질문형 소제목, 첫 문장 강조) */
+.paper{background:var(--panel);font-family:var(--read);font-size:15.5px;line-height:1.85;max-width:720px;margin:0 auto;color:var(--ink)}
+.paper .meta{font-size:12.5px;color:var(--mute)} .paper .meta b{color:var(--accent);margin-right:8px}
+.paper h1{font-size:26px;line-height:1.4;letter-spacing:-.03em;margin:6px 0 16px;text-wrap:balance}
+.paper h2{font-size:19.5px;line-height:1.45;margin:44px 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line);text-wrap:balance}
+.paper h2 .qn{color:var(--accent);margin-right:6px}
+.paper h3{font-size:16.5px;margin:26px 0 10px}
+.paper p{margin:0 0 16px}
+.paper p.lead{font-weight:700;color:var(--accent)}
+.paper blockquote{margin:22px 0;background:var(--bg);border-radius:8px;padding:16px 20px}
+.paper blockquote p{margin:0 0 6px}
+.paper ul{padding-left:20px;margin:0 0 16px} .paper li{margin:5px 0}
+.paper .tbl{overflow-x:auto;margin:20px 0}
+.paper table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6;min-width:480px}
+.paper th,.paper td{border:1px solid var(--line);padding:9px 10px;vertical-align:top}
+.paper th{background:var(--bg)}
+.paper hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+.paper mark{background:var(--mark);color:var(--mark-ink);border-radius:3px;padding:0 3px;font-size:.92em}
+.paper .disc{font-size:13px;color:var(--mute)}
+.empty{color:var(--mute);text-align:center;padding:60px 10px;font-size:14px}
+.example-tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.04em;background:var(--warn-soft);color:var(--warn);border-radius:4px;padding:2px 8px;margin-bottom:10px}
+.hist{margin-top:14px;font-size:13px}
+.hist button{display:block;width:100%;text-align:left;border:0;background:none;color:var(--sub);font:inherit;padding:5px 0;cursor:pointer;border-top:1px dashed var(--line)}
+.hist button:hover{color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--panel);font-size:13.5px;padding:9px 16px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+
+<div class="shell">
+  <header class="top">
+    <h1>병원 칼럼 자동 작성기</h1>
+    <p>주제를 넣으면 개요 → 원고 → 의료광고 검사 → 자동 수정까지 한 번에. 쓰는 사람의 Claude 사용량으로 돌아가요.</p>
+  </header>
+  <div class="banner" id="noClaude">이 화면에서는 Claude를 부를 수 없어요. claude.ai나 Claude 앱에서 열면 작성 기능이 켜져요. 원고 붙여넣기와 의료광고 검사는 지금도 쓸 수 있어요.</div>
+
+  <div class="grid">
+    <aside class="panel">
+      <h2>무엇을 쓸까요</h2>
+      <form id="form">
+        <label for="topic">주제</label>
+        <input type="text" id="topic" value="기미와 잡티, 어떻게 구분하나요?" required>
+        <label for="keyword">검색 키워드 <small>쉼표로 구분</small></label>
+        <input type="text" id="keyword" value="기미, 잡티, 기미 잡티 차이">
+        <label for="reader">읽는 사람</label>
+        <input type="text" id="reader" value="거울 볼 때 얼굴 색소가 신경 쓰이기 시작한 30~40대">
+        <label>올릴 곳</label>
+        <div class="seg" id="format">
+          <button type="button" data-v="homepage" aria-pressed="true">홈페이지 칼럼</button>
+          <button type="button" data-v="naver" aria-pressed="false">네이버 블로그</button>
+        </div>
+        <div class="row2">
+          <div><label for="length">분량</label>
+            <select id="length"><option value="2500">짧게 (약 2,500자)</option><option value="3500" selected>보통 (약 3,500자)</option><option value="5000">길게 (약 5,000자)</option></select></div>
+          <div><label for="qcount">질문 수</label>
+            <select id="qcount"><option>5</option><option selected>6</option><option>7</option><option>8</option></select></div>
+        </div>
+        <label for="notes">병원이 정한 내용 <small>선택</small></label>
+        <textarea id="notes" rows="3" placeholder="예: 진료 시간, 하는 시술 이름, 상담 방식. 비워 두면 [원장님 확인] 자리표시로 남겨요."></textarea>
+        <button class="go" id="run" type="submit">자동으로 완성하기</button>
+      </form>
+      <ol class="steps" id="steps">
+        <li data-k="outline"><span class="dot">1</span><div><b>개요 짜기</b><span class="s">질문형 소제목과 짧은 답</span></div></li>
+        <li data-k="draft"><span class="dot">2</span><div><b>원고 쓰기</b><span class="s">문단 한두 문장, 첫 문장에 답</span></div></li>
+        <li data-k="check"><span class="dot">3</span><div><b>의료광고 검사</b><span class="s">금지 표현 148개 규칙</span></div></li>
+        <li data-k="fix"><span class="dot">4</span><div><b>걸린 문장 고치기</b><span class="s">금지(block)가 0건이 될 때까지, 최대 2번</span></div></li>
+      </ol>
+      <p class="note">Claude는 인터넷을 볼 수 없어요. 그래서 수치나 연구를 지어내지 않도록 했고, 근거가 필요한 곳에는 <b>[출처 확인 필요]</b>를 남겨요. 발행 전에 사람이 출처를 채우고, 원장님 확인과 사전심의를 거쳐 주세요.</p>
+      <div class="hist" id="hist"></div>
+    </aside>
+
+    <main class="panel">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="t-preview" aria-selected="true">미리보기</button>
+        <button role="tab" id="t-edit" aria-selected="false">원고</button>
+        <button role="tab" id="t-check" aria-selected="false">검사 결과<span class="cnt" id="cnt">0</span></button>
+      </div>
+      <div class="toolbar">
+        <button class="ghost" id="recheck" type="button">다시 검사</button>
+        <button class="ghost" id="fixbtn" type="button">걸린 문장 고치기</button>
+        <button class="ghost" id="stop" type="button" hidden>멈추기</button>
+        <span class="sp"></span>
+        <button class="ghost" id="copyMd" type="button">원고 복사</button>
+        <button class="ghost" id="copyHtml" type="button">홈페이지용 HTML 복사</button>
+        <button class="ghost" id="save" type="button" hidden>파일로 저장</button>
+      </div>
+      <div class="status" id="status"></div>
+      <section id="p-preview"><div class="paper" id="paper"></div></section>
+      <section id="p-edit" hidden><textarea id="editor" spellcheck="false"></textarea></section>
+      <section id="p-check" hidden>
+        <div class="verdict idle" id="verdict">아직 검사하지 않았어요.</div>
+        <ul class="findings" id="findings"></ul>
+        <div class="manual"><b>사람이 확인할 것</b>
+          <ul>
+            <li>[출처 확인 필요] 자리마다 실제 문헌·공공기관 자료를 찾아 채웠는가? 못 찾으면 그 문장을 지운다.</li>
+            <li>[원장님 확인] 자리(시술 이름·횟수·회복 기간·주의 대상)를 원장님이 채웠는가?</li>
+            <li>다루는 시술이 신의료기술 평가를 받은 시술인가?</li>
+            <li>네이버 블로그·인스타그램·유튜브에 올린다면 의료광고 사전심의를 받았는가? (병원 자체 홈페이지는 심의 대상이 아니지만 금지 내용은 같다)</li>
+            <li>그림을 넣는다면 실제 인물 사진풍, 시술 장면, 전후 사진이 없는가?</li>
+          </ul>
+          자동 검사는 1차 거름망이에요. 사전심의·법률 검토를 대신하지 않아요.</div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const RULES = __RULES__;
+RULES.structure_rules.references_heading.push("확인할 자료");
+
+const EXAMPLE = `# 기미와 잡티, 어떻게 구분하나요?
+
+얼굴에 생긴 갈색 얼룩이 기미인지 잡티인지 헷갈리신 적 있으신가요? 둘은 생기는 이유와 모양이 달라서, 먼저 구분해 두면 관리 방향을 잡기 쉬워요.
+
+> **핵심 정리**
+> - 기미는 양 볼에 대칭으로 넓게 퍼지는 경우가 많아요.
+> - 잡티는 경계가 비교적 또렷한 작은 점 형태가 많아요.
+> - 둘이 섞여 있는 경우도 있어 진료로 확인하는 게 정확해요.
+
+## Q1. 기미는 어떻게 생겼나요?
+
+기미는 주로 양쪽 볼, 이마, 윗입술에 넓게 퍼진 연한 갈색 얼룩으로 보여요. 자외선과 호르몬 변화가 관련 요인으로 알려져 있어요[출처 확인 필요: 대한피부과학회 기미 안내].
+
+## Q2. 시술을 받으면 어떤 점을 알아둬야 하나요?
+
+시술 방법과 횟수는 피부 상태를 보고 정해요. [원장님 확인: 저희 병원에서 하는 방법과 간격]
+
+시술 뒤 붉어짐이나 일시적인 색소침착 같은 부작용이 생길 수 있고, 효과와 회복은 개인에 따라 달라요.
+
+## 마무리하며
+
+얼룩의 모양과 위치를 알아 두면 관리 방향을 정하기 쉬워요. 헷갈리신다면 진료로 피부 상태부터 확인해 보셔도 괜찮아요.
+
+---
+
+**확인할 자료**
+- [출처 확인 필요: 대한피부과학회 기미 안내 페이지]
+
+※ 이 글은 일반적인 정보이며, 진단이나 치료를 대신하지 않습니다. 치료 효과와 부작용은 개인에 따라 다를 수 있습니다.`;
+
+const $ = id => document.getElementById(id);
+const state = { format: "homepage", outline: null, md: "", findings: [], checked: false, isExample: true, busy: false };
+let sample = null, downloads = null, ctl = null;
+
+/* ---------- 작은 도구 ---------- */
+function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("on"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("on"),1800); }
+function esc(s){ return s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function setStep(k, st, sub){ const li=document.querySelector(`.steps li[data-k="${k}"]`); if(!li) return; li.dataset.st=st||""; if(sub!=null) li.querySelector(".s").textContent=sub; }
+function resetSteps(){ const subs={outline:"질문형 소제목과 짧은 답",draft:"문단 한두 문장, 첫 문장에 답",check:"금지 표현 148개 규칙",fix:"금지(block)가 0건이 될 때까지, 최대 2번"}; for(const k in subs) setStep(k,"",subs[k]); }
+function status(t){ $("status").textContent = t || ""; }
+function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} }
+function load(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch{ return null; } }
+
+/* ---------- 탭 ---------- */
+const TABS = ["preview","edit","check"];
+function showTab(t){ for(const x of TABS){ $("t-"+x).setAttribute("aria-selected", x===t); $("p-"+x).hidden = x!==t; } if(t==="preview") renderPreview(); }
+for(const x of TABS) $("t-"+x).addEventListener("click", ()=>showTab(x));
+
+/* ---------- 형식 선택 ---------- */
+$("format").addEventListener("click", e => { const b=e.target.closest("button"); if(!b) return; state.format=b.dataset.v; for(const x of $("format").children) x.setAttribute("aria-pressed", x===b); });
+
+/* ---------- 마크다운 → HTML (원고 형식 전용 작은 렌더러) ---------- */
+function inline(s){
+  s = esc(s);
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/\[(원장님 확인|출처 확인 필요|추후 기입)(:[^\]]*)?\]/g, (m)=>`<mark>${m.slice(1,-1)}</mark>`);
+  return s;
+}
+function mdToHtml(md){
+  const L = md.replace(/\r/g,"").split("\n"); const out=[]; let i=0, firstInSection=false;
+  while(i<L.length){
+    const ln=L[i];
+    if(!ln.trim()){ i++; continue; }
+    let m;
+    if((m=ln.match(/^# (.+)/))){ out.push(`<h1>${inline(m[1])}</h1>`); i++; continue; }
+    if((m=ln.match(/^## (.+)/))){ const q=m[1].match(/^(Q\d+)\.\s*(.+)/); out.push(q?`<h2><span class="qn">${q[1]}</span>${inline(q[2])}</h2>`:`<h2>${inline(m[1])}</h2>`); firstInSection=!!q; i++; continue; }
+    if((m=ln.match(/^### (.+)/))){ out.push(`<h3>${inline(m[1])}</h3>`); i++; continue; }
+    if(/^---+\s*$/.test(ln)){ out.push("<hr>"); i++; continue; }
+    if(ln.startsWith(">")){ const q=[]; while(i<L.length && L[i].startsWith(">")){ q.push(L[i].replace(/^> ?/,"")); i++; } out.push(`<blockquote>${mdToHtml(q.join("\n"))}</blockquote>`); continue; }
+    if(ln.startsWith("|")){ const rows=[]; while(i<L.length && L[i].startsWith("|")){ rows.push(L[i].trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim())); i++; }
+      const body=rows.slice(1).filter(r=>!/^[-:\s]+$/.test(r.join("")));
+      out.push(`<div class="tbl"><table><thead><tr>${rows[0].map(c=>`<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${body.map(r=>`<tr>${r.map(c=>`<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`); continue; }
+    if(/^[-*] /.test(ln)){ const it=[]; while(i<L.length && /^[-*] /.test(L[i])){ it.push(`<li>${inline(L[i].slice(2))}</li>`); i++; } out.push(`<ul>${it.join("")}</ul>`); continue; }
+    const para=[]; while(i<L.length && L[i].trim() && !/^(#|>|\||[-*] |---)/.test(L[i])){ para.push(L[i].trim()); i++; }
+    const t=para.join(" ");
+    if(t.startsWith("※")) out.push(`<p class="disc">${inline(t)}</p>`);
+    else if(firstInSection){ out.push(`<p class="lead">${inline(t)}</p>`); }
+    else out.push(`<p>${inline(t)}</p>`);
+    firstInSection=false;
+  }
+  return out.join("");
+}
+function titleOf(md){ return (md.match(/^# (.+)/m)||[])[1] || "제목 없음"; }
+
+function renderPreview(){
+  const md = state.md;
+  if(!md.trim()){ $("paper").innerHTML = `<div class="empty">왼쪽에 주제를 넣고 ‘자동으로 완성하기’를 누르세요.</div>`; return; }
+  const today = new Date().toISOString().slice(0,10).replace(/-/g,".");
+  $("paper").innerHTML = (state.isExample?`<span class="example-tag">예시 원고</span>`:"") + `<div class="meta"><b>피부 정보</b>${today}</div>` + mdToHtml(md);
+}
+
+/* ---------- 의료광고 검사 (tools/medad_rules.json 규칙 그대로) ---------- */
+const COMPILED = RULES.pattern_rules.map(r => ({...r, re:r.patterns.map(p=>new RegExp(p,"g")), ex:(r.exceptions||[]).map(p=>new RegExp(p))}));
+const MARKER = /\[(원장님 확인|출처 확인 필요|추후 기입)[^\]]*\]/g;
+function excerpt(line, idx, len){ const s=Math.max(0,idx-24), e=Math.min(line.length, idx+len+24); return (s?"…":"")+line.slice(s,e).trim()+(e<line.length?"…":""); }
+function check(md){
+  const lines = md.replace(/\r/g,"").split("\n");
+  const st = RULES.structure_rules;
+  let refAt = lines.findIndex(l => st.references_heading.some(h => l.replace(/[*#\s]/g,"").startsWith(h.replace(/\s/g,""))));
+  if(refAt<0) refAt = lines.length;
+  const F = [];
+  const add = (sev,id,title,law,ln,ex) => F.push({sev,id,title,law:law||"",line:ln+1,ex});
+  for(let i=0;i<refAt;i++){
+    const vis = lines[i].replace(/\(https?:[^)]*\)/g,"");
+    if(vis.startsWith("※")) continue; // 고지 문구는 '개인에 따라 다를 수 있습니다' 등 정해진 문장
+    for(const r of COMPILED){
+      for(const re of r.re){ re.lastIndex=0; let m;
+        while((m=re.exec(vis))){ if(!m[0]){ re.lastIndex++; continue; }
+          if(r.ex.some(x=>x.test(vis))) add("warn",r.id,r.title+" (부정 문맥 예외 — 확인 필요)",r.law,i,excerpt(vis,m.index,m[0].length));
+          else add(r.severity,r.id,r.title,r.law,i,excerpt(vis,m.index,m[0].length)); }
+      }
+    }
+  }
+  const body = lines.slice(0,refAt).join("\n");
+  const hasProc = st.procedure_terms.some(t=>body.includes(t));
+  if(hasProc && !st.sideeffect_terms.some(t=>body.includes(t))) add("block","S07-sideeffect","시술을 다루면서 부작용 정보가 없음","제56조 제2항 제7호 / 시행령 제23조 제1항 제7호",0,"(본문 전체)");
+  if(hasProc && !st.disclaimer_terms.some(t=>md.includes(t))) add("warn","S-disclaimer","개인차 고지 문구 없음","운영 규칙",0,"(본문 전체)");
+  if(/\d+(\.\d+)?\s*%/.test(body) && refAt===lines.length) add("warn","S-sources","수치가 있는데 참고 자료 섹션이 없음","제56조 제2항 제8호",0,"(본문 전체)");
+  lines.forEach((l,i)=>{ for(const m of l.matchAll(MARKER)) add("warn","S-marker","사람이 채울 자리표시","발행 준비",i,m[0].slice(0,70)); });
+  // 같은 줄·같은 규칙은 하나로, block 우선
+  F.sort((a,b)=>(a.sev===b.sev?0:a.sev==="block"?-1:1)||a.line-b.line);
+  const seen=new Set(); return F.filter(f=>{ const k=f.id+":"+f.line+(f.id==="S-marker"?f.ex:""); if(seen.has(k)) return false; seen.add(k); return true; });
+}
+function runCheck(){
+  state.findings = check(state.md); state.checked = true;
+  const b = state.findings.filter(f=>f.sev==="block").length, w = state.findings.length-b;
+  $("cnt").textContent = state.findings.length; $("cnt").className = "cnt"+(b?" b":"");
+  const v=$("verdict");
+  v.className = "verdict "+(b?"fail":"pass");
+  v.textContent = b ? `금지(block) ${b}건 · 확인(warn) ${w}건 — 금지 표현을 고치기 전에는 발행하지 마세요.` : `금지(block) 0건 · 확인(warn) ${w}건 — 확인 항목을 읽고 문제없으면 원장님 확인으로 넘기세요.`;
+  $("findings").innerHTML = state.findings.map(f=>`<li class="${f.sev}"><span class="sev">${f.sev==="block"?"금지":"확인"}</span>${esc(f.title)} <span class="status">· ${f.line}행</span><q>${esc(f.ex)}</q>${f.law?`<span class="law">${esc(f.law)}</span>`:""}</li>`).join("") || `<li class="warn" style="border-left-color:var(--ok)">걸린 표현이 없어요.</li>`;
+  $("fixbtn").disabled = !b || !sample;
+  return b;
+}
+
+/* ---------- Claude에게 줄 규칙 ---------- */
+function writingRules(){
+  const naver = state.format==="naver";
+  return `[글쓰기 규칙 — 반드시 지킨다]
+- 독자: ${$("reader").value || "피부 고민이 있는 일반인"}. 말투는 부드러운 해요체. 어려운 의학 용어는 처음 나올 때 괄호로 쉽게 풀이.
+- 병원 이름·지점 이름은 절대 쓰지 않는다. 병원은 "저희 병원"으로만 부른다.
+- 의료법 제56조 금지 표현을 쓰지 않는다: 후기·경험담·환자 사례, 시술 전후 비교, 효과 보장(확실한 효과, 완치, 영구적, 100%, 반드시, 즉시 효과), 최상급(최고, 최초, 유일, 1위, 가장, 독보적), 다른 병원과 비교·비방, 부작용·통증이 없다는 말(무통 포함), 할인·이벤트·무료·사은품, '전문 병원/센터' 표방, 인증·수상·언론 노출 자랑.
+- 시술이나 치료를 다루면 그 부작용(붉어짐·색소침착 등)과 "효과와 부작용은 개인에 따라 다를 수 있다"는 말을 본문에 꼭 넣는다.
+- 수치·연구 결과·통계는 지어내지 않는다. 확실하지 않으면 수치 없이 쓴다. 근거가 필요한 문장 끝에는 [출처 확인 필요: 찾아볼 기관이나 자료 이름]을 붙인다. 논문 제목·저자·연도를 지어내지 않는다.
+- 병원마다 다른 정보(하는 시술 이름, 횟수·간격, 가격, 장비, 회복 기간, 시술 주의 대상)는 지어내지 말고 [원장님 확인: 무엇을 확인할지]로 남긴다.${$("notes").value.trim()?`\n- 병원이 정해 준 내용(이것만 사실로 써도 된다): ${$("notes").value.trim()}`:""}
+- 구성: 소제목은 독자가 실제로 검색할 만한 질문. 각 소제목 바로 아래 첫 문장이 질문에 대한 답. 문단은 1~2문장으로 짧게.${naver?" 네이버 블로그용이라 문장을 짧게 끊고, 소제목 사이에 도입 한두 문장으로 흐름을 잇는다.":" 병원 홈페이지 칼럼용이라 차분하고 정보 중심으로 쓴다."}
+- 키워드(${$("keyword").value})는 제목과 소제목, 본문에 자연스럽게 넣고 억지로 반복하지 않는다.`;
+}
+
+/* ---------- 단계 1: 개요 ---------- */
+async function makeOutline(){
+  const n = +$("qcount").value;
+  const prompt = `너는 피부과 홈페이지 칼럼을 기획하는 편집자다.
+주제: ${$("topic").value}
+${writingRules()}
+
+질문형 소제목 ${n}개로 글의 개요를 만든다. 원인·구분법 같은 기본 정보부터, 관리·치료 선택지와 그 한계·부작용, 진료가 필요한 때 순서로 흐르게 한다.
+JSON 하나만 답한다. 형식:
+{"title":"검색 의도가 드러나는 제목(40자 이내)","description":"검색 결과에 보일 요약 한 문장(80자 이내)","summary":["핵심 정리 3~4개, 각 한 문장"],"sections":[{"q":"질문형 소제목","short":"그 질문에 대한 1~2문장 짧은 답","points":["본문에서 다룰 내용 2~4개"]}]}`;
+  return await sample.json(prompt, { modelTier:"default", signal:ctl.signal });
+}
+
+/* ---------- 단계 2: 원고 ---------- */
+async function makeDraft(outline){
+  const len = $("length").value;
+  const prompt = `너는 피부과 홈페이지 칼럼 작가다. 아래 개요대로 원고를 마크다운으로 쓴다. 분량은 공백 포함 약 ${len}자.
+${writingRules()}
+
+[개요]
+${JSON.stringify(outline, null, 1)}
+
+[출력 형식 — 이 틀 그대로, 마크다운만 답한다. 앞뒤 설명 금지]
+# (제목)
+
+(도입 2~3문장: 독자의 고민에 공감하고, 이 글에서 알 수 있는 것)
+
+> **핵심 정리**
+> - (개요의 summary)
+
+## Q1. (첫 질문)
+
+(첫 문장이 답. 이어서 짧은 문단들. 필요하면 "- **이름**: 설명" 목록이나 | 표 | 하나)
+
+## Q2. ...
+(개요의 질문 수만큼)
+
+## 마무리하며
+
+(2~3문장. 마지막은 "헷갈리신다면 진료로 피부 상태부터 확인해 보셔도 괜찮아요" 같은 부드러운 안내. 예약을 재촉하지 않는다)
+
+---
+
+**확인할 자료**
+- (본문에서 [출처 확인 필요]로 남긴 자료들을 한 줄씩)
+
+※ 이 글은 일반적인 정보이며, 진단이나 치료를 대신하지 않습니다. 치료 효과와 부작용은 개인에 따라 다를 수 있으므로 의료진과 충분히 상담한 뒤 결정하시기 바랍니다.`;
+  const { text, truncated } = await sample(prompt, { modelTier:"complex", signal:ctl.signal, onText:({text})=>{ state.md=text; $("editor").value=text; if(!$("p-preview").hidden) renderPreview(); status(`원고 쓰는 중… ${text.length.toLocaleString()}자`); } });
+  if(truncated) toast("원고가 중간에 끊겼어요. 분량을 줄여 다시 해 보세요.");
+  return cleanMd(text);
+}
+function cleanMd(t){ return t.replace(/^```(?:markdown|md)?\s*\n/,"").replace(/\n```\s*$/,"").trim()+"\n"; }
+
+/* ---------- 단계 4: 걸린 문장 고치기 ---------- */
+async function fixDraft(){
+  const blocks = state.findings.filter(f=>f.sev==="block");
+  const list = blocks.map(f=>`- ${f.line}행 [${f.title}] "${f.ex}"`).join("\n");
+  const prompt = `아래 피부과 칼럼 원고에서 의료광고 검사기에 걸린 문장만 고친다.
+${writingRules()}
+
+[걸린 곳]
+${list}
+
+[고치는 법]
+- 걸린 낱말을 빼거나 다른 말로 바꿔, 뜻은 지키되 규칙을 지킨다. 예: "가장 흔한" → "흔한", "확실한 효과" → "도움이 될 수 있어요", "부작용이 없어요" → 실제로 생길 수 있는 부작용을 적는다, "후기" → 그 문장을 지운다.
+- "시술을 다루면서 부작용 정보가 없음"이면 해당 시술 단락에 생길 수 있는 부작용과 개인차 문장을 더한다.
+- 걸리지 않은 문장, 자리표시([원장님 확인…], [출처 확인 필요…]), 형식은 그대로 둔다.
+- 고친 원고 전체를 마크다운으로만 답한다. 설명 금지.
+
+[원고]
+${state.md}`;
+  const { text } = await sample(prompt, { modelTier:"default", signal:ctl.signal, onText:({text})=>{ status(`고치는 중… ${text.length.toLocaleString()}자`); } });
+  return cleanMd(text);
+}
+
+/* ---------- 전체 흐름 ---------- */
+function setBusy(b){ state.busy=b; $("run").disabled=b; $("recheck").disabled=b; $("fixbtn").disabled=b||!sample; $("stop").hidden=!b; $("editor").readOnly=b; }
+function errText(e){
+  const c=e&&e.code;
+  if(c==="cancelled") return "멈췄어요.";
+  if(c==="not_granted") return "Claude 사용을 허락하지 않아서 작성할 수 없어요. 원고 붙여넣기와 검사는 계속 쓸 수 있어요.";
+  if(c==="rate_limited"||c==="queue_overflow") return "요청이 몰렸어요. 1~2분 뒤에 다시 눌러 주세요.";
+  if(c==="invalid_json") return "개요를 읽지 못했어요. 한 번 더 눌러 주세요.";
+  if(c==="refused") return "Claude가 이 주제로 쓰기를 거절했어요. 주제를 조금 바꿔 보세요.";
+  if(c==="session_expired") return "로그인이 만료됐어요. 페이지를 새로 열어 주세요.";
+  return "작성 중 문제가 생겼어요. 잠시 뒤 다시 시도해 주세요." + (c?` (${c})`:"");
+}
+
+async function autopilot(){
+  if(!sample){ toast("Claude 앱이나 claude.ai에서 열어야 작성할 수 있어요."); return; }
+  if(!$("topic").value.trim()){ $("topic").focus(); return; }
+  ctl = new AbortController(); setBusy(true); resetSteps(); state.isExample=false;
+  let step="outline";
+  try{
+    setStep("outline","run"); status("개요 짜는 중… (보통 20~60초)");
+    const ol = await makeOutline();
+    if(!ol || !Array.isArray(ol.sections)) throw {code:"invalid_json"};
+    state.outline = ol; setStep("outline","done",`질문 ${ol.sections.length}개 · ${ol.title}`);
+
+    step="draft"; setStep("draft","run"); showTab("preview"); status("원고 쓰는 중… (1~3분)");
+    state.md = await makeDraft(ol); $("editor").value=state.md; renderPreview();
+    setStep("draft","done",`${state.md.replace(/\s/g,"").length.toLocaleString()}자 (공백 제외)`);
+
+    step="check"; setStep("check","run");
+    let b = runCheck(); setStep("check","done", b?`금지 ${b}건 발견`:"금지 0건");
+
+    step="fix";
+    if(!b){ setStep("fix","done","고칠 금지 표현 없음"); }
+    for(let round=1; b && round<=2; round++){
+      setStep("fix","run",`${round}번째 고치는 중…`);
+      state.md = await fixDraft(); $("editor").value=state.md;
+      b = runCheck(); renderPreview();
+    }
+    if(b){ setStep("fix","fail",`금지 ${b}건 남음 — 검사 결과 탭에서 직접 고쳐 주세요`); showTab("check"); }
+    else setStep("fix","done","금지 0건");
+    saveHistory();
+    status(b?"":"완성했어요. [출처 확인 필요]·[원장님 확인] 자리를 채운 뒤 발행하세요.");
+  }catch(e){
+    setStep(step,"fail"); status(""); toast(errText(e));
+    if(e && e.text && step==="draft"){ state.md=cleanMd(e.text); $("editor").value=state.md; renderPreview(); }
+  }finally{ setBusy(false); }
+}
+$("form").addEventListener("submit", e => { e.preventDefault(); autopilot(); });
+$("stop").addEventListener("click", ()=>ctl?.abort());
+$("recheck").addEventListener("click", ()=>{ state.md=$("editor").value; runCheck(); renderPreview(); showTab("check"); });
+$("fixbtn").addEventListener("click", async ()=>{
+  state.md=$("editor").value; if(!runCheck()) { toast("금지 표현이 없어요."); return; }
+  ctl=new AbortController(); setBusy(true); setStep("fix","run","고치는 중…");
+  try{ state.md=await fixDraft(); $("editor").value=state.md; const b=runCheck(); renderPreview(); setStep("fix",b?"fail":"done",b?`금지 ${b}건 남음`:"금지 0건"); saveHistory(); }
+  catch(e){ setStep("fix","fail"); toast(errText(e)); }
+  finally{ setBusy(false); status(""); }
+});
+$("editor").addEventListener("input", ()=>{ state.md=$("editor").value; state.isExample=false; clearTimeout(state._d); state._d=setTimeout(()=>{ runCheck(); store("autopilot.draft", state.md); },400); });
+
+/* ---------- 내보내기 ---------- */
+function exportHtml(){
+  const md=state.md, title=titleOf(md);
+  const desc=(state.outline&&state.outline.description)||"";
+  const faq=(state.outline&&state.outline.sections||[]).map(s=>({"@type":"Question",name:s.q,acceptedAnswer:{"@type":"Answer",text:s.short}}));
+  const ld={"@context":"https://schema.org","@graph":[{"@type":"MedicalWebPage",headline:title,description:desc,inLanguage:"ko",datePublished:new Date().toISOString().slice(0,10)}].concat(faq.length?[{"@type":"FAQPage",mainEntity:faq}]:[])};
+  const css="body{margin:0;background:#fff;color:#222;font-family:Pretendard,'Noto Sans KR',sans-serif;font-size:16px;line-height:1.85;word-break:keep-all}.wrap{max-width:740px;margin:0 auto;padding:40px 20px}h1{font-size:28px;line-height:1.4}h2{font-size:21px;margin:48px 0 18px;padding-bottom:12px;border-bottom:1px solid #e8e8e8}h2 .qn{color:#1f6f66;margin-right:6px}p{margin:0 0 18px}p.lead{font-weight:700;color:#1f6f66}blockquote{margin:24px 0;background:#f5f7f6;border-radius:8px;padding:16px 22px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #e3e3e3;padding:9px 10px}th{background:#f5f7f6}.tbl{overflow-x:auto}hr{border:0;border-top:1px solid #e8e8e8;margin:36px 0}mark{background:#fff1b8}.disc{font-size:13px;color:#888}";
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title>${desc?`<meta name="description" content="${esc(desc)}">`:""}<script type="application/ld+json">${JSON.stringify(ld).replace(/</g,"\\u003c")}<\/script><style>${css}</style></head><body><main class="wrap">${mdToHtml(md)}</main></body></html>`;
+}
+async function copy(text, okMsg){
+  try{ await navigator.clipboard.writeText(text); toast(okMsg); }
+  catch{ showTab("edit"); $("editor").select(); toast("복사가 막혀 있어요. 원고 탭에서 선택된 글을 직접 복사해 주세요."); }
+}
+function guardBlock(){ if(!state.checked) runCheck(); const b=state.findings.filter(f=>f.sev==="block").length; if(b){ toast(`금지 표현 ${b}건이 남아 있어요. 먼저 고쳐 주세요.`); showTab("check"); return true; } return false; }
+$("copyMd").addEventListener("click", ()=>{ if(guardBlock()) return; copy(state.md, "원고를 복사했어요."); });
+$("copyHtml").addEventListener("click", ()=>{ if(guardBlock()) return; copy(exportHtml(), "홈페이지용 HTML을 복사했어요."); });
+$("save").addEventListener("click", async ()=>{
+  if(guardBlock()||!downloads) return;
+  const name=(titleOf(state.md).replace(/[\\/:*?"<>|]/g,"").slice(0,40)||"칼럼")+".md";
+  try{ await downloads.save({filename:name, data:state.md}); }catch(e){ if(e&&e.code!=="cancelled"&&e.code!=="declined") toast("저장하지 못했어요."); }
+});
+
+/* ---------- 최근 원고 (이 브라우저에만) ---------- */
+function saveHistory(){
+  const h=load("autopilot.hist")||[]; h.unshift({t:titleOf(state.md), at:new Date().toLocaleString("ko-KR"), md:state.md, outline:state.outline});
+  store("autopilot.hist", h.slice(0,8)); store("autopilot.draft", state.md); renderHistory();
+}
+function renderHistory(){
+  const h=load("autopilot.hist")||[];
+  $("hist").innerHTML = h.length ? `<b>최근 원고</b> <span class="status">이 브라우저에만 저장돼요</span>` + h.map((x,i)=>`<button type="button" data-i="${i}">${esc(x.t)} <span class="status">· ${esc(x.at)}</span></button>`).join("") : "";
+}
+$("hist").addEventListener("click", e=>{ const b=e.target.closest("button[data-i]"); if(!b) return; const x=(load("autopilot.hist")||[])[+b.dataset.i]; if(!x) return; state.md=x.md; state.outline=x.outline; state.isExample=false; $("editor").value=x.md; runCheck(); renderPreview(); showTab("preview"); });
+
+/* ---------- 시작 ---------- */
+(function init(){
+  const d = load("autopilot.draft");
+  state.md = d || EXAMPLE; state.isExample = !d;
+  $("editor").value = state.md; renderHistory(); runCheck(); renderPreview();
+  $("fixbtn").disabled = true;
+  (async ()=>{
+    try{ sample = window.claude ? await window.claude.use("sample") : null; }catch{ sample=null; }
+    if(!sample){ $("noClaude").classList.add("on"); $("run").disabled=true; }
+    else runCheck();
+    try{ downloads = window.claude ? await window.claude.use("downloads") : null; }catch{ downloads=null; }
+    $("save").hidden = !downloads;
+  })();
+})();
+</script>
