@@ -2,10 +2,15 @@ import { db, getSettings } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+// 등록된 기기에만: 설정, 자주 쓰는 문장, 화면끼리 잇는 실시간 채널 정보(공개 키)
 export async function GET() {
   const [settings, phrases] = await Promise.all([
     getSettings(),
     db().from("medi_phrases").select("id,category,sort,ko,en,zh,ja,ru,vi").order("sort").order("created_at"),
   ]);
-  return Response.json({ settings, phrases: phrases.data ?? [] });
+  return Response.json({
+    settings,
+    phrases: phrases.data ?? [],
+    realtime: { url: process.env.SUPABASE_URL, key: process.env.SUPABASE_PUBLISHABLE_KEY ?? "" },
+  });
 }

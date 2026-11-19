@@ -1,4 +1,4 @@
-// 지원 언어와 손님 화면 문구. 서버·브라우저 양쪽에서 쓴다.
+// 지원 언어, 언어 자동 판별, 손님 화면 문구. 서버·브라우저 양쪽에서 쓴다.
 
 export const GUEST_LANGS = ["en", "zh", "ja", "ru", "vi"] as const;
 export const ALL_LANGS = ["ko", ...GUEST_LANGS] as const;
@@ -21,158 +21,127 @@ export function isGuestLang(v: unknown): v is GuestLang {
   return typeof v === "string" && (GUEST_LANGS as readonly string[]).includes(v);
 }
 
+// 받아쓴 문장의 글자로 언어를 판별한다. 라틴 문자는 베트남어 성조 표시가 있으면 vi, 아니면 en.
+export function detectLang(text: string): Lang | null {
+  const t = text.replace(/[\s\d.,!?…·'"()\-:;]/g, "");
+  if (!t) return null;
+  const count = (re: RegExp) => (t.match(re) ?? []).length;
+  const hangul = count(/[가-힣ㄱ-ㆎ]/g);
+  const kana = count(/[぀-ヿ]/g);
+  const han = count(/[一-鿿]/g);
+  const cyr = count(/[Ѐ-ӿ]/g);
+  const latin = count(/[a-zA-ZÀ-ɏḀ-ỿ]/g);
+  const viet = count(/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹĂÂĐÊÔƠƯ]/g);
+  const max = Math.max(hangul, kana + han, cyr, latin);
+  if (max === 0) return null;
+  if (hangul === max) return "ko";
+  if (kana + han === max) return kana > 0 ? "ja" : "zh";
+  if (cyr === max) return "ru";
+  return viet >= 1 ? "vi" : "en";
+}
+
 export type GuestUI = {
   welcome: string;
-  choose: string;
-  tapToSpeak: string;
+  justSpeak: string;
   listening: string;
-  tapToFinish: string;
-  translating: string;
+  paused: string;
+  speaking: string;
   staffSpeaking: string;
-  sayAgain: string;
-  typeHere: string;
-  send: string;
   replay: string;
-  disclaimer: string;
-  consentTitle: string;
-  consentBody: (days: number) => string;
-  agree: string;
-  decline: string;
-  thanks: string;
-  stillThere: string;
-  continue: string;
-  quick: string[]; // 손님용 빠른 답변
-  micDenied: string;
   original: string;
+  disclaimer: string;
+  saveAsk: (days: number) => string;
+  saveYes: string;
+  saveNo: string;
+  saving: string;
+  micDenied: string;
+  tapToStart: string;
 };
-
-// quick 순서는 QUICK_KO 와 같아야 한다.
-export const QUICK_KO = ["네", "아니요", "다시 한 번 말씀해 주세요", "천천히 말씀해 주세요", "잘 모르겠어요", "감사합니다"];
 
 export const GUEST_UI: Record<GuestLang, GuestUI> = {
   en: {
     welcome: "Welcome",
-    choose: "Please choose your language",
-    tapToSpeak: "Tap and speak",
-    listening: "Listening… tap again when you finish",
-    tapToFinish: "Tap to finish",
-    translating: "Interpreting…",
+    justSpeak: "Just speak in your language. It will be interpreted right away.",
+    listening: "Listening…",
+    paused: "Microphone paused",
+    speaking: "Speaking…",
     staffSpeaking: "Staff is speaking…",
-    sayAgain: "Sorry, I couldn't hear that. Please say it again.",
-    typeHere: "Type your message",
-    send: "Send",
     replay: "Play again",
-    disclaimer: "AI interpretation may contain errors. Please confirm important medical information with the staff.",
-    consentTitle: "Saving this conversation",
-    consentBody: (d) =>
-      `To help with your visit, this conversation will be saved by the hospital and automatically deleted after ${d} days. It may include health information. If you choose not to save it, interpretation works exactly the same.`,
-    agree: "Agree and start",
-    decline: "Start without saving",
-    thanks: "Thank you. Take care.",
-    stillThere: "Are you still there?",
-    continue: "Continue",
-    quick: ["Yes", "No", "Please say that again", "Please speak slowly", "I don't understand", "Thank you"],
-    micDenied: "Microphone is not available. Please type instead.",
     original: "Original",
+    disclaimer: "AI interpretation may contain errors. Please confirm important medical information with the staff.",
+    saveAsk: (d) => `May the hospital keep this conversation for ${d} days? It is deleted automatically afterwards. Interpretation works the same either way.`,
+    saveYes: "Yes, save",
+    saveNo: "No",
+    saving: "This conversation is being saved",
+    micDenied: "Microphone is not available.",
+    tapToStart: "Tap to start",
   },
   zh: {
     welcome: "欢迎光临",
-    choose: "请选择您的语言",
-    tapToSpeak: "点击后说话",
-    listening: "正在听… 说完请再点一下",
-    tapToFinish: "点击结束",
-    translating: "正在翻译…",
+    justSpeak: "请直接用您的语言说话，会马上为您翻译。",
+    listening: "正在听…",
+    paused: "麦克风已暂停",
+    speaking: "正在说话…",
     staffSpeaking: "工作人员正在说话…",
-    sayAgain: "抱歉，没有听清楚。请再说一遍。",
-    typeHere: "请输入内容",
-    send: "发送",
     replay: "再听一遍",
-    disclaimer: "AI 翻译可能有误。重要的医疗信息请向工作人员确认。",
-    consentTitle: "保存对话记录",
-    consentBody: (d) =>
-      `为了更好地为您服务，医院将保存本次对话，并在 ${d} 天后自动删除。记录中可能包含健康信息。如果您选择不保存，翻译功能完全不受影响。`,
-    agree: "同意并开始",
-    decline: "不保存，直接开始",
-    thanks: "谢谢，请多保重。",
-    stillThere: "您还在吗？",
-    continue: "继续",
-    quick: ["是", "不是", "请再说一遍", "请说慢一点", "我不太明白", "谢谢"],
-    micDenied: "无法使用麦克风，请用文字输入。",
     original: "原文",
+    disclaimer: "AI 翻译可能有误。重要的医疗信息请向工作人员确认。",
+    saveAsk: (d) => `医院可以将本次对话保存 ${d} 天吗？到期后会自动删除。无论是否同意，翻译功能都一样。`,
+    saveYes: "同意保存",
+    saveNo: "不同意",
+    saving: "本次对话正在保存",
+    micDenied: "无法使用麦克风。",
+    tapToStart: "点击开始",
   },
   ja: {
     welcome: "ようこそ",
-    choose: "言語を選んでください",
-    tapToSpeak: "タップして話してください",
-    listening: "聞いています… 話し終えたらもう一度タップ",
-    tapToFinish: "タップして終了",
-    translating: "通訳しています…",
+    justSpeak: "ご自分の言葉でそのままお話しください。すぐに通訳します。",
+    listening: "聞いています…",
+    paused: "マイク一時停止中",
+    speaking: "話しています…",
     staffSpeaking: "スタッフが話しています…",
-    sayAgain: "すみません、聞き取れませんでした。もう一度お話しください。",
-    typeHere: "メッセージを入力",
-    send: "送信",
     replay: "もう一度聞く",
-    disclaimer: "AI通訳には誤りがある場合があります。大切な医療情報はスタッフにご確認ください。",
-    consentTitle: "会話の記録について",
-    consentBody: (d) =>
-      `ご案内のため、この会話は病院に保存され、${d}日後に自動的に削除されます。健康に関する情報が含まれる場合があります。保存しない場合でも、通訳は同じようにご利用いただけます。`,
-    agree: "同意して始める",
-    decline: "保存せずに始める",
-    thanks: "ありがとうございました。お大事に。",
-    stillThere: "まだいらっしゃいますか？",
-    continue: "続ける",
-    quick: ["はい", "いいえ", "もう一度お願いします", "ゆっくり話してください", "よくわかりません", "ありがとうございます"],
-    micDenied: "マイクが使えません。文字で入力してください。",
     original: "原文",
+    disclaimer: "AI通訳には誤りがある場合があります。大切な医療情報はスタッフにご確認ください。",
+    saveAsk: (d) => `この会話を病院で${d}日間保存してもよろしいですか？期間が過ぎると自動で削除されます。どちらを選んでも通訳は同じように使えます。`,
+    saveYes: "保存してよい",
+    saveNo: "いいえ",
+    saving: "この会話は保存されています",
+    micDenied: "マイクが使えません。",
+    tapToStart: "タップして開始",
   },
   ru: {
     welcome: "Добро пожаловать",
-    choose: "Выберите язык",
-    tapToSpeak: "Нажмите и говорите",
-    listening: "Слушаю… нажмите ещё раз, когда закончите",
-    tapToFinish: "Нажмите, чтобы закончить",
-    translating: "Перевожу…",
+    justSpeak: "Просто говорите на своём языке — перевод появится сразу.",
+    listening: "Слушаю…",
+    paused: "Микрофон на паузе",
+    speaking: "Говорит…",
     staffSpeaking: "Говорит сотрудник…",
-    sayAgain: "Извините, не расслышал. Повторите, пожалуйста.",
-    typeHere: "Введите сообщение",
-    send: "Отправить",
     replay: "Прослушать ещё раз",
-    disclaimer: "ИИ-перевод может содержать ошибки. Важную медицинскую информацию уточняйте у сотрудников.",
-    consentTitle: "Сохранение разговора",
-    consentBody: (d) =>
-      `Чтобы помочь Вам, больница сохранит этот разговор и автоматически удалит его через ${d} дн. Он может содержать сведения о здоровье. Если Вы не согласны на сохранение, перевод будет работать точно так же.`,
-    agree: "Согласен, начать",
-    decline: "Начать без сохранения",
-    thanks: "Спасибо. Будьте здоровы.",
-    stillThere: "Вы ещё здесь?",
-    continue: "Продолжить",
-    quick: ["Да", "Нет", "Повторите, пожалуйста", "Говорите медленнее, пожалуйста", "Я не понимаю", "Спасибо"],
-    micDenied: "Микрофон недоступен. Пожалуйста, введите текст.",
     original: "Оригинал",
+    disclaimer: "ИИ-перевод может содержать ошибки. Важную медицинскую информацию уточняйте у сотрудников.",
+    saveAsk: (d) => `Можно больнице сохранить этот разговор на ${d} дн.? Затем он удаляется автоматически. Перевод работает одинаково в любом случае.`,
+    saveYes: "Да, сохранить",
+    saveNo: "Нет",
+    saving: "Разговор сохраняется",
+    micDenied: "Микрофон недоступен.",
+    tapToStart: "Нажмите, чтобы начать",
   },
   vi: {
     welcome: "Xin chào",
-    choose: "Vui lòng chọn ngôn ngữ",
-    tapToSpeak: "Chạm rồi nói",
-    listening: "Đang nghe… nói xong hãy chạm lại",
-    tapToFinish: "Chạm để kết thúc",
-    translating: "Đang phiên dịch…",
+    justSpeak: "Quý vị cứ nói bằng ngôn ngữ của mình, sẽ được phiên dịch ngay.",
+    listening: "Đang nghe…",
+    paused: "Đã tạm dừng micrô",
+    speaking: "Đang nói…",
     staffSpeaking: "Nhân viên đang nói…",
-    sayAgain: "Xin lỗi, tôi chưa nghe rõ. Vui lòng nói lại.",
-    typeHere: "Nhập tin nhắn",
-    send: "Gửi",
     replay: "Nghe lại",
-    disclaimer: "Phiên dịch bằng AI có thể có sai sót. Vui lòng xác nhận thông tin y tế quan trọng với nhân viên.",
-    consentTitle: "Lưu cuộc trò chuyện",
-    consentBody: (d) =>
-      `Để hỗ trợ quý vị, bệnh viện sẽ lưu cuộc trò chuyện này và tự động xóa sau ${d} ngày. Nội dung có thể bao gồm thông tin sức khỏe. Nếu quý vị không đồng ý lưu, việc phiên dịch vẫn hoạt động như bình thường.`,
-    agree: "Đồng ý và bắt đầu",
-    decline: "Bắt đầu không lưu",
-    thanks: "Cảm ơn quý vị. Chúc quý vị mau khỏe.",
-    stillThere: "Quý vị vẫn còn ở đây chứ?",
-    continue: "Tiếp tục",
-    quick: ["Vâng", "Không", "Xin nói lại một lần nữa", "Xin nói chậm hơn", "Tôi không hiểu", "Cảm ơn"],
-    micDenied: "Không dùng được micrô. Vui lòng nhập chữ.",
     original: "Bản gốc",
+    disclaimer: "Phiên dịch bằng AI có thể có sai sót. Vui lòng xác nhận thông tin y tế quan trọng với nhân viên.",
+    saveAsk: (d) => `Bệnh viện có thể lưu cuộc trò chuyện này trong ${d} ngày không? Sau đó sẽ tự động xóa. Dù chọn thế nào, việc phiên dịch vẫn như nhau.`,
+    saveYes: "Đồng ý lưu",
+    saveNo: "Không",
+    saving: "Cuộc trò chuyện đang được lưu",
+    micDenied: "Không dùng được micrô.",
+    tapToStart: "Chạm để bắt đầu",
   },
 };
