@@ -44,3 +44,7 @@ npm run dev                  # http://localhost:3210
 ```
 DB 스키마는 Supabase 마이그레이션 `medi_interpreter_init`, `medi_settings_speak_split` 참고.
 초기 용어 84개·문장 27개는 `seed/seed.json` (`seed/seed.sql`).
+
+## 배포
+운영 주소: https://medibridge-desk.vercel.app (Vercel 프로젝트 `medibridge-desk`, 서울 리전)
+다시 배포: `npx vercel login` 후 `./deploy.sh`
