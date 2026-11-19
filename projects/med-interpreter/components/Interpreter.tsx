@@ -2,22 +2,29 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { Listener, MicEngine, PcmPlayer, type ListenState } from "@/lib/client/audio";
+import { Listener, MicEngine, PcmPlayer, listMics, type ListenState } from "@/lib/client/audio";
 import { Room, newRoomCode, normalizeRoom, type RoomEvent } from "@/lib/client/room";
-import { GUEST_LANGS, GUEST_UI, LANG_META, detectLang, isGuestLang, type GuestLang, type Lang } from "@/lib/langs";
+import { GUEST_LANGS, GUEST_UI, LANG_META, detectLang, isGuestLang, isRisky, type GuestLang, type Lang } from "@/lib/langs";
 
 type Mode = "desk" | "guest" | "solo";
 type Side = "staff" | "guest";
 type Settings = {
   hospital_name: string; retention_days: number; speak_to_guest: boolean; speak_to_staff: boolean;
   slow_speech: boolean; flip_guest: boolean; idle_seconds: number;
+  interpreter_services: { name: string; phone?: string; url?: string; note?: string }[];
 };
+type Card = { id: string; title: string; keywords: string | null };
+type Shown = { type: "card"; id: string; title: string; titleTr?: string } | { type: "amount"; value: number } | null;
+type Role = "staff" | "guest" | "any";
+type Ear = { role: Role; mic: MicEngine; l: Listener };
 type Phrase = { id: string; category: string; ko: string } & Partial<Record<Lang, string | null>>;
 type Boot = { settings: Settings; phrases: Phrase[]; realtime: { url: string; key: string } };
 type Msg = {
   id: string; speaker: Side; kind: "speech" | "text" | "phrase";
   srcLang: Lang; src: string; tgtLang: Lang; tgt: string;
   status: "translating" | "done" | "error"; at: number;
+  back?: string; // 역번역 (직원 말 → 손님 언어 → 다시 한국어)
+  backOk?: boolean; backIssue?: string;
 };
 type Live = { speaker: Side; text: string; at: number };
 type Sess = { id: string; consent: boolean | null };
@@ -125,7 +132,7 @@ function ModePicker({ hospital, onPick }: { hospital: string; onPick: (m: Mode, 
 // ================================================================
 function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room: string | null; boot: Boot; onExit: () => void }) {
   const settings = boot.settings;
-  const authority = mode !== "guest"; // 대화 상태(세션·언어·초기화)는 데스크(또는 한 화면)가 정한다
+  const authority = mode !== "guest"; // 대화 상태(세션·언어·초기화·안내 자료)는 데스크(또는 한 화면)가 정한다
   const [started, setStarted] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -134,47 +141,65 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
   const [session, setSession] = useState<Sess>(() => ({ id: uid(), consent: null }));
   const [listen, setListen] = useState<ListenState>("off");
   const [level, setLevel] = useState(0);
+  const [earCount, setEarCount] = useState(0);
   const [muted, setMuted] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
-  const [remoteTts, setRemoteTts] = useState(false);
   const [roomOk, setRoomOk] = useState(false);
   const [peerAt, setPeerAt] = useState(0);
-  const [sheet, setSheet] = useState<null | "connect" | "phrases" | "keyboard" | "lang" | "menu">(null);
+  const [sheet, setSheet] = useState<null | "connect" | "phrases" | "keyboard" | "lang" | "menu" | "human" | "cards" | "summary" | "mics">(null);
   const [now, setNow] = useState(Date.now());
+  const [cards, setCards] = useState<Card[]>([]);
+  const [shown, setShown] = useState<Shown>(null);
+  const [suggest, setSuggest] = useState<Card | null>(null);
+  const [humanNotice, setHumanNotice] = useState(false); // 손님 화면: "통역사 연결 중" 안내
+  const [humanAsked, setHumanAsked] = useState(false);   // 데스크: 손님이 사람 통역을 요청함
+  const [riskDismissed, setRiskDismissed] = useState<string | null>(null);
 
   const dev = useRef(uid().slice(0, 8));
-  const mic = useRef<MicEngine | null>(null);
-  const listener = useRef<Listener | null>(null);
+  const ears = useRef<Ear[]>([]);
   const player = useRef<PcmPlayer | null>(null);
   const room = useRef<Room | null>(null);
-  const S = useRef({ msgs, guestLang, session, soundOn });
-  S.current = { msgs, guestLang, session, soundOn };
+  const S = useRef({ msgs, guestLang, session, soundOn, shown });
+  S.current = { msgs, guestLang, session, soundOn, shown };
   const recent = useRef<{ text: string; at: number }[]>([]);
   const ttsQueue = useRef<Msg[]>([]);
   const ttsBusy = useRef(false);
   const lastActivity = useRef(Date.now());
   const sessionCreated = useRef<string | null>(null);
-  const remoteTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
-  const liveSent = useRef(0);
+  const liveSent = useRef<Record<string, number>>({});
+  const levels = useRef<Record<string, number>>({});
   const feed = useRef<HTMLDivElement>(null);
 
   const G = GUEST_UI[guestLang];
+  const guestView = mode === "guest";
 
   useEffect(() => { const i = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(i); }, []);
+  useEffect(() => {
+    if (!authority) return;
+    fetch("/api/cards", { cache: "no-store" }).then((r) => r.json()).then((j) => setCards(j.cards ?? [])).catch(() => {});
+  }, [authority]);
+
+  // 여러 마이크를 한꺼번에 다루는 도우미
+  const pauseAll = useCallback((reason: string, on: boolean) => { for (const e of ears.current) e.l.pause(reason, on); }, []);
+  const anyTalking = () => ears.current.some((e) => e.l.current === "speech" || e.l.current === "finalizing");
+  const refreshListen = useCallback(() => {
+    const st = ears.current.map((e) => e.l.current);
+    setListen(st.includes("speech") ? "speech" : st.includes("finalizing") ? "finalizing" : st[0] ?? "off");
+  }, []);
 
   // ---------- 상태 공유 ----------
   const broadcastState = useCallback((extra?: { withMsgs?: boolean }) => {
     if (!authority) return;
     const s = S.current;
-    room.current?.send("state", { session: s.session, guestLang: s.guestLang, ...(extra?.withMsgs ? { msgs: s.msgs.slice(-40) } : {}) });
+    room.current?.send("state", { session: s.session, guestLang: s.guestLang, shown: s.shown, ...(extra?.withMsgs ? { msgs: s.msgs.slice(-40) } : {}) });
   }, [authority]);
 
   const upsertMsg = useCallback((m: Msg) => {
     setMsgs((xs) => {
       const i = xs.findIndex((x) => x.id === m.id);
       if (i < 0) return [...xs, m].sort((a, b) => a.at - b.at).slice(-200);
-      const c = xs.slice(); c[i] = m; return c;
+      const c = xs.slice(); c[i] = { ...c[i], ...m }; return c;
     });
   }, []);
 
@@ -220,25 +245,21 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     ttsBusy.current = true;
     while (ttsQueue.current.length) {
       // 이 기기 앞 사람이 말하는 중이면 끝날 때까지 기다린다 (말을 끊지 않게, 최대 15초)
-      for (let w = 0; w < 100; w++) {
-        const st = listener.current?.current;
-        if (st !== "speech" && st !== "finalizing") break;
-        await new Promise((r) => setTimeout(r, 150));
-      }
+      for (let w = 0; w < 100 && anyTalking(); w++) await new Promise((r) => setTimeout(r, 150));
       const m = ttsQueue.current.shift();
       if (!m) break;
       setSpeakingId(m.id);
-      listener.current?.pause("tts", true);
+      pauseAll("tts", true);
       room.current?.send("tts", { dev: dev.current, on: true });
       recent.current.push({ text: m.tgt, at: Date.now() });
       await player.current?.play(m.id + m.tgt.length, m.tgt, m.tgtLang);
       room.current?.send("tts", { dev: dev.current, on: false });
       await new Promise((r) => setTimeout(r, 250)); // 스피커 잔향이 마이크에 안 들어가게
-      listener.current?.pause("tts", false);
+      pauseAll("tts", false);
       setSpeakingId(null);
     }
     ttsBusy.current = false;
-  }, []);
+  }, [pauseAll]);
 
   const speak = useCallback((m: Msg, force = false) => {
     if (!force && !wantsAudio(m)) return;
@@ -247,7 +268,27 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     void pumpTts();
   }, [wantsAudio, pumpTts]);
 
+  // ---------- 안내 자료 추천 ----------
+  const suggestCard = useCallback((koText: string) => {
+    if (!authority || !koText) return;
+    const t = koText.replace(/\s+/g, "");
+    const hit = cards.find((c) => [c.title, ...(c.keywords ?? "").split(/[,\n]/)].map((k) => k.trim().replace(/\s+/g, "")).filter((k) => k.length >= 2).some((k) => t.includes(k)));
+    if (hit && S.current.shown?.type !== "card") setSuggest(hit);
+  }, [authority, cards]);
+
   // ---------- 통역 ----------
+  const backTranslate = useCallback(async (m: Msg) => {
+    try {
+      const r = await fetch("/api/backtranslate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: m.tgt, from: m.tgtLang, original: m.src }) });
+      if (!r.ok) return;
+      const j = await r.json() as { text: string; ok: boolean; issue: string };
+      if (!j.text) return;
+      const up = { ...m, back: j.text, backOk: j.ok, backIssue: j.issue };
+      upsertMsg(up);
+      room.current?.send("msg", { msg: up });
+    } catch {}
+  }, [upsertMsg]);
+
   const interpret = useCallback(async (text: string, srcLang: Lang, kind: "speech" | "text") => {
     lastActivity.current = Date.now();
     const speaker: Side = srcLang === "ko" ? "staff" : "guest";
@@ -284,35 +325,57 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     }
     upsertMsg({ ...m });
     room.current?.send("msg", { msg: { ...m } });
-    if (m.status === "done") { recent.current.push({ text: m.tgt, at: Date.now() }); speak(m); }
-  }, [authority, ensureSession, speak, upsertMsg]);
+    if (m.status === "done") {
+      recent.current.push({ text: m.tgt, at: Date.now() });
+      speak(m);
+      suggestCard(speaker === "staff" ? m.src : m.tgt);
+      if (speaker === "staff") void backTranslate({ ...m });
+    }
+  }, [authority, ensureSession, speak, upsertMsg, suggestCard, backTranslate]);
 
-  // 이 기기 마이크가 확정한 문장
-  const onFinal = useCallback((text: string) => {
-    const sendLiveEnd = () => { setLives((l) => { const c = { ...l }; delete c[dev.current]; return c; }); room.current?.send("live", { dev: dev.current, text: "" }); };
-    const lang = detectLang(text);
-    if (!lang) { sendLiveEnd(); return; }
-    // 두 기기를 쓸 때: 데스크는 한국어만, 손님 화면은 외국어만 맡는다 (서로 상대 말을 중복 통역하지 않게)
-    if ((mode === "desk" && lang !== "ko") || (mode === "guest" && lang === "ko")) { sendLiveEnd(); return; }
-    // 방금 스피커로 나온 통역을 다시 받아쓴 것이면 버린다
+  // 마이크가 확정한 문장. role: 이 마이크가 맡은 사람 (staff=한국어만, guest=외국어만, any=모두)
+  const onFinal = useCallback((text: string, role: Role, key: string) => {
+    const end = () => { setLives((l) => { const c = { ...l }; delete c[key]; return c; }); room.current?.send("live", { dev: key, text: "" }); };
+    const lang = detectLang(text, S.current.guestLang);
+    if (!lang) { end(); return; }
+    if ((role === "staff" && lang !== "ko") || (role === "guest" && lang === "ko")) { end(); return; }
+    // 방금 스피커로 나온 통역(또는 상대 기기 원문)을 다시 받아쓴 것이면 버린다
     const t = Date.now();
     recent.current = recent.current.filter((r) => t - r.at < 25_000);
-    if (recent.current.some((r) => similar(r.text, text) > 0.55)) { sendLiveEnd(); return; }
-    sendLiveEnd();
+    if (recent.current.some((r) => similar(r.text, text) > 0.55)) { end(); return; }
+    end();
     if (lang !== "ko" && isGuestLang(lang)) changeGuestLang(lang);
     recent.current.push({ text, at: t });
     void interpret(text, lang, "speech");
-  }, [mode, changeGuestLang, interpret]);
+  }, [changeGuestLang, interpret]);
 
-  const onPartial = useCallback((text: string) => {
-    const lang = detectLang(text);
-    if (text && ((mode === "desk" && lang && lang !== "ko") || (mode === "guest" && lang === "ko"))) return;
-    const speaker: Side = lang && lang !== "ko" ? "guest" : mode === "guest" ? "guest" : "staff";
+  const onPartial = useCallback((text: string, role: Role, key: string) => {
+    const lang = detectLang(text, S.current.guestLang);
+    if (text && ((role === "staff" && lang && lang !== "ko") || (role === "guest" && lang === "ko"))) return;
+    const speaker: Side = role === "guest" ? "guest" : role === "staff" ? "staff" : lang && lang !== "ko" ? "guest" : "staff";
     const live: Live = { speaker, text, at: Date.now() };
-    setLives((l) => ({ ...l, [dev.current]: live }));
+    setLives((l) => ({ ...l, [key]: live }));
     lastActivity.current = Date.now();
-    if (Date.now() - liveSent.current > 250 || !text) { liveSent.current = Date.now(); room.current?.send("live", { dev: dev.current, ...live }); }
-  }, [mode]);
+    if (Date.now() - (liveSent.current[key] ?? 0) > 250 || !text) { liveSent.current[key] = Date.now(); room.current?.send("live", { dev: key, ...live }); }
+  }, []);
+  const onPartialRef = useRef(onPartial); onPartialRef.current = onPartial;
+  const onFinalRef = useRef(onFinal); onFinalRef.current = onFinal;
+
+  // ---------- 안내 자료 / 금액 띄우기 ----------
+  const show = useCallback(async (s: Shown) => {
+    setSuggest(null);
+    setSheet(null);
+    lastActivity.current = Date.now();
+    let v = s;
+    if (s?.type === "card") {
+      try {
+        const r = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: s.title, from: "ko", to: S.current.guestLang, speaker: "staff", kind: "text" }) });
+        if (r.ok) v = { ...s, titleTr: (await r.text()).trim() };
+      } catch {}
+    }
+    setShown(v); S.current.shown = v;
+    room.current?.send("show", { shown: v });
+  }, []);
 
   // ---------- 실시간 채널 ----------
   const onRoom = useCallback((e: RoomEvent) => {
@@ -329,16 +392,22 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         const s = p.session as Sess | undefined;
         if (s?.id) setSession(s);
         if (isGuestLang(p.guestLang)) { setGuestLang(p.guestLang); S.current.guestLang = p.guestLang; }
+        if ("shown" in p) setShown((p.shown as Shown) ?? null);
         if (Array.isArray(p.msgs) && !S.current.msgs.length) setMsgs(p.msgs as Msg[]);
         break;
       }
       case "msg": {
         const m = p.msg as Msg;
         if (!m?.id) break;
+        const isNewDone = m.status === "done" && !S.current.msgs.some((x) => x.id === m.id && x.status === "done");
         upsertMsg(m);
         lastActivity.current = Date.now();
         if (authority) void ensureSession();
-        if (m.status === "done") { recent.current.push({ text: m.tgt, at: Date.now() }, { text: m.src, at: Date.now() }); speak(m); }
+        if (isNewDone) {
+          recent.current.push({ text: m.tgt, at: Date.now() }, { text: m.src, at: Date.now() });
+          speak(m);
+          suggestCard(m.speaker === "staff" ? m.src : m.tgt);
+        }
         break;
       }
       case "live": {
@@ -350,36 +419,61 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         });
         break;
       }
-      case "tts": {
-        // 상대 기기 스피커 소리는 언어로 걸러지므로(데스크=한국어만, 손님=외국어만) 마이크를 멈추지 않는다. 표시만 한다.
-        const d = String(p.dev ?? "");
-        clearTimeout(remoteTimers.current[d]);
-        setRemoteTts(!!p.on);
-        if (p.on) remoteTimers.current[d] = setTimeout(() => setRemoteTts(false), 25_000);
-        break;
-      }
-      case "lang":
-        if (authority && isGuestLang(p.guestLang)) changeGuestLang(p.guestLang, true);
-        break;
-      case "consent":
-        if (authority && typeof p.value === "boolean") void applyConsent(p.value);
-        break;
+      case "show": setShown((p.shown as Shown) ?? null); break;
+      case "human": setHumanNotice(!!p.on); break;
+      case "human-request": if (authority) setHumanAsked(true); break;
+      case "lang": if (authority && isGuestLang(p.guestLang)) changeGuestLang(p.guestLang, true); break;
+      case "consent": if (authority && typeof p.value === "boolean") void applyConsent(p.value); break;
       case "clear":
-        if (!authority) { setMsgs([]); setLives({}); player.current?.stop(); ttsQueue.current = []; }
+        if (!authority) { setMsgs([]); setLives({}); setShown(null); setHumanNotice(false); player.current?.stop(); ttsQueue.current = []; }
         break;
     }
-  }, [authority, broadcastState, upsertMsg, speak, changeGuestLang, applyConsent, ensureSession]);
+  }, [authority, broadcastState, upsertMsg, speak, changeGuestLang, applyConsent, ensureSession, suggestCard]);
   const onRoomRef = useRef(onRoom);
   onRoomRef.current = onRoom;
 
   useEffect(() => {
     if (!roomCode || !boot.realtime.key) return;
     const r = new Room(boot.realtime.url, boot.realtime.key, roomCode, (e) => onRoomRef.current(e));
-    r.onStatus = (ok) => { setRoomOk(ok); if (ok) r.send(authority ? "state" : "hello", authority ? { session: S.current.session, guestLang: S.current.guestLang } : { dev: dev.current }); };
+    r.onStatus = (ok) => { setRoomOk(ok); if (ok) r.send(authority ? "state" : "hello", authority ? { session: S.current.session, guestLang: S.current.guestLang, shown: S.current.shown } : { dev: dev.current }); };
     room.current = r;
     const ping = setInterval(() => r.send("ping", { dev: dev.current, mode }), 10_000);
     return () => { clearInterval(ping); r.close(); room.current = null; };
   }, [roomCode, boot.realtime, authority, mode]);
+
+  // ---------- 마이크 구성 ----------
+  // 데스크/손님 화면: 마이크 1개. 한 화면: 직원·손님 마이크를 따로 지정하면 2개, 아니면 1개가 두 언어를 다 듣는다.
+  const buildEars = useCallback(async () => {
+    for (const e of ears.current) { e.l.close(); e.mic.close(); }
+    ears.current = [];
+    const cfg = JSON.parse(store.get("mb.mics") ?? "{}") as { staff?: string; guest?: string; single?: string };
+    const plan: { role: Role; deviceId?: string }[] =
+      mode === "desk" ? [{ role: "staff", deviceId: cfg.single }]
+      : mode === "guest" ? [{ role: "guest", deviceId: cfg.single }]
+      : cfg.staff && cfg.guest && cfg.staff !== cfg.guest ? [{ role: "staff", deviceId: cfg.staff }, { role: "guest", deviceId: cfg.guest }]
+      : [{ role: "any", deviceId: cfg.staff || cfg.single }];
+    const errors: string[] = [];
+    for (const [i, pl] of plan.entries()) {
+      try {
+        let mic = new MicEngine(pl.deviceId);
+        try { await mic.init(); } catch { mic = new MicEngine(); await mic.init(); } // 저장된 마이크가 빠졌으면 기본 마이크
+        const key = `${dev.current}-${i}`;
+        const l = new Listener(mic, () => ({ guestLang: S.current.guestLang }));
+        l.onState = () => refreshListen();
+        l.onLevel = (v) => { levels.current[key] = v; setLevel(Math.max(...Object.values(levels.current))); };
+        l.onPartial = (t) => onPartialRef.current(t, pl.role, key);
+        l.onFinal = (t) => onFinalRef.current(t, pl.role, key);
+        l.setMuted(muted);
+        ears.current.push({ role: pl.role, mic, l });
+        void l.connect();
+      } catch (err) { console.warn(err); errors.push(pl.role); }
+    }
+    setEarCount(ears.current.length);
+    if (!player.current) player.current = new PcmPlayer(() => ears.current[0]?.mic.ctx ?? null);
+    if (!ears.current.length) setMicError(mode === "guest" ? G.micDenied : "마이크를 쓸 수 없습니다. 브라우저 주소창의 마이크 권한을 허용해 주세요.");
+    else setMicError(errors.length ? "마이크 하나를 열지 못했습니다. 메뉴 → 마이크 설정을 확인하세요." : null);
+    refreshListen();
+  }, [mode, muted, G.micDenied, refreshListen]);
 
   // ---------- 시작 (사용자 터치 필요: 마이크·소리 허용) ----------
   const start = useCallback(async () => {
@@ -388,34 +482,16 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
       const nav = navigator as Navigator & { wakeLock?: { request: (t: "screen") => Promise<unknown> } };
       void nav.wakeLock?.request("screen").catch(() => {});
     } catch {}
-    try {
-      mic.current = new MicEngine();
-      await mic.current.init();
-      player.current = new PcmPlayer(() => mic.current?.ctx ?? null);
-      const l = new Listener(mic.current, () => ({ guestLang: S.current.guestLang }));
-      l.onState = setListen;
-      l.onLevel = (v) => setLevel(v);
-      l.onPartial = (t) => onPartialRef.current(t);
-      l.onFinal = (t) => onFinalRef.current(t);
-      listener.current = l;
-      void l.connect();
-      setListen(l.current);
-    } catch (e) {
-      console.warn(e);
-      setMicError(mode === "guest" ? G.micDenied : "마이크를 쓸 수 없습니다. 브라우저 주소창의 마이크 권한을 허용해 주세요.");
-      if (!player.current) player.current = new PcmPlayer(() => mic.current?.ctx ?? null);
-    }
-  }, [mode, G.micDenied]);
-  const onPartialRef = useRef(onPartial); onPartialRef.current = onPartial;
-  const onFinalRef = useRef(onFinal); onFinalRef.current = onFinal;
+    await buildEars();
+  }, [buildEars]);
 
   useEffect(() => {
     const v = () => { if (document.visibilityState === "visible" && started) { const nav = navigator as Navigator & { wakeLock?: { request: (t: "screen") => Promise<unknown> } }; void nav.wakeLock?.request("screen").catch(() => {}); } };
     document.addEventListener("visibilitychange", v);
-    return () => { document.removeEventListener("visibilitychange", v); listener.current?.close(); };
+    return () => { document.removeEventListener("visibilitychange", v); };
   }, [started]);
-
-  useEffect(() => { listener.current?.setMuted(muted); }, [muted]);
+  useEffect(() => () => { for (const e of ears.current) { e.l.close(); e.mic.close(); } }, []);
+  useEffect(() => { for (const e of ears.current) e.l.setMuted(muted); }, [muted]);
 
   // ---------- 새 손님 (자동 초기화) ----------
   const newGuest = useCallback(() => {
@@ -425,7 +501,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     const s: Sess = { id: uid(), consent: null };
     setSession(s); S.current.session = s;
     setMsgs([]); S.current.msgs = [];
-    setLives({});
+    setLives({}); setShown(null); S.current.shown = null; setSuggest(null); setHumanAsked(false); setHumanNotice(false); setRiskDismissed(null);
     player.current?.stop(); ttsQueue.current = [];
     recent.current = [];
     room.current?.send("clear", {});
@@ -453,10 +529,17 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     room.current?.send("msg", { msg: m });
     recent.current.push({ text: t, at: Date.now() });
     speak(m);
+    suggestCard(p.ko);
     void ensureSession();
     const s = S.current.session;
     if (s.consent) void fetch("/api/messages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: s.id, speaker: "staff", kind: "phrase", srcLang: "ko", srcText: p.ko, tgtLang: m.tgtLang, tgtText: t }) });
-  }, [interpret, upsertMsg, speak, ensureSession]);
+  }, [interpret, upsertMsg, speak, ensureSession, suggestCard]);
+
+  const callHuman = useCallback((on: boolean) => {
+    setHumanNotice(on);
+    room.current?.send("human", { on });
+    if (on) setHumanAsked(false);
+  }, []);
 
   useEffect(() => {
     const el = feed.current;
@@ -468,7 +551,8 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
   const liveList = Object.entries(lives).filter(([, l]) => l.text && now - l.at < 15_000);
   const lastTheirs = [...msgs].reverse().find((m) => m.status === "done" && (mode === "desk" ? m.tgtLang === "ko" : mode === "guest" ? m.tgtLang !== "ko" : true));
   const showConsent = mode !== "desk" && session.consent === null && msgs.some((m) => m.status === "done");
-  const guestView = mode === "guest";
+  const riskyMsg = !guestView ? [...msgs].reverse().slice(0, 4).find((m) => m.status === "done" && isRisky(m.speaker === "staff" ? m.src : m.tgt)) : undefined;
+  const showRisk = !!riskyMsg && riskyMsg.id !== riskDismissed && !humanNotice;
 
   if (!started) {
     return (
@@ -504,7 +588,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
             </>
           )}
         </div>
-        <ListenPill state={listen} level={level} remote={remoteTts} speaking={!!speakingId} guest={guestView ? G : null} />
+        <ListenPill state={listen} level={level} speaking={!!speakingId} guest={guestView ? G : null} ears={earCount} />
         <div className="bar-right">
           {mode === "desk" && (
             <button className={`peer ${peerOnline ? "on" : ""}`} onClick={() => setSheet("connect")}>
@@ -513,23 +597,25 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
           )}
           {mode !== "desk" && session.consent === true && <span className="badge on">● {guestView ? G.saving : "기록 저장 중"}</span>}
           {mode === "desk" && <span className={`badge ${session.consent ? "on" : ""}`}>{session.consent ? "● 기록 저장 중" : session.consent === false ? "기록 안 함" : "기록 동의 전"}</span>}
-          <button className={`icon-btn ${muted ? "off" : ""}`} onClick={() => setMuted((v) => !v)} aria-label="마이크">{muted ? "🎙̸" : "🎙"}</button>
+          <button className={`icon-btn ${muted ? "off" : ""}`} onClick={() => setMuted((v) => !v)} aria-label="마이크">🎤</button>
           <button className={`icon-btn ${soundOn ? "" : "off"}`} onClick={() => { setSoundOn((v) => !v); player.current?.stop(); }} aria-label="소리">{soundOn ? "🔊" : "🔇"}</button>
-          {!guestView && <button className="icon-btn" onClick={() => setSheet("menu")} aria-label="메뉴">⋯</button>}
+          <button className="icon-btn" onClick={() => setSheet("menu")} aria-label="메뉴">⋯</button>
         </div>
       </header>
+
+      {shown && <ShowPanel shown={shown} guestLang={guestLang} guestView={guestView} G={G} onClose={authority ? () => void show(null) : undefined} />}
 
       <div className="feed" ref={feed}>
         {!msgs.length && !liveList.length && (
           guestView ? (
             <div className="empty-guest">
               <div className="welcome-multi">{GUEST_LANGS.map((l) => <span key={l} lang={LANG_META[l].html}>{GUEST_UI[l].welcome}</span>)}</div>
-              <div className="speak-hints">{GUEST_LANGS.map((l) => <p key={l} lang={LANG_META[l].html}>{GUEST_UI[l].justSpeak}</p>)}</div>
+              <div className="speak-hints">{GUEST_LANGS.map((l) => <p key={l} lang={LANG_META[l].html} dir={LANG_META[l].rtl ? "rtl" : undefined}>{GUEST_UI[l].justSpeak}</p>)}</div>
             </div>
           ) : (
             <div className="empty-desk">
               <h2>말씀하시면 바로 통역됩니다</h2>
-              <p>한국어로 말하면 손님 언어로, 손님이 말하면 한국어로 바뀝니다. 손님 언어는 자동으로 알아냅니다.</p>
+              <p>한국어로 말하면 손님 언어로, 손님이 말하면 한국어로 바뀝니다. 손님 언어(10개)는 자동으로 알아냅니다.</p>
               {mode === "desk" && !peerOnline && <button className="btn ghost" onClick={() => setSheet("connect")}>손님 화면 연결하기 (QR)</button>}
             </div>
           )
@@ -537,15 +623,24 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         {msgs.map((m) => <MsgRow key={m.id} m={m} mode={mode} G={G} speaking={speakingId === m.id} onReplay={() => speak(m, true)} />)}
         {liveList.map(([d, l]) => (
           <div key={d} className={`row live ${l.speaker}`}>
-            <span className="who">{l.speaker === "staff" ? (guestView ? "Staff" : "직원") : guestView ? "Guest" : "손님"}</span>
+            <span className="who">{l.speaker === "staff" ? (guestView ? G.staff : "직원") : guestView ? G.guest : "손님"}</span>
             <p className="primary">{l.text}<span className="caret" /></p>
           </div>
         ))}
       </div>
 
       {micError && <div className="notice warn">{micError}</div>}
+      {!guestView && humanAsked && (
+        <div className="alert-bar urgent"><span>🙋 손님이 <b>사람 통역</b>을 요청했습니다.</span><button className="btn primary sm" onClick={() => setSheet("human")}>통역 연결하기</button><button className="btn ghost sm" onClick={() => setHumanAsked(false)}>닫기</button></div>
+      )}
+      {showRisk && (
+        <div className="alert-bar"><span>⚕︎ 진료·약·검사 같은 <b>의료 내용</b>이 나왔어요. 정확한 설명이 필요하면 사람 통역을 연결하세요.</span><button className="btn primary sm" onClick={() => setSheet("human")}>사람 통역</button><button className="btn ghost sm" onClick={() => setRiskDismissed(riskyMsg!.id)}>괜찮아요</button></div>
+      )}
+      {!guestView && suggest && (
+        <div className="alert-bar soft"><span>🖼 안내 자료 <b>‘{suggest.title}’</b>를 손님 화면에 띄울까요?</span><button className="btn primary sm" onClick={() => void show({ type: "card", id: suggest.id, title: suggest.title })}>띄우기</button><button className="btn ghost sm" onClick={() => setSuggest(null)}>아니요</button></div>
+      )}
       {showConsent && (
-        <div className="consent-bar" lang={LANG_META[guestLang].html}>
+        <div className="consent-bar" lang={LANG_META[guestLang].html} dir={LANG_META[guestLang].rtl ? "rtl" : undefined}>
           <p>{G.saveAsk(settings.retention_days)}</p>
           <div className="consent-btns">
             <button className="btn primary" onClick={() => applyConsent(true)}>{G.saveYes}</button>
@@ -558,21 +653,41 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         {guestView ? (
           <>
             <p className="disclaimer">{G.disclaimer}</p>
+            <button className="btn ghost" onClick={() => { room.current?.send("human-request", {}); setHumanAsked(true); setTimeout(() => setHumanAsked(false), 6000); }}>{humanAsked ? `✓ ${G.humanAsked}` : `🧑‍💼 ${G.humanBtn}`}</button>
             {lastTheirs && <button className="btn ghost" onClick={() => speak(lastTheirs, true)}>↻ {G.replay}</button>}
           </>
         ) : (
           <>
             <button className="btn ghost" onClick={() => setSheet("phrases")}>☰ 자주 쓰는 문장</button>
-            <button className="btn ghost" onClick={() => setSheet("keyboard")}>⌨ 글자로 입력</button>
+            <button className="btn ghost" onClick={() => setSheet("keyboard")}>⌨ 글자 입력</button>
+            <button className="btn ghost" onClick={() => setSheet("cards")}>🖼 안내 자료·금액</button>
+            <button className="btn ghost" onClick={() => setSheet("summary")} disabled={!msgs.some((m) => m.status === "done")}>📝 요약</button>
+            <button className="btn ghost human" onClick={() => setSheet("human")}>🧑‍💼 사람 통역</button>
             <span className="grow" />
-            <button className="btn end" onClick={newGuest}>새 손님 (화면 비우기)</button>
+            <button className="btn end" onClick={newGuest}>새 손님</button>
           </>
         )}
       </footer>
 
+      {humanNotice && mode !== "desk" && (
+        <div className="overlay" dir={LANG_META[guestLang].rtl ? "rtl" : undefined}>
+          <div className="overlay-card">
+            <div className="big-icon">🧑‍💼</div>
+            <h2>{G.humanTitle}</h2>
+            <p>{G.humanBody}</p>
+            {mode === "solo" && <p className="muted">사람 통역 연결 중 안내를 띄웠습니다.</p>}
+            <button className="btn ghost" onClick={() => callHuman(false)}>{G.close}</button>
+          </div>
+        </div>
+      )}
+
       {sheet === "connect" && roomCode && <ConnectSheet code={roomCode} online={peerOnline} onClose={() => setSheet(null)} />}
       {sheet === "phrases" && <PhraseSheet phrases={boot.phrases} lang={guestLang} onPick={sendPhrase} onClose={() => setSheet(null)} />}
       {sheet === "keyboard" && <KeyboardSheet lang={guestLang} onSend={(t) => { setSheet(null); void interpret(t, "ko", "text"); }} onClose={() => setSheet(null)} />}
+      {sheet === "human" && <HumanSheet services={settings.interpreter_services} noticeOn={humanNotice} onNotice={callHuman} onClose={() => setSheet(null)} />}
+      {sheet === "cards" && <CardsSheet cards={cards} onShow={(s) => void show(s)} onClose={() => setSheet(null)} shown={shown} onHide={() => void show(null)} />}
+      {sheet === "summary" && <SummarySheet msgs={msgs} guestLang={guestLang} sessionId={session.id} consent={session.consent === true} onClose={() => setSheet(null)} />}
+      {sheet === "mics" && <MicSheet mode={mode} onApply={() => { setSheet(null); void buildEars(); }} onClose={() => setSheet(null)} />}
       {sheet === "lang" && (
         <Sheet title={guestView ? "Language" : "손님 언어 (말하면 자동으로 바뀝니다)"} onClose={() => setSheet(null)}>
           <div className="lang-grid">
@@ -585,12 +700,13 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         </Sheet>
       )}
       {sheet === "menu" && (
-        <Sheet title="메뉴" onClose={() => setSheet(null)}>
+        <Sheet title={guestView ? "Menu" : "메뉴"} onClose={() => setSheet(null)}>
           <div className="menu-list">
             {mode === "desk" && <button className="menu-item" onClick={() => setSheet("connect")}>손님 화면 연결 (QR·코드)</button>}
+            <button className="menu-item" onClick={() => setSheet("mics")}>🎙 마이크 설정{mode === "solo" ? " (직원·손님 마이크 따로 쓰기)" : ""}</button>
             <button className="menu-item" onClick={() => { void (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => {}); setSheet(null); }}>전체화면 켜기/끄기</button>
-            <a className="menu-item" href="/admin">관리자 화면 (용어집·기록·설정)</a>
-            <button className="menu-item" onClick={() => { listener.current?.close(); onExit(); }}>화면 모드 바꾸기</button>
+            {!guestView && <a className="menu-item" href="/admin">관리자 화면 (용어집·안내 자료·기록·설정)</a>}
+            <button className="menu-item" onClick={() => { for (const e of ears.current) { e.l.close(); e.mic.close(); } onExit(); }}>화면 모드 바꾸기</button>
           </div>
         </Sheet>
       )}
@@ -600,13 +716,13 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
 
 // ---------------- 하위 컴포넌트 ----------------
 
-function ListenPill({ state, level, remote, speaking, guest }: { state: ListenState; level: number; remote: boolean; speaking: boolean; guest: (typeof GUEST_UI)[GuestLang] | null }) {
+function ListenPill({ state, level, speaking, guest, ears }: { state: ListenState; level: number; speaking: boolean; guest: (typeof GUEST_UI)[GuestLang] | null; ears: number }) {
   const label = speaking ? (guest ? guest.speaking : "통역 음성 재생 중")
     : state === "off" ? (guest ? guest.paused : "마이크 꺼짐")
     : state === "paused" ? (guest ? guest.paused : "잠시 멈춤")
     : state === "speech" ? (guest ? guest.listening : "받아쓰는 중")
     : state === "finalizing" ? (guest ? guest.listening : "정리 중")
-    : guest ? guest.listening : "듣는 중 · 그냥 말하세요";
+    : guest ? guest.listening : `듣는 중 · 그냥 말하세요${ears > 1 ? ` (마이크 ${ears}개)` : ""}`;
   const bars = [0.35, 0.7, 1, 0.7, 0.35];
   const active = state === "speech" || state === "idle" || state === "finalizing";
   return (
@@ -623,25 +739,155 @@ function MsgRow({ m, mode, G, speaking, onReplay }: { m: Msg; mode: Mode; G: (ty
   // 어느 화면이든 한 메시지에 원문과 통역문을 둘 다 같은 크기로 보여준다 (데스크·손님 화면이 같은 대화를 본다)
   const dots = <span className="dots"><i /><i /><i /></span>;
   const guestView = mode === "guest";
-  const who = m.speaker === "staff" ? (guestView ? "Staff" : "직원") : guestView ? "Guest" : "손님";
-  const lines: { lang: Lang; text: string; orig: boolean }[] = [
-    { lang: m.srcLang, text: m.src, orig: true },
-    { lang: m.tgtLang, text: m.tgt, orig: false },
-  ];
-  // 보는 사람 언어 줄을 진하게
+  const who = m.speaker === "staff" ? (guestView ? G.staff : "직원") : guestView ? G.guest : "손님";
+  const lines: { lang: Lang; text: string }[] = [{ lang: m.srcLang, text: m.src }, { lang: m.tgtLang, text: m.tgt }];
   const mine = (l: Lang) => (guestView ? l !== "ko" : mode === "desk" ? l === "ko" : true);
+  // 역번역: 직원에게만, 원문과 뜻이 많이 다르면 경고
+  const backOff = !!m.back && m.backOk === false;
   return (
     <div className={`row ${m.speaker} ${speaking ? "speaking" : ""}`}>
-      <span className="who">{who}</span>
+      <span className="who">{who}{m.kind === "phrase" && !guestView ? " · 자주 쓰는 문장" : ""}</span>
       {lines.map((ln, i) => (
-        <p key={i} className={`line ${mine(ln.lang) ? "strong" : ""}`} lang={LANG_META[ln.lang].html}>
+        <p key={i} className={`line ${mine(ln.lang) ? "strong" : ""}`} lang={LANG_META[ln.lang].html} dir={LANG_META[ln.lang].rtl ? "rtl" : undefined}>
           <span className="flag">{LANG_META[ln.lang].flag}</span>
           <span className="txt">{ln.text || (m.status === "error" ? "" : dots)}</span>
         </p>
       ))}
-      {m.status === "error" && <p className="err">⚠︎ {guestView ? "Interpretation failed. Please say it again." : "통역 실패 — 다시 말씀해 주세요"}</p>}
+      {!guestView && m.back && (
+        <p className={`back ${backOff ? "off" : ""}`}><span className="tag">{backOff ? "⚠︎ 뜻 확인" : "역번역 ✓"}</span>{m.back}{backOff && m.backIssue && <><br /><b>{m.backIssue}</b> — 다시 말하거나 사람 통역을 쓰세요.</>}</p>
+      )}
+      {m.status === "error" && <p className="err">⚠︎ {guestView ? G.failed : "통역 실패 — 다시 말씀해 주세요"}</p>}
       {m.status === "done" && <button className="replay" onClick={onReplay} aria-label={guestView ? G.replay : "다시 듣기"}>{speaking ? "🔊" : "▶︎"}</button>}
     </div>
+  );
+}
+
+function ShowPanel({ shown, guestLang, guestView, G, onClose }: { shown: NonNullable<Shown>; guestLang: GuestLang; guestView: boolean; G: (typeof GUEST_UI)[GuestLang]; onClose?: () => void }) {
+  return (
+    <div className="show-panel">
+      {shown.type === "card" ? (
+        <>
+          <img src={`/api/cards/image?id=${shown.id}`} alt={shown.title} />
+          <div className="show-cap">
+            <b lang="ko">{shown.title}</b>
+            {shown.titleTr && <span lang={LANG_META[guestLang].html}>{LANG_META[guestLang].flag} {shown.titleTr}</span>}
+          </div>
+        </>
+      ) : (
+        <div className="amount">
+          <span className="amount-label">{guestView ? G.amountLabel : `수납 금액 · ${G.amountLabel}`}</span>
+          <span className="amount-value">₩{shown.value.toLocaleString("ko-KR")}</span>
+        </div>
+      )}
+      {onClose && <button className="icon-btn show-close" onClick={onClose} aria-label="닫기">✕</button>}
+    </div>
+  );
+}
+
+function HumanSheet({ services, noticeOn, onNotice, onClose }: { services: Settings["interpreter_services"]; noticeOn: boolean; onNotice: (on: boolean) => void; onClose: () => void }) {
+  return (
+    <Sheet title="사람 통역 연결" onClose={onClose}>
+      <p className="muted">진단·치료 설명, 동의서, 약 복용처럼 중요한 내용은 사람 통역사에게 맡기세요. 번호는 관리자 화면 → 설정에서 바꿀 수 있습니다.</p>
+      <div className="svc-list">
+        {services.map((s, i) => (
+          <div key={i} className="svc">
+            <div><b>{s.name}</b>{s.note && <p className="muted small">{s.note}</p>}</div>
+            <div className="svc-actions">
+              {s.phone && <a className="btn primary" href={`tel:${s.phone.replace(/[^\d+]/g, "")}`}>📞 {s.phone}</a>}
+              {s.url && <a className="btn ghost" href={s.url} target="_blank" rel="noreferrer">열기</a>}
+            </div>
+          </div>
+        ))}
+        {!services.length && <p className="muted">등록된 통역 서비스가 없습니다. 관리자 화면 → 설정에서 추가하세요.</p>}
+      </div>
+      <div className="sheet-actions">
+        <button className={`btn ${noticeOn ? "ghost" : "primary"}`} onClick={() => { onNotice(!noticeOn); onClose(); }}>
+          {noticeOn ? "손님 화면 안내 내리기" : "손님 화면에 ‘통역사 연결 중’ 안내 띄우기"}
+        </button>
+      </div>
+    </Sheet>
+  );
+}
+
+function CardsSheet({ cards, shown, onShow, onHide, onClose }: { cards: Card[]; shown: Shown; onShow: (s: Shown) => void; onHide: () => void; onClose: () => void }) {
+  const [amount, setAmount] = useState("");
+  const n = Number(amount.replace(/[^\d]/g, ""));
+  return (
+    <Sheet title="손님 화면에 띄우기" onClose={onClose}>
+      <div className="amount-row">
+        <span className="amount-prefix">₩</span>
+        <input className="input" inputMode="numeric" placeholder="수납 금액 (예: 35000)" value={amount ? Number(amount.replace(/[^\d]/g, "") || 0).toLocaleString("ko-KR") : ""} onChange={(e) => setAmount(e.target.value)} />
+        <button className="btn primary" disabled={!n} onClick={() => onShow({ type: "amount", value: n })}>금액 띄우기</button>
+      </div>
+      <div className="card-grid">
+        {cards.map((c) => (
+          <button key={c.id} className="card-thumb" onClick={() => onShow({ type: "card", id: c.id, title: c.title })}>
+            <img src={`/api/cards/image?id=${c.id}`} alt="" loading="lazy" />
+            <span>{c.title}</span>
+          </button>
+        ))}
+        {!cards.length && <p className="muted">등록된 안내 자료가 없습니다. 관리자 화면 → 안내 자료에서 층별 안내도·주차 안내 같은 그림을 올리세요.</p>}
+      </div>
+      {shown && <div className="sheet-actions"><button className="btn ghost" onClick={onHide}>띄운 것 내리기</button></div>}
+    </Sheet>
+  );
+}
+
+function SummarySheet({ msgs, guestLang, sessionId, consent, onClose }: { msgs: Msg[]; guestLang: GuestLang; sessionId: string; consent: boolean; onClose: () => void }) {
+  const [text, setText] = useState("");
+  const [err, setErr] = useState("");
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    const lines = msgs.filter((m) => m.status === "done").map((m) => ({ speaker: m.speaker, ko: m.srcLang === "ko" ? m.src : m.tgt }));
+    fetch("/api/summary", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: consent ? sessionId : null, guestLang, lines }) })
+      .then(async (r) => { const j = await r.json(); if (!r.ok) throw new Error(j.error); setText(j.summary); })
+      .catch((e) => setErr(String(e.message ?? e)));
+  }, [msgs, guestLang, sessionId, consent]);
+  return (
+    <Sheet title="대화 요약 (진료실·간호사 전달용)" onClose={onClose}>
+      {!text && !err && <p className="muted"><span className="dots"><i /><i /><i /></span> 요약하는 중…</p>}
+      {err && <p className="warn">{err}</p>}
+      {text && <pre className="summary">{text}</pre>}
+      <div className="sheet-actions">
+        {text && <span className="muted small">{consent ? "● 대화 기록에도 저장했습니다." : "기록 미동의 대화라 저장하지 않았습니다."}</span>}
+        <button className="btn primary" disabled={!text} onClick={() => { void navigator.clipboard?.writeText(text).then(() => setCopied(true)); }}>{copied ? "복사됨 ✓" : "복사하기"}</button>
+      </div>
+    </Sheet>
+  );
+}
+
+function MicSheet({ mode, onApply, onClose }: { mode: Mode; onApply: () => void; onClose: () => void }) {
+  const [mics, setMics] = useState<{ id: string; label: string }[]>([]);
+  const [cfg, setCfg] = useState<{ staff?: string; guest?: string; single?: string }>(() => JSON.parse(store.get("mb.mics") ?? "{}"));
+  useEffect(() => { void listMics().then(setMics).catch(() => {}); }, []);
+  const save = () => { store.set("mb.mics", JSON.stringify(cfg)); onApply(); };
+  const select = (k: "staff" | "guest" | "single", label: string, allowNone?: string) => (
+    <label className="mic-row">
+      <span>{label}</span>
+      <select className="input" value={cfg[k] ?? ""} onChange={(e) => setCfg({ ...cfg, [k]: e.target.value || undefined })}>
+        <option value="">{allowNone ?? "기본 마이크"}</option>
+        {mics.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+      </select>
+    </label>
+  );
+  return (
+    <Sheet title="마이크 설정" onClose={onClose}>
+      {mode === "solo" ? (
+        <>
+          <p className="muted">PC 한 대에 마이크를 두 개(직원용·손님용) 꽂으면 각각 지정하세요. 두 사람이 동시에 말해도 따로 받아씁니다. 손님 마이크를 비우면 마이크 하나가 두 언어를 다 듣습니다.</p>
+          {select("staff", "직원 마이크 (한국어)")}
+          {select("guest", "손님 마이크 (외국어)", "따로 안 씀 — 직원 마이크 하나로")}
+          <p className="muted small">권장: 사람마다 앞쪽 소리만 잡는 단일지향(거위목·탁상) 마이크. 상대 목소리가 덜 섞입니다.</p>
+        </>
+      ) : (
+        <>
+          <p className="muted">이 기기에 연결된 마이크 중 하나를 고르세요. USB·블루투스 마이크를 꽂으면 목록에 나옵니다.</p>
+          {select("single", mode === "desk" ? "직원 마이크" : "손님 마이크")}
+        </>
+      )}
+      {!mics.length && <p className="warn sm">마이크 목록을 읽지 못했습니다. 브라우저의 마이크 권한을 확인하세요.</p>}
+      <div className="sheet-actions"><button className="btn primary" onClick={save}>적용</button></div>
+    </Sheet>
   );
 }
 

@@ -43,11 +43,18 @@ async function addWorklet(ctx: AudioContext) {
   try { await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
 }
 
+// 연결된 마이크 목록 (권한을 한 번 받은 뒤에야 이름이 보인다)
+export async function listMics(): Promise<{ id: string; label: string }[]> {
+  const all = await navigator.mediaDevices.enumerateDevices();
+  return all.filter((d) => d.kind === "audioinput" && d.deviceId && d.deviceId !== "communications").map((d, i) => ({ id: d.deviceId, label: d.label || `마이크 ${i + 1}` }));
+}
+
 export class MicEngine {
   ctx: AudioContext | null = null;
   private node: AudioWorkletNode | null = null;
   private stream: MediaStream | null = null;
   onChunk: ((pcm: Int16Array) => void) | null = null;
+  constructor(private deviceId?: string) {}
 
   // 반드시 사용자 터치 안에서 호출 (iOS 오디오 정책)
   async init(): Promise<void> {
@@ -56,7 +63,7 @@ export class MicEngine {
     try { ctx = new AudioContext({ sampleRate: RATE }); } catch { ctx = new AudioContext(); }
     await ctx.resume();
     this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1, ...(this.deviceId ? { deviceId: { exact: this.deviceId } } : {}) },
     });
     await addWorklet(ctx);
     let src: MediaStreamAudioSourceNode;
@@ -77,6 +84,13 @@ export class MicEngine {
     mute.gain.value = 0;
     node.connect(mute).connect(ctx.destination);
     this.node = node;
+  }
+
+  close() {
+    this.stream?.getTracks().forEach((t) => t.stop());
+    this.node?.disconnect();
+    void this.ctx?.close().catch(() => {});
+    this.node = null; this.stream = null; this.ctx = null;
   }
 }
 

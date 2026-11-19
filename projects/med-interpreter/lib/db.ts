@@ -16,11 +16,12 @@ export type Settings = {
   slow_speech: boolean;
   flip_guest: boolean;
   idle_seconds: number;
+  interpreter_services: { name: string; phone?: string; url?: string; note?: string }[];
 };
 
 export const DEFAULT_SETTINGS: Settings = {
   hospital_name: "우리병원", retention_days: 30, speak_to_guest: true, speak_to_staff: true,
-  slow_speech: false, flip_guest: true, idle_seconds: 180,
+  slow_speech: false, flip_guest: true, idle_seconds: 180, interpreter_services: [],
 };
 
 let cache: { at: number; v: Settings } | null = null;

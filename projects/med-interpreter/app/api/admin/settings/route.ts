@@ -22,6 +22,11 @@ export async function PUT(req: Request) {
     if (!(n >= 30 && n <= 1800)) return bad("자동 초기화 시간은 30~1800초 사이여야 합니다.");
     patch.idle_seconds = n;
   }
+  if (Array.isArray(b.interpreter_services)) {
+    patch.interpreter_services = (b.interpreter_services as Record<string, unknown>[])
+      .map((x) => ({ name: String(x?.name ?? "").trim().slice(0, 60), phone: String(x?.phone ?? "").trim().slice(0, 30), url: String(x?.url ?? "").trim().slice(0, 300), note: String(x?.note ?? "").trim().slice(0, 200) }))
+      .filter((x) => x.name && (x.phone || x.url)).slice(0, 10);
+  }
   for (const k of ["speak_to_guest", "speak_to_staff", "slow_speech", "flip_guest"]) if (typeof b[k] === "boolean") patch[k] = b[k];
   const { error } = await db().from("medi_settings").update(patch).eq("id", 1);
   if (error) return bad(error.message, 500);

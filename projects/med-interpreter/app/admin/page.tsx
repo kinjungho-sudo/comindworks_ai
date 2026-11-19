@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ALL_LANGS, GUEST_LANGS, LANG_META, type Lang } from "@/lib/langs";
 
-type Tab = "terms" | "phrases" | "records" | "settings";
+type Tab = "terms" | "phrases" | "cards" | "records" | "settings";
 type Row = { id?: string; category: string; note?: string | null; sort?: number } & Partial<Record<Lang, string | null>>;
 
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
@@ -21,7 +21,7 @@ export default function Admin() {
       <header className="admin-top">
         <div className="brand"><img src="/brand.svg" alt="" width={32} height={32} /><b>MediBridge</b><span>관리자</span></div>
         <nav className="admin-tabs">
-          {([["terms", "병원 용어집"], ["phrases", "자주 쓰는 문장"], ["records", "대화 기록"], ["settings", "설정"]] as [Tab, string][]).map(([k, v]) => (
+          {([["terms", "병원 용어집"], ["phrases", "자주 쓰는 문장"], ["cards", "안내 자료"], ["records", "대화 기록"], ["settings", "설정"]] as [Tab, string][]).map(([k, v]) => (
             <button key={k} className={`atab ${tab === k ? "sel" : ""}`} onClick={() => setTab(k)}>{v}</button>
           ))}
         </nav>
@@ -34,6 +34,7 @@ export default function Admin() {
         {tab === "terms" && <Library kind="terms" />}
         {tab === "phrases" && <Library kind="phrases" />}
         {tab === "records" && <Records />}
+        {tab === "cards" && <Cards />}
         {tab === "settings" && <SettingsForm />}
       </main>
     </div>
@@ -207,7 +208,7 @@ function parseCsv(text: string): string[][] {
 
 // ---------------- 대화 기록 ----------------
 
-type SessionRow = { id: string; guest_lang: Lang; consent: boolean; started_at: string; ended_at: string | null; message_count: number };
+type SessionRow = { id: string; guest_lang: Lang; consent: boolean; started_at: string; ended_at: string | null; message_count: number; summary?: string | null };
 type MsgRow = { id: string; speaker: "staff" | "guest"; kind: string; src_lang: Lang; src_text: string; tgt_lang: Lang; tgt_text: string; created_at: string };
 
 const fmt = (s: string) => new Date(s).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -278,6 +279,7 @@ function Records() {
         <div className="modal-bg" onClick={() => setOpen(null)}>
           <div className="modal wide" onClick={(e) => e.stopPropagation()}>
             <h3>{fmt(open.session.started_at)} · {LANG_META[open.session.guest_lang].korean} 손님</h3>
+            {open.session.summary && <pre className="summary">{open.session.summary}</pre>}
             <div className="transcript">
               {open.messages.map((m) => (
                 <div key={m.id} className={`t-row ${m.speaker}`}>
@@ -303,7 +305,8 @@ function Records() {
 
 // ---------------- 설정 ----------------
 
-type S = { hospital_name: string; retention_days: number; speak_to_guest: boolean; speak_to_staff: boolean; slow_speech: boolean; flip_guest: boolean; idle_seconds: number };
+type Svc = { name: string; phone?: string; url?: string; note?: string };
+type S = { hospital_name: string; retention_days: number; speak_to_guest: boolean; speak_to_staff: boolean; slow_speech: boolean; flip_guest: boolean; idle_seconds: number; interpreter_services: Svc[] };
 
 function SettingsForm() {
   const [s, setS] = useState<S | null>(null);
@@ -311,6 +314,7 @@ function SettingsForm() {
   useEffect(() => { void api<{ settings: S }>("/api/admin/settings").then((j) => setS(j.settings)); }, []);
   if (!s) return <p className="muted">불러오는 중…</p>;
   const set = <K extends keyof S>(k: K, v: S[K]) => setS({ ...s, [k]: v });
+  const setSvc = (i: number, p: Partial<Svc>) => set("interpreter_services", s.interpreter_services.map((x, j) => (j === i ? { ...x, ...p } : x)));
   async function save() {
     try { const j = await api<{ settings: S }>("/api/admin/settings", { method: "PUT", body: JSON.stringify(s) }); setS(j.settings); setMsg("저장했습니다. 통역 화면은 다음 대화부터 반영됩니다."); }
     catch (e) { setMsg((e as Error).message); }
@@ -339,8 +343,108 @@ function SettingsForm() {
       <Toggle k="speak_to_guest" label="손님에게 음성으로 들려주기" desc="직원이 한 말을 손님 언어 음성으로 읽어 줍니다." />
       <Toggle k="speak_to_staff" label="직원에게 음성으로 들려주기" desc="손님이 한 말을 한국어 음성으로 읽어 줍니다." />
       <Toggle k="slow_speech" label="천천히 말하기" desc="어르신이나 소음이 큰 곳에서 알아듣기 쉽게 천천히 읽습니다." />
-      <Toggle k="flip_guest" label="손님 화면 뒤집기" desc="태블릿을 직원과 손님 사이에 눕혀 둘 때 켭니다. 나란히 볼 때는 끕니다." />
+      <div className="setting col">
+        <div><b>사람 통역 연결처</b><p className="muted">직원 화면의 ‘사람 통역’ 버튼에 나옵니다. 병원이 계약한 전화·화상 통역 서비스나 원내 통역 담당자 번호를 넣으세요.</p></div>
+        {s.interpreter_services.map((v, i) => (
+          <div key={i} className="svc-edit">
+            <input className="input" placeholder="이름 (예: 원내 영어 통역 담당)" value={v.name} onChange={(e) => setSvc(i, { name: e.target.value })} />
+            <input className="input" placeholder="전화번호" value={v.phone ?? ""} onChange={(e) => setSvc(i, { phone: e.target.value })} />
+            <input className="input" placeholder="화상통역 주소 (선택)" value={v.url ?? ""} onChange={(e) => setSvc(i, { url: e.target.value })} />
+            <input className="input" placeholder="메모 (지원 언어·시간 등)" value={v.note ?? ""} onChange={(e) => setSvc(i, { note: e.target.value })} />
+            <button className="btn danger sm" onClick={() => set("interpreter_services", s.interpreter_services.filter((_, j) => j !== i))}>삭제</button>
+          </div>
+        ))}
+        <button className="btn ghost sm" onClick={() => set("interpreter_services", [...s.interpreter_services, { name: "", phone: "", url: "", note: "" }])}>+ 연결처 추가</button>
+      </div>
       <div className="modal-actions"><span className="grow" />{msg && <span className="flash">{msg}</span>}<button className="btn primary" onClick={save}>저장</button></div>
+    </section>
+  );
+}
+
+// ---------------- 안내 자료 ----------------
+
+type CardRow = { id: string; title: string; keywords: string | null; sort: number };
+
+// 그림을 최대 1600px JPEG 로 줄여서 올린다 (SVG 는 그대로)
+async function toDataUrl(file: File): Promise<string> {
+  const raw = await new Promise<string>((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.onerror = rej; r.readAsDataURL(file); });
+  if (file.type === "image/svg+xml") return raw;
+  const img = new Image();
+  await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = raw; });
+  const k = Math.min(1, 1600 / Math.max(img.width, img.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  const g = c.getContext("2d")!;
+  g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+  g.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.85);
+}
+
+function Cards() {
+  const [items, setItems] = useState<CardRow[] | null>(null);
+  const [edit, setEdit] = useState<(Partial<CardRow> & { image?: string }) | null>(null);
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const load = useCallback(async () => setItems((await api<{ items: CardRow[] }>("/api/admin/cards")).items), []);
+  useEffect(() => { void load(); }, [load]);
+  async function save() {
+    if (!edit) return;
+    setBusy(true); setMsg("");
+    try { await api("/api/admin/cards", { method: "POST", body: JSON.stringify(edit) }); setEdit(null); setMsg("저장했습니다."); await load(); }
+    catch (e) { setMsg((e as Error).message); }
+    setBusy(false);
+  }
+  async function remove(id: string) {
+    if (!confirm("이 안내 자료를 삭제할까요?")) return;
+    await api(`/api/admin/cards?id=${id}`, { method: "DELETE" }); setEdit(null); await load();
+  }
+  return (
+    <section>
+      <div className="section-head">
+        <div>
+          <h2>안내 자료</h2>
+          <p className="muted">층별 안내도·주차 안내·검사 준비 그림처럼 말보다 보여주는 게 빠른 자료입니다. 직원 화면의 ‘안내 자료’에서 손님 화면에 띄우고, 대화에 키워드가 나오면 자동으로 띄울지 물어봅니다.</p>
+        </div>
+        <button className="btn primary" onClick={() => setEdit({ title: "", keywords: "", sort: 0 })}>+ 새 자료</button>
+      </div>
+      {msg && <p className="flash">{msg}</p>}
+      <div className="card-admin-grid">
+        {items?.map((c) => (
+          <button key={c.id} className="card-thumb" onClick={() => setEdit(c)}>
+            <img src={`/api/cards/image?id=${c.id}`} alt="" />
+            <span>{c.title}</span>
+            {c.keywords && <span className="muted small">키워드: {c.keywords}</span>}
+          </button>
+        ))}
+        {items && !items.length && <p className="muted">아직 자료가 없습니다.</p>}
+        {!items && <p className="muted">불러오는 중…</p>}
+      </div>
+      {edit && (
+        <div className="modal-bg" onClick={() => setEdit(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>{edit.id ? "안내 자료 수정" : "새 안내 자료"}</h3>
+            <div className="form-grid">
+              <label className="span2">제목 (한국어 — 손님 화면에는 손님 언어로 함께 표시)
+                <input className="input" value={edit.title ?? ""} onChange={(e) => setEdit({ ...edit, title: e.target.value })} placeholder="예: 층별 안내도" />
+              </label>
+              <label className="span2">키워드 (쉼표로 구분 — 대화에 나오면 띄울지 물어봄)
+                <input className="input" value={edit.keywords ?? ""} onChange={(e) => setEdit({ ...edit, keywords: e.target.value })} placeholder="예: 영상의학과, 채혈실, 엘리베이터, 3층" />
+              </label>
+              <label>순서<input className="input" type="number" value={edit.sort ?? 0} onChange={(e) => setEdit({ ...edit, sort: Number(e.target.value) })} /></label>
+              <label>그림 {edit.id ? "(바꿀 때만)" : ""}
+                <input className="input" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setEdit({ ...edit, image: await toDataUrl(f) }); }} />
+              </label>
+            </div>
+            {(edit.image || edit.id) && <img className="card-preview" src={edit.image ?? `/api/cards/image?id=${edit.id}`} alt="" />}
+            <div className="modal-actions">
+              {edit.id && <button className="btn danger" onClick={() => remove(edit.id!)}>삭제</button>}
+              <span className="grow" />
+              <button className="btn ghost" onClick={() => setEdit(null)}>취소</button>
+              <button className="btn primary" disabled={busy || !edit.title?.trim() || (!edit.id && !edit.image)} onClick={save}>{busy ? "저장 중…" : "저장"}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -12,7 +12,7 @@ export function interpreterPrompt(opts: {
     ? `the hospital receptionist (speaking ${F}) to a foreign patient or visitor`
     : `a foreign patient or visitor (speaking ${F}, possibly mixed with other languages) to the Korean receptionist`;
   const register = opts.speaker === "staff"
-    ? `Use the courteous, warm register of hospital staff addressing a patient${opts.to === "ja" ? " (です/ます調)" : opts.to === "ru" ? " (formal Вы)" : opts.to === "vi" ? " (address the listener as quý vị, polite particles)" : ""}.`
+    ? `Use the courteous, warm register of hospital staff addressing a patient${opts.to === "ja" ? " (です/ます調)" : opts.to === "ru" ? " (formal Вы)" : opts.to === "vi" ? " (address the listener as quý vị, polite particles)" : opts.to === "th" ? " (polite particles ค่ะ/คะ)" : opts.to === "ar" ? " (Modern Standard Arabic)" : opts.to === "mn" ? " (Mongolian Cyrillic, polite Та)" : opts.to === "uz" ? " (Uzbek Latin script, polite Siz)" : opts.to === "idn" ? " (polite Bapak/Ibu where natural)" : ""}.`
     : `Render it as natural, polite spoken Korean (존댓말, e.g. "~인데요", "~해야 하나요?"), faithfully conveying exactly what the guest said, in the first person. Avoid stiff translationese; use the words Korean patients actually use at a hospital (e.g. "see a doctor" → "진료를 받다", "stomach ache" → "배가 아프다").`;
   const lines = [
     `You are a professional medical interpreter at the reception desk of ${opts.hospital}, a hospital in South Korea.`,

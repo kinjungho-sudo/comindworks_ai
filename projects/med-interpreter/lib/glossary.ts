@@ -1,15 +1,15 @@
 import "server-only";
 import { db } from "./db";
-import type { Lang } from "./langs";
+import { ALL_LANGS, type Lang } from "./langs";
 
-export type Term = { id: string; category: string; ko: string; en: string | null; zh: string | null; ja: string | null; ru: string | null; vi: string | null; note: string | null };
+export type Term = { id: string; category: string; ko: string; note: string | null } & Partial<Record<Lang, string | null>>;
 
 let cache: { at: number; terms: Term[] } | null = null;
 export async function getTerms(fresh = false): Promise<Term[]> {
   if (!fresh && cache && Date.now() - cache.at < 60_000) return cache.terms;
-  const { data, error } = await db().from("medi_terms").select("id,category,ko,en,zh,ja,ru,vi,note").order("category").order("ko");
+  const { data, error } = await db().from("medi_terms").select(["id", "category", ...ALL_LANGS, "note"].join(",")).order("category").order("ko");
   if (error) throw error;
-  cache = { at: Date.now(), terms: (data ?? []) as Term[] };
+  cache = { at: Date.now(), terms: (data ?? []) as unknown as Term[] };
   return cache.terms;
 }
 export function clearTermsCache() { cache = null; }
