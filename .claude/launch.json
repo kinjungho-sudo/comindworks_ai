@@ -2,10 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "clinic-studio",
+      "name": "clinic-content",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "projects/clinic-studio", "run", "dev"],
+      "runtimeArgs": ["--prefix", "projects/clinic-content", "run", "dev"],
       "port": 3300
+    },
+    {
+      "name": "clinic-reviews",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "projects/clinic-reviews", "run", "dev"],
+      "port": 3301
     }
   ]
 }
