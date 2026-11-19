@@ -1,0 +1,40 @@
+{
+  "_comment": "서면 시술가 조사 설정. 실행: python3 ../../shared/skills/clinic-price-research/scripts/price_research.py run price_watch.json",
+  "client_label": "서면 피부과",
+  "area_keyword": "서면",
+  "area_stations": [
+    "부산 서면역",
+    "부산 부전역",
+    "부산 범내골역",
+    "부산 전포역",
+    "부산 부암역"
+  ],
+  "own_hospitals": [],
+  "procedures": [
+    "pico-toning",
+    "ulthera",
+    "shurink",
+    "thermage",
+    "oligio",
+    "inmode",
+    "potenza",
+    "fraxel",
+    "rejuran",
+    "juvelook",
+    "aquapeel",
+    "botox"
+  ],
+  "max_requests": 80,
+  "output_dir": "data/prices",
+  "report_dir": "output/prices",
+  "search_keywords": [
+    "서면",
+    "부산"
+  ],
+  "sorts": [
+    "",
+    "LOWEST_DISCOUNTED_COST",
+    "HIGHEST_POPULARITY"
+  ],
+  "max_detail_requests": 150
+}

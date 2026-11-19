@@ -1,0 +1,541 @@
+{
+ "date": "2026-11-19",
+ "area": "서면",
+ "vs": null,
+ "procedures": {
+  "pico-toning": {
+   "name": "피코토닝",
+   "unit": "회",
+   "n_events": 8,
+   "n_hospitals": 7,
+   "n_rows": 28,
+   "n_single": 14,
+   "n_detail": 8,
+   "basis": "단품 옵션",
+   "teaser_n": 1,
+   "teaser_min": 9790,
+   "teaser_hospitals": 1,
+   "min": 9900,
+   "p25": 30000,
+   "median": 50000,
+   "p75": 150000,
+   "max": 390000,
+   "ppu_median": null,
+   "ppu_min": null,
+   "ppu_max": null,
+   "ppu_n": 0,
+   "qty_groups": [
+    {
+     "qty": 5.0,
+     "n": 5,
+     "hospitals": 3,
+     "min": 50000,
+     "median": 150000,
+     "max": 350000
+    },
+    {
+     "qty": 1.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 53900,
+     "median": 53900,
+     "max": 53900
+    },
+    {
+     "qty": 10.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 390000,
+     "median": 390000,
+     "max": 390000
+    }
+   ]
+  },
+  "ulthera": {
+   "name": "울쎄라",
+   "unit": "샷",
+   "n_events": 8,
+   "n_hospitals": 8,
+   "n_rows": 19,
+   "n_single": 12,
+   "n_detail": 8,
+   "basis": "단품 옵션",
+   "teaser_n": 0,
+   "teaser_min": null,
+   "teaser_hospitals": 0,
+   "min": 230000,
+   "p25": 330000,
+   "median": 510000,
+   "p75": 990000,
+   "max": 2040000,
+   "ppu_median": 3300,
+   "ppu_min": 2300,
+   "ppu_max": 5500,
+   "ppu_n": 12,
+   "qty_groups": [
+    {
+     "qty": 100.0,
+     "n": 7,
+     "hospitals": 7,
+     "min": 230000,
+     "median": 330000,
+     "max": 550000
+    },
+    {
+     "qty": 300.0,
+     "n": 3,
+     "hospitals": 3,
+     "min": 930000,
+     "median": 990000,
+     "max": 990000
+    },
+    {
+     "qty": 600.0,
+     "n": 2,
+     "hospitals": 2,
+     "min": 1860000,
+     "median": 1950000,
+     "max": 2040000
+    }
+   ]
+  },
+  "shurink": {
+   "name": "슈링크",
+   "unit": "샷",
+   "n_events": 8,
+   "n_hospitals": 8,
+   "n_rows": 22,
+   "n_single": 17,
+   "n_detail": 8,
+   "basis": "단품 옵션",
+   "teaser_n": 1,
+   "teaser_min": 9790,
+   "teaser_hospitals": 1,
+   "min": 5390,
+   "p25": 55875,
+   "median": 88000,
+   "p75": 182500,
+   "max": 330000,
+   "ppu_median": 380,
+   "ppu_min": 54,
+   "ppu_max": 600,
+   "ppu_n": 15,
+   "qty_groups": [
+    {
+     "qty": 100.0,
+     "n": 5,
+     "hospitals": 4,
+     "min": 5390,
+     "median": 44000,
+     "max": 58000
+    },
+    {
+     "qty": 300.0,
+     "n": 5,
+     "hospitals": 4,
+     "min": 77000,
+     "median": 132000,
+     "max": 180000
+    },
+    {
+     "qty": 600.0,
+     "n": 2,
+     "hospitals": 2,
+     "min": 190000,
+     "median": 260000,
+     "max": 330000
+    },
+    {
+     "qty": 200.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 75900,
+     "median": 75900,
+     "max": 75900
+    }
+   ]
+  },
+  "thermage": {
+   "name": "써마지",
+   "unit": "샷",
+   "n_events": 4,
+   "n_hospitals": 4,
+   "n_rows": 13,
+   "n_single": 8,
+   "n_detail": 4,
+   "basis": "단품 옵션",
+   "teaser_n": 0,
+   "teaser_min": null,
+   "teaser_hospitals": 0,
+   "min": 1089000,
+   "p25": 1399750,
+   "median": 1870000,
+   "p75": 2359250,
+   "max": 3290000,
+   "ppu_median": 3966,
+   "ppu_min": 2909,
+   "ppu_max": 5500,
+   "ppu_n": 8,
+   "qty_groups": [
+    {
+     "qty": 600.0,
+     "n": 3,
+     "hospitals": 3,
+     "min": 2090000,
+     "median": 2339000,
+     "max": 2420000
+    },
+    {
+     "qty": 300.0,
+     "n": 2,
+     "hospitals": 2,
+     "min": 1430000,
+     "median": 1540000,
+     "max": 1650000
+    },
+    {
+     "qty": 225.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 1089000,
+     "median": 1089000,
+     "max": 1089000
+    },
+    {
+     "qty": 450.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 1309000,
+     "median": 1309000,
+     "max": 1309000
+    }
+   ]
+  },
+  "oligio": {
+   "name": "올리지오",
+   "unit": "샷",
+   "n_events": 6,
+   "n_hospitals": 6,
+   "n_rows": 15,
+   "n_single": 14,
+   "n_detail": 6,
+   "basis": "단품 옵션",
+   "teaser_n": 0,
+   "teaser_min": null,
+   "teaser_hospitals": 0,
+   "min": 110000,
+   "p25": 352000,
+   "median": 465000,
+   "p75": 743750,
+   "max": 968000,
+   "ppu_median": 1623,
+   "ppu_min": 1100,
+   "ppu_max": 2640,
+   "ppu_n": 14,
+   "qty_groups": [
+    {
+     "qty": 300.0,
+     "n": 6,
+     "hospitals": 5,
+     "min": 330000,
+     "median": 459500,
+     "max": 605000
+    },
+    {
+     "qty": 600.0,
+     "n": 3,
+     "hospitals": 3,
+     "min": 790000,
+     "median": 825000,
+     "max": 968000
+    },
+    {
+     "qty": 100.0,
+     "n": 3,
+     "hospitals": 2,
+     "min": 110000,
+     "median": 165000,
+     "max": 264000
+    },
+    {
+     "qty": 200.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 440000,
+     "median": 440000,
+     "max": 440000
+    }
+   ]
+  },
+  "inmode": {
+   "name": "인모드",
+   "unit": "회",
+   "n_events": 11,
+   "n_hospitals": 8,
+   "n_rows": 22,
+   "n_single": 16,
+   "n_detail": 11,
+   "basis": "단품 옵션",
+   "teaser_n": 3,
+   "teaser_min": 5390,
+   "teaser_hospitals": 3,
+   "min": 61000,
+   "p25": 143000,
+   "median": 165000,
+   "p75": 275000,
+   "max": 1089000,
+   "ppu_median": null,
+   "ppu_min": null,
+   "ppu_max": null,
+   "ppu_n": 0,
+   "qty_groups": [
+    {
+     "qty": 1.0,
+     "n": 2,
+     "hospitals": 2,
+     "min": 165000,
+     "median": 297000,
+     "max": 429000
+    },
+    {
+     "qty": 3.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 1089000,
+     "median": 1089000,
+     "max": 1089000
+    }
+   ]
+  },
+  "potenza": {
+   "name": "포텐자",
+   "unit": "회",
+   "n_events": 8,
+   "n_hospitals": 8,
+   "n_rows": 24,
+   "n_single": 10,
+   "n_detail": 8,
+   "basis": "단품 옵션",
+   "teaser_n": 2,
+   "teaser_min": 109000,
+   "teaser_hospitals": 1,
+   "min": 100000,
+   "p25": 191250,
+   "median": 220000,
+   "p75": 253000,
+   "max": 330000,
+   "ppu_median": null,
+   "ppu_min": null,
+   "ppu_max": null,
+   "ppu_n": 0,
+   "qty_groups": []
+  },
+  "fraxel": {
+   "name": "프락셀(흉터)",
+   "unit": "회",
+   "n_events": 2,
+   "n_hospitals": 2,
+   "n_rows": 7,
+   "n_single": 1,
+   "n_detail": 2,
+   "basis": "전체(단품 부족)",
+   "teaser_n": 0,
+   "teaser_min": null,
+   "teaser_hospitals": 0,
+   "min": 29900,
+   "p25": 40000,
+   "median": 70000,
+   "p75": 92185,
+   "max": 214500,
+   "ppu_median": null,
+   "ppu_min": null,
+   "ppu_max": null,
+   "ppu_n": 0,
+   "qty_groups": []
+  },
+  "rejuran": {
+   "name": "리쥬란",
+   "unit": "cc",
+   "n_events": 12,
+   "n_hospitals": 11,
+   "n_rows": 22,
+   "n_single": 10,
+   "n_detail": 12,
+   "basis": "단품 옵션",
+   "teaser_n": 2,
+   "teaser_min": 152900,
+   "teaser_hospitals": 2,
+   "min": 108900,
+   "p25": 248975,
+   "median": 367950,
+   "p75": 416250,
+   "max": 550000,
+   "ppu_median": 108900,
+   "ppu_min": 87725,
+   "ppu_max": 275000,
+   "ppu_n": 7,
+   "qty_groups": [
+    {
+     "qty": 2.0,
+     "n": 3,
+     "hospitals": 3,
+     "min": 185900,
+     "median": 385000,
+     "max": 550000
+    },
+    {
+     "qty": 4.0,
+     "n": 3,
+     "hospitals": 3,
+     "min": 350900,
+     "median": 390000,
+     "max": 495000
+    },
+    {
+     "qty": 1.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 108900,
+     "median": 108900,
+     "max": 108900
+    }
+   ]
+  },
+  "juvelook": {
+   "name": "쥬베룩",
+   "unit": "cc",
+   "n_events": 14,
+   "n_hospitals": 12,
+   "n_rows": 38,
+   "n_single": 29,
+   "n_detail": 14,
+   "basis": "단품 옵션",
+   "teaser_n": 2,
+   "teaser_min": 77000,
+   "teaser_hospitals": 1,
+   "min": 77000,
+   "p25": 110000,
+   "median": 330000,
+   "p75": 550000,
+   "max": 2090000,
+   "ppu_median": 89284,
+   "ppu_min": 53625,
+   "ppu_max": 275000,
+   "ppu_n": 18,
+   "qty_groups": [
+    {
+     "qty": 4.0,
+     "n": 4,
+     "hospitals": 3,
+     "min": 257400,
+     "median": 385000,
+     "max": 1089000
+    },
+    {
+     "qty": 1.0,
+     "n": 3,
+     "hospitals": 2,
+     "min": 86900,
+     "median": 100000,
+     "max": 100000
+    },
+    {
+     "qty": 2.0,
+     "n": 2,
+     "hospitals": 2,
+     "min": 209000,
+     "median": 379500,
+     "max": 550000
+    },
+    {
+     "qty": 8.0,
+     "n": 3,
+     "hospitals": 2,
+     "min": 429000,
+     "median": 500500,
+     "max": 600000
+    }
+   ]
+  },
+  "aquapeel": {
+   "name": "아쿠아필",
+   "unit": "회",
+   "n_events": 7,
+   "n_hospitals": 7,
+   "n_rows": 17,
+   "n_single": 6,
+   "n_detail": 7,
+   "basis": "단품 옵션",
+   "teaser_n": 1,
+   "teaser_min": 10000,
+   "teaser_hospitals": 1,
+   "min": 33000,
+   "p25": 38500,
+   "median": 40000,
+   "p75": 55000,
+   "max": 220000,
+   "ppu_median": null,
+   "ppu_min": null,
+   "ppu_max": null,
+   "ppu_n": 0,
+   "qty_groups": [
+    {
+     "qty": 10.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 220000,
+     "median": 220000,
+     "max": 220000
+    }
+   ]
+  },
+  "botox": {
+   "name": "보톡스",
+   "unit": "유닛",
+   "n_events": 19,
+   "n_hospitals": 13,
+   "n_rows": 111,
+   "n_single": 102,
+   "n_detail": 19,
+   "basis": "단품 옵션",
+   "teaser_n": 40,
+   "teaser_min": 3900,
+   "teaser_hospitals": 5,
+   "min": 1100,
+   "p25": 37400,
+   "median": 72950,
+   "p75": 107500,
+   "max": 187000,
+   "ppu_median": 798,
+   "ppu_min": 286,
+   "ppu_max": 1980,
+   "ppu_n": 10,
+   "qty_groups": [
+    {
+     "qty": 50.0,
+     "n": 7,
+     "hospitals": 2,
+     "min": 14300,
+     "median": 55000,
+     "max": 99000
+    },
+    {
+     "qty": 100.0,
+     "n": 2,
+     "hospitals": 1,
+     "min": 37400,
+     "median": 37400,
+     "max": 37400
+    },
+    {
+     "qty": 200.0,
+     "n": 1,
+     "hospitals": 1,
+     "min": 121000,
+     "median": 121000,
+     "max": 121000
+    }
+   ]
+  }
+ }
+}

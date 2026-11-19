@@ -61,6 +61,12 @@ python3 tools/medad_check.py output/<폴더>/<원고>.md
 - 원본은 `images/raw/`에, 생성 기록은 `images/raw/PROVENANCE.md`(모델·작업 ID·SHA-256)에 남긴다.
 - 실제 인물 사진풍·시술 장면·전후 비교 금지. 사람은 수채화 일러스트로만, 아래에 "AI로 만든 일러스트이며 실제 환자가 아닙니다" 표기(기준서 4장).
 
+## 시술가 조사 (2026-11-19)
+
+- 주변 피부과 이벤트 가격은 `clinic-price-research` 스킬로 조사한다. 설정 [price_watch.json](price_watch.json), 보고서 `output/prices/<날짜>_price-report.html`.
+- 실행: `python3 ../../shared/skills/clinic-price-research/scripts/price_research.py run price_watch.json` (10~15분, 사람이 요청할 때만).
+- **내부 참고용.** 조사한 타 병원 가격을 블로그·SNS·광고 원고에 넣지 않는다.
+
 ## 폴더 구조
 
 ```

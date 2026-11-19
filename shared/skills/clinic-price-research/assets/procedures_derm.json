@@ -1,0 +1,158 @@
+{
+ "_comment": "피부과 기본 시술 목록. query=강남언니 검색어(지역명 뒤에 붙음), include=제목에 하나라도 있어야 해당 시술로 인정, exclude=있으면 제외, unit=제목에서 뽑을 수량 단위(샷·cc·유닛·회). 시술을 더하거나 빼려면 이 파일 또는 병원 폴더의 price_watch.json 'procedures'를 고친다.",
+ "procedures": [
+  {
+   "id": "pico-toning",
+   "name": "피코토닝",
+   "query": "피코토닝",
+   "include": [
+    "피코"
+   ],
+   "exclude": [
+    "문신",
+    "타투"
+   ],
+   "unit": "회"
+  },
+  {
+   "id": "ulthera",
+   "name": "울쎄라",
+   "query": "울쎄라",
+   "include": [
+    "울쎄라"
+   ],
+   "exclude": [],
+   "unit": "샷"
+  },
+  {
+   "id": "shurink",
+   "name": "슈링크",
+   "query": "슈링크",
+   "include": [
+    "슈링크"
+   ],
+   "exclude": [],
+   "unit": "샷"
+  },
+  {
+   "id": "thermage",
+   "name": "써마지",
+   "query": "써마지",
+   "include": [
+    "써마지"
+   ],
+   "exclude": [],
+   "unit": "샷"
+  },
+  {
+   "id": "oligio",
+   "name": "올리지오",
+   "query": "올리지오",
+   "include": [
+    "올리지오"
+   ],
+   "exclude": [],
+   "unit": "샷"
+  },
+  {
+   "id": "inmode",
+   "name": "인모드",
+   "query": "인모드",
+   "include": [
+    "인모드"
+   ],
+   "exclude": [],
+   "unit": "회"
+  },
+  {
+   "id": "potenza",
+   "name": "포텐자",
+   "query": "포텐자",
+   "include": [
+    "포텐자"
+   ],
+   "exclude": [],
+   "unit": "회"
+  },
+  {
+   "id": "fraxel",
+   "name": "프락셀(흉터)",
+   "query": "프락셀",
+   "include": [
+    "프락셀",
+    "프락셔널"
+   ],
+   "exclude": [],
+   "unit": "회"
+  },
+  {
+   "id": "rejuran",
+   "name": "리쥬란",
+   "query": "리쥬란",
+   "include": [
+    "리쥬란"
+   ],
+   "exclude": [
+    "헤어",
+    "두피"
+   ],
+   "unit": "cc"
+  },
+  {
+   "id": "juvelook",
+   "name": "쥬베룩",
+   "query": "쥬베룩",
+   "include": [
+    "쥬베룩"
+   ],
+   "exclude": [],
+   "unit": "cc"
+  },
+  {
+   "id": "aquapeel",
+   "name": "아쿠아필",
+   "query": "아쿠아필",
+   "include": [
+    "아쿠아필"
+   ],
+   "exclude": [],
+   "unit": "회"
+  },
+  {
+   "id": "botox",
+   "name": "보톡스",
+   "query": "보톡스",
+   "include": [
+    "보톡스",
+    "보툴",
+    "제오민",
+    "코어톡스",
+    "나보타",
+    "디스포트",
+    "주름보톡스",
+    "사각턱"
+   ],
+   "exclude": [],
+   "unit": "유닛"
+  }
+ ],
+ "other_products": [
+  "필러",
+  "레디어스",
+  "온다",
+  "리투오",
+  "스킨바이브",
+  "물광",
+  "LDM",
+  "제모",
+  "레이저토닝",
+  "엑셀브이",
+  "클라리티",
+  "실리프팅",
+  "윤곽주사",
+  "셀르디엠",
+  "리쥬비엘",
+  "MTS"
+ ],
+ "_comment_other": "other_products: 카탈로그에 없는 다른 시술·제품명. 옵션명에 이것만 있으면 그 시술 가격에서 빼고, 같이 있으면 패키지로 본다. 일반 명사(관리·케어)는 넣지 않는다."
+}
