@@ -130,6 +130,19 @@ def main(argv):
     L.append("\n_자동 검사는 1차 거름망이며 사전심의·법률 검토를 대신하지 않는다._")
     report_path.write_text("\n".join(L) + "\n", encoding="utf-8")
 
+    if "--json" in argv:
+        print(json.dumps({
+            "post": str(post), "title": fm.get("title", post.name), "platform": fm.get("platform", ""),
+            "ok": ok, "gates": [{"name": n, "ok": p, "detail": d} for n, p, d in gates],
+            "medad": md_block + md_warn, "geo": {"score": g["score"], "miss": g_miss},
+            "cite": {"block": c["block"], "warn": c["warn"], "findings": c["findings"],
+                     "refs": [{"n": n, "text": r["text"], "url": r["url"], "status": r.get("status", ""),
+                               "cited": len(r.get("cited_by", []))} for n, r in sorted(c["refs"].items())],
+                     "uncited": len(c.get("uncited", []))},
+            "channel": ch, "markers": [m[8:-1].strip() for m in markers],
+            "manual": rules.get("manual_checklist", []),
+            "report": str(report_path), "sheet": str(sheet_path)}, ensure_ascii=False))
+        return 0 if ok else 1
     print(f"\n== 발행 전 마무리 점검: {post}")
     for n, p, d in gates:
         print(f"   {'통과' if p else '미달'}  {n:<12} {d}")

@@ -1,0 +1,23 @@
+{
+  "_about": "clinic-studio 원고 승인 기록. 환자 정보는 넣지 않는다.",
+  "posts": {
+    "output/2026-11-30_enlarged-pores/enlarged-pores.md": {
+      "stage": "checked",
+      "history": [
+        {
+          "at": "2026-11-19T19:06:11.147Z",
+          "action": "점검 통과",
+          "note": "의료광고 검사 통과 · GEO 점검 통과 · 출처 검사 통과"
+        }
+      ],
+      "check": {
+        "at": "2026-11-19T19:06:11.147Z",
+        "ok": true,
+        "hash": "b56ea82b37394321",
+        "summary": "의료광고 검사 통과 · GEO 점검 통과 · 출처 검사 통과",
+        "report": "docs/reviews/2026-11-20_enlarged-pores_final-check.md",
+        "sheet": "docs/reviews/2026-11-20_enlarged-pores_sources.md"
+      }
+    }
+  }
+}

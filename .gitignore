@@ -15,3 +15,6 @@ projects/*/data/prices/*/raw/
 # 병원 리뷰 원문·닉네임 (개인정보) — clinic-review-care
 projects/*/data/reviews/
 projects/*/output/reviews/
+
+# 시술가 조사 실행 상태 (clinic-studio)
+projects/*/data/prices/_run.*

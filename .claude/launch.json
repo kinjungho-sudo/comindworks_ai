@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "clinic-studio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "projects/clinic-studio", "run", "dev"],
+      "port": 3300
+    }
+  ]
+}

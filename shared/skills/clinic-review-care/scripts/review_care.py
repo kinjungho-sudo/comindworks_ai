@@ -337,6 +337,22 @@ def main(argv):
                 print(f"     조문: {c}")
         print("검사 통과" if not fs else "")
         return 1 if any(f["severity"] == "block" for f in fs) else 0
+    if argv[0] == "json" and len(argv) > 1:  # 앱용: 분석 결과를 JSON으로
+        cfg_path = Path(argv[1]); cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        rows = analyze(load_reviews(cfg_path.parent / cfg.get("input_dir", "data/reviews")), date.today())
+        keep = ("id", "platform", "date", "rating", "author", "text", "reply", "reply_draft", "cat", "rating_num",
+                "flags", "answered", "draft_check", "posted_check", "age", "source_file")
+        print(json.dumps([{k: r.get(k) for k in keep} for r in rows], ensure_ascii=False))
+        return 0
+    if argv[0] == "check-stdin":  # 앱용: 표준입력 {"text":…, "cat":…} → 검사 결과 JSON
+        req = json.loads(sys.stdin.read())
+        fs = check_reply(req.get("text", ""), req.get("cat"))
+        print(json.dumps({"findings": fs, "block": any(f["severity"] == "block" for f in fs)}, ensure_ascii=False))
+        return 0
+    if argv[0] == "classify-stdin":  # 앱용: 표준입력 [{"text","rating"}] → 분류
+        items = json.loads(sys.stdin.read())
+        print(json.dumps([dict(zip(("cat", "rating_num", "flags"), classify(i))) for i in items], ensure_ascii=False))
+        return 0
     if argv[0] == "selftest":
         return selftest()
     print(__doc__)
