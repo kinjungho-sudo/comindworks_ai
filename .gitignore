@@ -11,3 +11,7 @@ node_modules/
 
 # 시술가 조사 원문 HTML (그날 근거용, 재배포 금지)
 projects/*/data/prices/*/raw/
+
+# 병원 리뷰 원문·닉네임 (개인정보) — clinic-review-care
+projects/*/data/reviews/
+projects/*/output/reviews/

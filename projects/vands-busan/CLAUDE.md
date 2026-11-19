@@ -69,6 +69,13 @@ python3 tools/medad_check.py output/<폴더>/<원고>.md
 - 실행: `python3 ../../shared/skills/clinic-price-research/scripts/price_research.py run price_watch.json` (10~15분, 사람이 요청할 때만).
 - **내부 참고용.** 조사한 타 병원 가격을 블로그·SNS·광고 원고에 넣지 않는다.
 
+## 리뷰 관리 (2026-11-19)
+
+- `clinic-review-care` 스킬. 리뷰는 사람이 관리자 화면에서 복사·내보내기 → `data/reviews/*.csv`. 설정 [review_watch.json](review_watch.json).
+- 실행: `python3 ../../shared/skills/clinic-review-care/scripts/review_care.py run review_watch.json` → `output/reviews/<날짜>_review-report.html`.
+- 답글은 초안만 쓰고 게시는 사람이. 답글에 시술명·날짜·기록 금지(의료법 제19조), 공개 보상·할인 약속 금지(제27조 제3항), 리뷰를 블로그·SNS에 옮겨 싣지 않음(제56조 제2항 제2호).
+- 리뷰 원문·보고서는 개인정보라 git에 올리지 않는다(.gitignore).
+
 ## 폴더 구조
 
 ```

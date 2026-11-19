@@ -27,6 +27,7 @@ BASE = "https://www.law.go.kr"
 # (법령명, 키 접두어, 가져올 조, 조마다 가져올 항 (None=전부))
 TARGETS = [
     ("의료법", "법", [
+        ("19", ["1"]),          # 정보 누설 금지 (리뷰 답글)
         ("27", ["3"]),          # 환자 유인 금지
         ("56", None),           # 의료광고 금지
         ("57", ["1", "3"]),     # 사전심의 대상·면제
@@ -37,6 +38,11 @@ TARGETS = [
     ("의료법 시행령", "령", [
         ("23", None),           # 의료광고 금지 기준
         ("24", ["1", "2"]),     # 심의 대상 인터넷 매체·SNS
+    ]),
+    ("정보통신망 이용촉진 및 정보보호 등에 관한 법률", "망", [
+        ("44의2", None),        # 권리 침해 정보 삭제·임시조치 요청 (허위 리뷰 대응)
+        ("44의3", None),        # 임의의 임시조치
+        ("70", ["1", "2"]),     # 명예훼손 벌칙
     ]),
 ]
 CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳"
@@ -57,7 +63,7 @@ def to_text(page):
 
 def fetch_law(name):
     """법령 이름 → (머리말 '[시행 …] [법률 제…]', 본문 텍스트, 원문 주소)."""
-    landing = f"{BASE}/{urllib.parse.quote('법령')}/{urllib.parse.quote(name.replace(' ', ''))}"
+    landing = f"{BASE}/{urllib.parse.quote('법령')}/{urllib.parse.quote(name.replace(' ', ''))}"  # 띄어쓰기 없는 정식 명칭
     page = get(landing)
     seq = re.search(r'id="lsiSeq" value="(\d+)"', page)
     ef = re.search(r"efYd = '(\d{8})'", page)
@@ -74,7 +80,8 @@ def fetch_law(name):
 
 
 def cut_article(text, jo):
-    m = re.search(rf"(?m)^제{jo}조\(([^)]*)\)", text)
+    head = f"제{jo.split('의')[0]}조의{jo.split('의')[1]}" if "의" in jo else f"제{jo}조"
+    m = re.search(rf"(?m)^{head}\(([^)]*)\)", text)
     if not m:
         raise RuntimeError(f"제{jo}조를 찾지 못했습니다")
     nxt = re.search(r"(?m)^(제\d+조(의\d+)?\(|제\d+조(의\d+)? 삭제|제\d+장 |부칙)", text[m.end():])
@@ -84,7 +91,7 @@ def cut_article(text, jo):
 
 def split_article(body):
     """조 본문 → [(항번호|None, 항 첫 문장, [(호번호, 호 본문)])]."""
-    body = re.sub(r"^제\d+조\([^)]*\)\s*", "", body)
+    body = re.sub(r"^제\d+조(의\d+)?\([^)]*\)\s*", "", body)
     parts = re.split(rf"(?:^|\n)\s*([{CIRCLED}])\s*", body)
     out = []
     chunks = [(None, parts[0])] if parts[0].strip() else []
@@ -118,12 +125,13 @@ def build():
         md.append(f"## {name}\n\n{head} · 원문: {url}\n")
         for jo, hangs in jos:
             title, body = cut_article(text, jo)
-            md.append(f"### 제{jo}조({title})\n")
+            jo_label = jo.replace("의", "조의") if "의" in jo else jo + "조"
+            md.append(f"### 제{jo_label}({title})\n")
             for hang, lead, items in split_article(body):
                 if hangs and hang not in hangs:
                     continue
                 key = f"{pre}{jo}" + (f"-{hang}" if hang else "")
-                label = f"{name} 제{jo}조" + (f" 제{hang}항" if hang else "")
+                label = f"{name} 제{jo_label}" + (f" 제{hang}항" if hang else "")
                 articles[key] = {"label": label, "title": title, "text": clean(lead)}
                 md.append(f"- **{key}** ({label}) {clean(lead)}")
                 for ho, t in items:

@@ -1,0 +1,2 @@
+platform,date,rating,author,text,reply,reply_draft
+네이버,2026-11-18,5,닉네임,"리뷰 원문을 그대로 붙여 넣기","(이미 게시한 답글이 있으면)","(비워 두면 Claude가 초안 작성)"
