@@ -63,7 +63,7 @@ export default function Interpreter() {
     const m = store.get("mb.mode") as Mode | null;
     let r = store.get("mb.room");
     if (r && !normalizeRoom(r)) { r = deskRoom(1); store.set("mb.room", r); } // 예전 8자리 코드 → 데스크 1
-    if (m === "solo") setMode("solo");
+    if (m === "solo" || !m) setMode("solo"); // 처음 여는 기기는 한 화면 모드로 바로 시작
     else if ((m === "desk" || m === "guest") && r) { setMode(m); setRoom(r); }
     setReady(true);
     fetch("/api/bootstrap", { cache: "no-store" }).then(async (res) => {
@@ -85,42 +85,40 @@ export default function Interpreter() {
 // ================================================================
 function ModePicker({ hospital, onPick }: { hospital: string; onPick: (m: Mode, room: string | null) => void }) {
   const [desk, setDesk] = useState(() => deskNumber(store.get("mb.room")));
-  const DeskSelect = () => (
-    <div className="desk-pick" onClick={(e) => e.stopPropagation()}>
-      <span>데스크</span>
-      {[1, 2, 3, 4, 5].map((n) => <button key={n} className={`desk-n ${n === desk ? "sel" : ""}`} onClick={() => setDesk(n)}>{n}</button>)}
-    </div>
-  );
   return (
     <main className="picker">
-      <div className="picker-head">
-        <img src="/brand.svg" alt="" width={56} height={56} />
-        <h1>{hospital} 통역</h1>
-        <p className="muted">이 기기를 어떤 화면으로 쓸지 고르세요. 한 번 고르면 다음부터 바로 열립니다.</p>
+      <header className="launch-top"><Brand /><span className="launch-hosp">{hospital}</span></header>
+      <div className="picker-body">
+        <div className="picker-head">
+          <h1>이 기기를 어떻게 쓸까요?</h1>
+          <p>한 번 고르면 다음부터 바로 열립니다. 언제든 메뉴에서 바꿀 수 있어요.</p>
+        </div>
+        <div className="picker-grid">
+          <button className="pick-card primary" onClick={() => onPick("solo", null)}>
+            <span className="pick-top"><span className="pick-ico"><Icon n="screen" size={26} /></span><span className="pick-badge">기본</span></span>
+            <b>한 화면으로 같이 보기</b>
+            <span>기기 하나를 직원과 손님이 함께 봅니다. 모니터를 복제해 두 화면에 띄워도 됩니다. 한국어·외국어를 모두 알아듣고 두 줄로 크게 보여줍니다.</span>
+            <span className="pick-go">시작하기 <Icon n="arrow" size={16} /></span>
+          </button>
+          <button className="pick-card" onClick={() => onPick("desk", deskRoom(desk))}>
+            <span className="pick-top"><span className="pick-ico"><Icon n="desk" size={26} /></span></span>
+            <b>데스크 화면 <small>직원용</small></b>
+            <span>손님 화면과 따로 쓰는 직원 쪽 기기. 같은 데스크 번호의 손님 화면과 자동으로 연결됩니다.</span>
+            <span className="pick-go">데스크 {desk} 로 시작 <Icon n="arrow" size={16} /></span>
+          </button>
+          <button className="pick-card" onClick={() => onPick("guest", deskRoom(desk))}>
+            <span className="pick-top"><span className="pick-ico"><Icon n="tablet" size={26} /></span></span>
+            <b>손님 화면 <small>손님용</small></b>
+            <span>손님 앞에 두는 두 번째 기기. 코드 입력 없이 같은 번호의 데스크 화면과 연결됩니다.</span>
+            <span className="pick-go">데스크 {desk} 에 연결 <Icon n="arrow" size={16} /></span>
+          </button>
+        </div>
+        <div className="desk-pick">
+          <span>데스크 번호 (두 기기로 쓸 때)</span>
+          {[1, 2, 3, 4, 5].map((n) => <button key={n} className={`desk-n ${n === desk ? "sel" : ""}`} onClick={() => setDesk(n)}>{n}</button>)}
+        </div>
       </div>
-      <DeskSelect />
-      <div className="picker-grid">
-        <button className="pick-card" onClick={() => onPick("desk", deskRoom(desk))}>
-          <span className="pick-icon">🧑‍⚕️</span>
-          <b>데스크 화면</b>
-          <span>직원 앞에 두는 화면. 직원 말은 손님 언어로, 손님 말은 한국어로 보이고 들립니다.</span>
-          <span className="pick-go">데스크 {desk} 로 시작 →</span>
-        </button>
-        <button className="pick-card" onClick={() => onPick("guest", deskRoom(desk))}>
-          <span className="pick-icon">🙋</span>
-          <b>손님 화면</b>
-          <span>손님 앞에 두는 두 번째 기기. 같은 번호의 데스크 화면과 자동으로 연결됩니다. 코드 입력은 필요 없습니다.</span>
-          <span className="pick-go">데스크 {desk} 에 연결 →</span>
-        </button>
-        <button className="pick-card" onClick={() => onPick("solo", null)}>
-          <span className="pick-icon">🖥️</span>
-          <b>한 화면으로 같이 보기</b>
-          <span>기기 하나(모니터 복제 포함)를 함께 볼 때. 한국어와 손님 언어를 모두 알아듣고 양쪽 글자를 같이 보여줍니다.</span>
-          <span className="pick-go">시작 →</span>
-        </button>
-      </div>
-      <p className="muted small">데스크가 여러 곳이면 위에서 번호를 고르세요. 데스크 화면과 손님 화면은 같은 번호끼리 연결됩니다.</p>
-      <a className="link" href="/admin">⚙︎ 관리자</a>
+      <footer className="launch-foot"><a href="/admin"><Icon n="gear" size={16} /> 관리자</a></footer>
     </main>
   );
 }
@@ -552,21 +550,29 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
 
   if (!started) {
     return (
-      <div className={`startup ${mode}`}>
+      <div className={`launch ${mode}`}>
+        <header className="launch-top">
+          <Brand />
+          {!guestView && <span className="launch-hosp">{settings.hospital_name}</span>}
+        </header>
         {guestView ? (
-          <button className="start-card" onClick={start}>
-            <div className="welcome-multi">{GUEST_LANGS.map((l) => <span key={l} lang={LANG_META[l].html}>{GUEST_UI[l].welcome}</span>)}</div>
-            <span className="start-btn">▶ {GUEST_LANGS.map((l) => GUEST_UI[l].tapToStart).slice(0, 3).join(" · ")}</span>
+          <button className="launch-main as-btn" onClick={start}>
+            <GuestWelcome level={0} />
+            <span className="launch-cta"><Icon n="play" size={20} /> {GUEST_LANGS.map((l) => GUEST_UI[l].tapToStart).slice(0, 2).join(" · ")}</span>
           </button>
         ) : (
-          <button className="start-card" onClick={start}>
-            <p className="eyebrow">{settings.hospital_name} · {mode === "desk" ? "데스크 화면" : "한 화면 모드"}</p>
-            <h1>통역 시작</h1>
-            <p className="lead">누르면 마이크가 켜지고 계속 듣습니다. 버튼 없이 말하면 바로 통역됩니다.</p>
-            <span className="start-btn">▶ 시작하기</span>
-          </button>
+          <main className="launch-main">
+            <p className="launch-eyebrow">{mode === "solo" ? "한 화면 통역" : `데스크 ${deskNumber(roomCode)} · 직원 화면`}</p>
+            <h1>말하면,<br /><em>바로 통역</em>됩니다</h1>
+            <p className="launch-sub">한국어 ↔ 10개 언어 · 손님 언어 자동 인식 · 버튼 없이 계속 듣습니다</p>
+            <button className="launch-cta" onClick={start}><Icon n="mic" size={22} /> 통역 시작</button>
+            <div className="launch-langs">{GUEST_LANGS.map((l) => <span key={l} lang={LANG_META[l].html}>{LANG_META[l].flag} {LANG_META[l].native}</span>)}</div>
+          </main>
         )}
-        <button className="link corner" onClick={onExit}>화면 모드 바꾸기</button>
+        <footer className="launch-foot">
+          <button onClick={onExit}><Icon n="screen" size={16} /> 화면 모드 바꾸기</button>
+          {!guestView && <a href="/admin"><Icon n="gear" size={16} /> 관리자</a>}
+        </footer>
       </div>
     );
   }
@@ -586,7 +592,8 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
             <button className="lang-chip" onClick={() => setSheet("lang")}><span className="flag">{LANG_META[guestLang].flag}</span>{LANG_META[guestLang].native}<Icon n="chev" /></button>
           ) : (
             <>
-              <span className="brand-dot" aria-hidden><img src="/brand.svg" alt="" width={30} height={30} /></span>
+              <Brand compact />
+              <span className="bar-div" />
               <b className="bar-title">{settings.hospital_name}</b>
               <button className="lang-chip" onClick={() => setSheet("lang")} title="손님 언어 (말하면 자동으로 바뀜)"><span className="muted-sm">손님</span><span className="flag">{LANG_META[guestLang].flag}</span>{LANG_META[guestLang].korean}<Icon n="chev" /></button>
             </>
@@ -636,7 +643,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         <div className="alert-bar"><Icon n="alert" /><span>진료·약·검사 같은 <b>의료 내용</b>이 나왔어요. 정확한 설명이 필요하면 사람 통역을 연결하세요.</span><button className="btn primary sm" onClick={() => setSheet("human")}>사람 통역</button><button className="btn ghost sm" onClick={() => setRiskDismissed(riskyMsg!.id)}>괜찮아요</button></div>
       )}
       {!guestView && suggest && (
-        <div className="alert-bar soft"><Icon n="image" /><span>안내 자료 <b>‘{suggest.title}’</b>를 손님 화면에 띄울까요?</span><button className="btn primary sm" onClick={() => void show({ type: "card", id: suggest.id, title: suggest.title })}>띄우기</button><button className="btn ghost sm" onClick={() => setSuggest(null)}>아니요</button></div>
+        <div className="alert-bar soft"><Icon n="image" /><span>안내 자료 <b>‘{suggest.title}’</b>를 {mode === "solo" ? "화면에" : "손님 화면에"} 띄울까요?</span><button className="btn primary sm" onClick={() => void show({ type: "card", id: suggest.id, title: suggest.title })}>띄우기</button><button className="btn ghost sm" onClick={() => setSuggest(null)}>아니요</button></div>
       )}
       {showConsent && (
         <div className="consent-bar" lang={LANG_META[guestLang].html} dir={LANG_META[guestLang].rtl ? "rtl" : undefined}>
@@ -754,7 +761,21 @@ const ICONS: Record<string, string> = {
   alert: "M12 3l10 18H2zM12 10v5M12 18h.01",
   lock: "M6 11h12v10H6zM8.5 11V7.5a3.5 3.5 0 0 1 7 0V11",
   qr: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2",
+  desk: "M3 17h18M5 17V7h14v10M8 21h8M12 17v4",
+  tablet: "M7 3h10v18H7zM11 18h2",
+  screen: "M3 4h18v12H3zM8 20h8M12 16v4",
+  gear: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z",
+  arrow: "M5 12h14M13 6l6 6-6 6",
 };
+
+function Brand({ compact }: { compact?: boolean }) {
+  return (
+    <span className={`brand ${compact ? "compact" : ""}`}>
+      <img src="/brand.svg" alt="" width={compact ? 28 : 34} height={compact ? 28 : 34} />
+      <b>MediBridge</b>
+    </span>
+  );
+}
 function Icon({ n, size = 20 }: { n: string; size?: number }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill={n === "play" ? "currentColor" : "none"} stroke="currentColor" strokeWidth={n === "menu" ? 3.2 : 1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
