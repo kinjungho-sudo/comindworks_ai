@@ -13,7 +13,7 @@ export type Event = {
   original_price: number | null; discount_pct: number | null; rating: number | null; review_count: number;
   is_package: boolean; qty: number | null; options: Option[] | null;
 };
-export type Row = { hospital: string; name: string; price: number; qty: number | null; is_package: boolean; teaser: boolean; price_per_unit?: number | null; event_id: string };
+export type Row = { hospital: string; name: string; price: number; qty: number | null; is_package: boolean; teaser: boolean; price_per_unit?: number | null; event_id: string; url?: string; title?: string; station?: string };
 export type Proc = {
   name: string; unit: string; n_events: number; n_hospitals: number; n_rows: number; n_single: number; basis: string;
   teaser_n: number; teaser_min: number | null; min: number | null; p25: number | null; median: number | null; p75: number | null; max: number | null;
