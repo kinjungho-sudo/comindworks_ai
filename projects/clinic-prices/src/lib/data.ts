@@ -1,9 +1,6 @@
-// 서버 전용: 배포에 함께 묶인 조사 결과(data/) 읽기. 읽기 전에 로그인을 확인한다(2차 관문).
+// 서버 전용: 배포에 함께 묶인 조사 결과(data/) 읽기. (2026-11-20 정호님 지시로 로그인 없이 공개)
 import fs from "node:fs";
 import path from "node:path";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { COOKIE, verifyToken } from "./auth";
 
 const DATA = path.join(/*turbopackIgnore: true*/ process.cwd(), "data");
 
@@ -30,13 +27,7 @@ export type Survey = {
   diff: { prev_date?: string; procedures?: Record<string, { median_prev: number | null; median_cur: number | null; ppu_prev: number | null; ppu_cur: number | null; new_events?: unknown[]; gone_events?: unknown[]; changed?: Change[] }> };
 };
 
-export async function requireLogin() {
-  const ok = await verifyToken((await cookies()).get(COOKIE)?.value).catch(() => false);
-  if (!ok) redirect("/login");
-}
-
 export async function listClinics(): Promise<Clinic[]> {
-  await requireLogin();
   try {
     return JSON.parse(fs.readFileSync(path.join(DATA, "index.json"), "utf-8")).clinics;
   } catch {
@@ -49,7 +40,6 @@ export async function getClinic(id: string): Promise<Clinic | null> {
 }
 
 export async function getSurvey(clinic: Clinic, date?: string): Promise<Survey | null> {
-  await requireLogin();
   const d = date && clinic.dates.includes(date) ? date : clinic.dates.at(-1);
   if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return null;
   return JSON.parse(fs.readFileSync(path.join(DATA, clinic.id, `${d}.json`), "utf-8"));
@@ -57,7 +47,6 @@ export async function getSurvey(clinic: Clinic, date?: string): Promise<Survey |
 
 /** 같은 병원의 모든 조사에서 시술별 중앙값 추이 */
 export async function trend(clinic: Clinic, procId: string) {
-  await requireLogin();
   return clinic.dates.map((d) => {
     const s: Survey = JSON.parse(fs.readFileSync(path.join(DATA, clinic.id, `${d}.json`), "utf-8"));
     const p = s.procedures[procId];

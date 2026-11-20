@@ -53,6 +53,6 @@ python3 ../../shared/skills/clinic-price-research/scripts/price_research.py run 
 
 ## 배포 앱 (2026-11-20)
 - `report`(그리고 `run`)이 보고서·summary.json과 함께 `data/prices/<날짜>/app.json`(지역 안 이벤트 전체 통계)을 만든다.
-- 이 파일을 [projects/clinic-prices](../../../projects/clinic-prices/) 앱이 읽어 https://clinic-prices.vercel.app (로그인 필요)에 보여 준다.
+- 이 파일을 [projects/clinic-prices](../../../projects/clinic-prices/) 앱이 읽어 https://clinic-prices.vercel.app (로그인 없이 공개, 검색 차단, 주소는 price_watch.json의 app_slug)에 보여 준다.
 - 조사 뒤 올리기: clinic-content 시세 탭 "배포 앱에 올리기" 또는 `cd projects/clinic-prices && npm run publish`. 배포 서버는 조사를 하지 않는다.
 

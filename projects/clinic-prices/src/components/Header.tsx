@@ -16,7 +16,6 @@ export default function Header({ clinic, date, back }: { clinic: Clinic; date: s
               ))}
             </nav>
           )}
-          <form method="post" action="/api/logout"><button className="btn text-xs">나가기</button></form>
         </div>
       </div>
     </header>

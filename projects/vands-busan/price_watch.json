@@ -36,5 +36,6 @@
     "LOWEST_DISCOUNTED_COST",
     "HIGHEST_POPULARITY"
   ],
-  "max_detail_requests": 150
+  "max_detail_requests": 150,
+  "app_slug": "seomyeon"
 }

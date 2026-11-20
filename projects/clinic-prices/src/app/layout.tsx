@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "시술가 시세",
-  description: "주변 피부과 강남언니 이벤트가 조사 결과 (내부 참고용, 로그인 필요)",
+  description: "주변 피부과 강남언니 이벤트가 조사 결과 (내부 참고용)",
   robots: { index: false, follow: false, nocache: true },
 };
 
