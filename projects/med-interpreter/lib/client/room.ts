@@ -33,14 +33,10 @@ export class Room {
   }
 }
 
-// 사람이 읽고 입력하기 쉬운 8자리 방 코드 (헷갈리는 0/O, 1/I 제외)
-export function newRoomCode(): string {
-  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const r = crypto.getRandomValues(new Uint8Array(8));
-  const s = [...r].map((x) => A[x % A.length]).join("");
-  return `${s.slice(0, 4)}-${s.slice(4)}`;
-}
+// 방 이름은 데스크 번호로 정한다 ("desk-1"). 코드 입력 없이 데스크 번호만 고르면 연결된다.
+export const deskRoom = (n: number) => `desk-${Math.max(1, Math.min(20, Math.round(n) || 1))}`;
 export function normalizeRoom(v: string): string | null {
-  const s = v.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  return s.length === 8 ? `${s.slice(0, 4)}-${s.slice(4)}` : null;
+  const m = /^desk-(\d{1,2})$/i.exec(v.trim());
+  return m ? deskRoom(Number(m[1])) : null;
 }
+export const deskNumber = (room: string | null) => Number(/desk-(\d+)/.exec(room ?? "")?.[1] ?? 1);

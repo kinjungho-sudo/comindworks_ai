@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Listener, MicEngine, PcmPlayer, listMics, type ListenState } from "@/lib/client/audio";
-import { Room, newRoomCode, normalizeRoom, type RoomEvent } from "@/lib/client/room";
+import { Room, deskNumber, deskRoom, normalizeRoom, type RoomEvent } from "@/lib/client/room";
 import { GUEST_LANGS, GUEST_UI, LANG_META, detectLang, isGuestLang, isRisky, type GuestLang, type Lang } from "@/lib/langs";
 
 type Mode = "desk" | "guest" | "solo";
@@ -61,12 +61,12 @@ export default function Interpreter() {
     const qm = q.get("mode"), qr = normalizeRoom(q.get("room") ?? "");
     if ((qm === "guest" || qm === "desk") && qr) { store.set("mb.mode", qm); store.set("mb.room", qr); history.replaceState(null, "", "/"); }
     const m = store.get("mb.mode") as Mode | null;
-    const r = store.get("mb.room");
+    let r = store.get("mb.room");
+    if (r && !normalizeRoom(r)) { r = deskRoom(1); store.set("mb.room", r); } // 예전 8자리 코드 → 데스크 1
     if (m === "solo") setMode("solo");
     else if ((m === "desk" || m === "guest") && r) { setMode(m); setRoom(r); }
     setReady(true);
     fetch("/api/bootstrap", { cache: "no-store" }).then(async (res) => {
-      if (res.status === 401) { location.href = "/unlock"; return; }
       setBoot(await res.json());
     }).catch(() => {});
   }, []);
@@ -84,18 +84,13 @@ export default function Interpreter() {
 
 // ================================================================
 function ModePicker({ hospital, onPick }: { hospital: string; onPick: (m: Mode, room: string | null) => void }) {
-  const [code, setCode] = useState("");
-  const [err, setErr] = useState("");
-  const desk = () => {
-    let r = store.get("mb.deskRoom");
-    if (!r) { r = newRoomCode(); store.set("mb.deskRoom", r); }
-    onPick("desk", r);
-  };
-  const guest = () => {
-    const r = normalizeRoom(code);
-    if (!r) { setErr("데스크 화면에 보이는 8자리 연결 코드를 입력하세요."); return; }
-    onPick("guest", r);
-  };
+  const [desk, setDesk] = useState(() => deskNumber(store.get("mb.room")));
+  const DeskSelect = () => (
+    <div className="desk-pick" onClick={(e) => e.stopPropagation()}>
+      <span>데스크</span>
+      {[1, 2, 3, 4, 5].map((n) => <button key={n} className={`desk-n ${n === desk ? "sel" : ""}`} onClick={() => setDesk(n)}>{n}</button>)}
+    </div>
+  );
   return (
     <main className="picker">
       <div className="picker-head">
@@ -103,28 +98,28 @@ function ModePicker({ hospital, onPick }: { hospital: string; onPick: (m: Mode, 
         <h1>{hospital} 통역</h1>
         <p className="muted">이 기기를 어떤 화면으로 쓸지 고르세요. 한 번 고르면 다음부터 바로 열립니다.</p>
       </div>
+      <DeskSelect />
       <div className="picker-grid">
-        <button className="pick-card" onClick={desk}>
+        <button className="pick-card" onClick={() => onPick("desk", deskRoom(desk))}>
           <span className="pick-icon">🧑‍⚕️</span>
           <b>데스크 화면</b>
           <span>직원 앞에 두는 화면. 직원 말은 손님 언어로, 손님 말은 한국어로 보이고 들립니다.</span>
+          <span className="pick-go">데스크 {desk} 로 시작 →</span>
         </button>
-        <div className="pick-card as-div">
+        <button className="pick-card" onClick={() => onPick("guest", deskRoom(desk))}>
           <span className="pick-icon">🙋</span>
           <b>손님 화면</b>
-          <span>손님 앞에 두는 두 번째 기기. 데스크 화면의 연결 코드를 입력하거나 QR을 찍으세요.</span>
-          <div className="pick-join">
-            <input className="input code-sm" value={code} onChange={(e) => { setCode(e.target.value); setErr(""); }} placeholder="ABCD-1234" aria-label="연결 코드" onKeyDown={(e) => e.key === "Enter" && guest()} />
-            <button className="btn primary" onClick={guest}>연결</button>
-          </div>
-          {err && <span className="warn sm">{err}</span>}
-        </div>
+          <span>손님 앞에 두는 두 번째 기기. 같은 번호의 데스크 화면과 자동으로 연결됩니다. 코드 입력은 필요 없습니다.</span>
+          <span className="pick-go">데스크 {desk} 에 연결 →</span>
+        </button>
         <button className="pick-card" onClick={() => onPick("solo", null)}>
           <span className="pick-icon">🖥️</span>
           <b>한 화면으로 같이 보기</b>
           <span>기기 하나(모니터 복제 포함)를 함께 볼 때. 한국어와 손님 언어를 모두 알아듣고 양쪽 글자를 같이 보여줍니다.</span>
+          <span className="pick-go">시작 →</span>
         </button>
       </div>
+      <p className="muted small">데스크가 여러 곳이면 위에서 번호를 고르세요. 데스크 화면과 손님 화면은 같은 번호끼리 연결됩니다.</p>
       <a className="link" href="/admin">⚙︎ 관리자</a>
     </main>
   );
@@ -687,7 +682,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         </div>
       )}
 
-      {sheet === "connect" && roomCode && <ConnectSheet code={roomCode} online={peerOnline} onClose={() => setSheet(null)} />}
+      {sheet === "connect" && roomCode && <ConnectSheet room={roomCode} online={peerOnline} onClose={() => setSheet(null)} />}
       {sheet === "phrases" && <PhraseSheet phrases={boot.phrases} lang={guestLang} onPick={sendPhrase} onClose={() => setSheet(null)} />}
       {sheet === "keyboard" && <KeyboardSheet lang={guestLang} onSend={(t) => { setSheet(null); void interpret(t, "ko", "text"); }} onClose={() => setSheet(null)} />}
       {sheet === "human" && <HumanSheet services={settings.interpreter_services} noticeOn={humanNotice} onNotice={callHuman} onClose={() => setSheet(null)} />}
@@ -1003,18 +998,18 @@ function Sheet({ title, children, onClose }: { title: string; children: React.Re
   );
 }
 
-function ConnectSheet({ code, online, onClose }: { code: string; online: boolean; onClose: () => void }) {
+function ConnectSheet({ room, online, onClose }: { room: string; online: boolean; onClose: () => void }) {
   const [qr, setQr] = useState("");
-  const url = typeof location !== "undefined" ? `${location.origin}/?mode=guest&room=${code}` : "";
+  const url = typeof location !== "undefined" ? `${location.origin}/?mode=guest&room=${room}` : "";
   useEffect(() => { void QRCode.toDataURL(url, { margin: 1, width: 360, color: { dark: "#0f1f24", light: "#ffffff" } }).then(setQr); }, [url]);
   return (
     <Sheet title="손님 화면 연결" onClose={onClose}>
       <div className="connect">
         {qr && <img src={qr} alt="손님 화면 연결 QR" width={220} height={220} />}
         <div className="connect-info">
-          <p>손님 쪽 기기(태블릿·모니터 PC)로 QR을 찍거나, 그 기기에서 이 주소를 열고 <b>손님 화면</b>을 고른 뒤 코드를 입력하세요.</p>
-          <p className="code-big">{code}</p>
-          <p className="muted small">{online ? "● 손님 화면이 연결되어 있습니다." : "아직 연결된 손님 화면이 없습니다."} 손님 기기도 처음 한 번은 기기 등록 코드가 필요합니다.</p>
+          <p className="code-big">데스크 {deskNumber(room)}</p>
+          <p>손님 쪽 기기에서 이 주소를 열고 <b>손님 화면 → 데스크 {deskNumber(room)}</b> 을 누르면 바로 연결됩니다. 코드 입력은 필요 없고, QR을 찍어도 됩니다.</p>
+          <p className="muted small">{online ? "● 손님 화면이 연결되어 있습니다." : "아직 연결된 손님 화면이 없습니다."}</p>
         </div>
       </div>
     </Sheet>
