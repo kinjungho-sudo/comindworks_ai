@@ -2,6 +2,7 @@
 // 리뷰 넣기 → 분류(긴급·불만·질문·칭찬) → 답글 초안 작성·의료법 검사 → 사람이 플랫폼에 게시 → "게시함" 표시.
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/client/api";
+import NaverPanel from "./NaverPanel";
 
 type Finding = { id: string; severity: "block" | "warn"; title: string; hit: string; fix: string; cite: string[] };
 type Review = {
@@ -65,6 +66,7 @@ export default function ReviewsBoard({ clinic }: { clinic: string }) {
           <b>오늘 바로 할 일</b> — 긴급 리뷰 {urgentOpen.length}건. 공개 답글보다 먼저 원장님이 확인하고 개별 연락하세요.
         </div>
       )}
+      <NaverPanel clinic={clinic} onSaved={load} />
       <ImportBox clinic={clinic} onDone={load} />
       <div className="flex flex-wrap gap-2">
         {(["open", "all", ...order] as const).map((k) => (
@@ -113,7 +115,7 @@ function ImportBox({ clinic, onDone }: { clinic: string; onDone: () => void }) {
 
   return (
     <details className="card">
-      <summary className="cursor-pointer font-semibold">리뷰 넣기 <span className="mute text-sm font-normal">— 플랫폼 관리자 화면에서 복사해 붙여 넣기</span></summary>
+      <summary className="cursor-pointer font-semibold">다른 채널 리뷰 넣기 <span className="mute text-sm font-normal">— 카카오·구글·강남언니 등 한 건씩 또는 CSV</span></summary>
       <div className="mt-3 space-y-3">
         <div className="flex gap-2">
           <button className={`btn ${mode === "one" ? "btn-primary" : ""}`} onClick={() => setMode("one")}>한 건씩</button>

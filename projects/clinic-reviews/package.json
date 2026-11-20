@@ -6,10 +6,12 @@
     "dev": "next dev -H 127.0.0.1 -p 3301",
     "build": "next build",
     "start": "next start -H 127.0.0.1 -p 3301",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test tests/naverParse.test.ts"
   },
   "dependencies": {
     "next": "16.4.6",
+    "playwright-core": "1.65.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
