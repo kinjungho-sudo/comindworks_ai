@@ -1,0 +1,28 @@
+{
+  "name": "clinic-prices",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 127.0.0.1 -p 3302",
+    "build": "next build",
+    "start": "next start -p 3302",
+    "lint": "eslint",
+    "sync": "node scripts/sync-data.mjs",
+    "publish": "node scripts/sync-data.mjs && npx --yes vercel@latest deploy --prod --yes"
+  },
+  "dependencies": {
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5"
+  }
+}

@@ -4,7 +4,7 @@
 사용법
   python3 price_research.py run      <병원폴더>/price_watch.json [날짜]  # 조사 + 보고서
   python3 price_research.py collect  <병원폴더>/price_watch.json [날짜]  # 조사 → data/…/<날짜>/snapshot.json
-  python3 price_research.py report   <병원폴더>/price_watch.json [날짜]  # 스냅샷 → HTML 보고서 + summary.json
+  python3 price_research.py report   <병원폴더>/price_watch.json [날짜]  # 스냅샷 → HTML 보고서 + summary.json + app.json(시세 앱용)
   python3 price_research.py selftest                                     # 파서 회귀 시험
 
 동작
@@ -671,6 +671,12 @@ def report(cfg: dict, date: str | None = None) -> Path:
     lite = {pid: {k: v for k, v in s.items() if k not in ("events", "hospitals", "popular", "rows")} for pid, s in summ.items()}
     (day / "summary.json").write_text(json.dumps({"date": snap["date"], "area": snap["area_keyword"], "vs": dif.get("prev_date"),
                                                   "procedures": lite}, ensure_ascii=False, indent=1), encoding="utf-8")
+    # 배포용 시세 앱(projects/clinic-prices)이 읽는 전체 결과 (지역 안 이벤트만, 원문 HTML 없음)
+    app = {"schema": 1, "date": snap["date"], "client": snap.get("client", ""), "area": snap["area_keyword"],
+           "collected_at": snap.get("collected_at"), "source": snap.get("source"),
+           "stations": snap.get("area_stations", []), "own_hospitals": snap.get("own_hospitals", []),
+           "procedures": summ, "diff": dif}
+    (day / "app.json").write_text(json.dumps(app, ensure_ascii=False), encoding="utf-8")
     print(f"보고서: {out}", file=sys.stderr)
     return out
 

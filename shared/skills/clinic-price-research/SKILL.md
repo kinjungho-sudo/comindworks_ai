@@ -50,3 +50,9 @@ python3 ../../shared/skills/clinic-price-research/scripts/price_research.py run 
 - 표본: 검색어 × 정렬 몇 가지 × 첫 장(20건)만 본다. 강남언니에 이벤트가 없는 병원은 빠진다.
 - 단품/패키지·용량 분류는 옵션명 글자로 자동 판단한다. 의사결정 전에는 보고서의 원문 링크로 확인한다.
 - 강남언니 화면 구조가 바뀌면 파서가 깨진다. 조사 결과가 0건이거나 selftest가 실패하면 `tests/`의 저장본과 새 화면을 비교해 고친다.
+
+## 배포 앱 (2026-11-20)
+- `report`(그리고 `run`)이 보고서·summary.json과 함께 `data/prices/<날짜>/app.json`(지역 안 이벤트 전체 통계)을 만든다.
+- 이 파일을 [projects/clinic-prices](../../../projects/clinic-prices/) 앱이 읽어 https://clinic-prices.vercel.app (로그인 필요)에 보여 준다.
+- 조사 뒤 올리기: clinic-content 시세 탭 "배포 앱에 올리기" 또는 `cd projects/clinic-prices && npm run publish`. 배포 서버는 조사를 하지 않는다.
+
