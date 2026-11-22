@@ -20,3 +20,4 @@
 - 2026-11-20: 시술가 조사를 배포 앱으로 — projects/clinic-prices (https://clinic-prices.vercel.app). 비밀번호 로그인(proxy + 페이지마다 재확인), 검색 차단. 조사는 맥미니에서만 하고 결과(app.json)만 올림(clinic-content 시세 탭 "배포 앱에 올리기" 또는 npm run publish). 비밀번호는 맥미니 projects/clinic-prices/.env.local.
 - 2026-11-20: 시세 앱 비밀번호 제거, 로그인 없이 공개(정호님 지시). 검색 차단은 유지. 공개 주소에 병원 실명이 안 드러나게 /c/seomyeon(price_watch.json app_slug)으로 바꿈. Vercel 비밀값 2개 삭제.
 - 2026-11-20: 시세 앱 개편(정호님 요청) — 같은 기준끼리 단가 비교(샷·cc당+흔한 용량 환산, 회 시술은 얼굴 전체/한 부위 1회, 보톡스는 주름 1부위/사각턱), 우리 병원 이름·단가를 넣으면 시술별 순위, 병원별 막대그래프, 모든 가격에 강남언니 원문 링크, 중앙값 30% 미만은 미끼가 의심으로 제외.
+- 2026-11-23: 리뷰 배지를 밴스의원 부산 개발 홈페이지(vands-dev)에 적용 시작 — 리뷰 앱 "홈페이지로 보내기"가 /Users/macmini/cominidworks/vands/data/review-badge.json을 씀(숫자·링크만, 원문 없음, confirmed=false면 개발 사이트에서만 표시). 화면 반영·dev 배포는 홈페이지 세션이 그 폴더 규칙(dev→QA→운영)대로. 숫자는 정호님 제공 후 채움.

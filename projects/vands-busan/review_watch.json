@@ -3,5 +3,13 @@
   "input_dir": "data/reviews",
   "report_dir": "output/reviews",
   "report_days": 7,
-  "platforms": ["네이버", "강남언니", "구글", "카카오"]
+  "platforms": [
+    "네이버",
+    "강남언니",
+    "구글",
+    "카카오"
+  ],
+  "homepage_badge_files": [
+    "/Users/macmini/cominidworks/vands/data/review-badge.json"
+  ]
 }

@@ -22,6 +22,16 @@ export default function BadgeEditor({ clinic }: { clinic: string }) {
   const errs = validateBadge(b);
   const snippet = badgeSnippet(b);
 
+  async function sendHomepage() {
+    setBusy(true); setMsg(null);
+    try {
+      await api(`/api/clinics/${clinic}/badge`, { method: "PUT", json: b });
+      const r = await api<{ written: string[]; confirmed: boolean }>(`/api/clinics/${clinic}/badge/homepage`, { method: "POST" });
+      setMsg({ ok: true, text: `홈페이지 데이터로 보냈습니다 (${r.written.length}곳). 다음 개발 배포 때 개발 사이트에 반영됩니다${r.confirmed ? "" : " · 법률 확인 전이라 운영 사이트에는 표시되지 않습니다"}` });
+    } catch (e) { setMsg({ ok: false, text: (e as Error).message }); }
+    setBusy(false);
+  }
+
   async function save() {
     setBusy(true); setMsg(null);
     try {
@@ -74,6 +84,7 @@ export default function BadgeEditor({ clinic }: { clinic: string }) {
           {errs.length > 0 && <div className="box-bad">{errs.map((x) => <div key={x}>{x}</div>)}</div>}
           <div className="flex items-center gap-3">
             <button className="btn btn-primary" disabled={busy || errs.length > 0} onClick={save}>{busy ? "저장 중…" : "저장"}</button>
+            <button className="btn" disabled={busy || errs.length > 0 || !snippet} onClick={sendHomepage}>홈페이지로 보내기</button>
             {msg && <span className={`text-sm ${msg.ok ? "text-[var(--ok)]" : "text-[var(--bad)]"}`}>{msg.text}</span>}
           </div>
         </div>
@@ -87,7 +98,8 @@ export default function BadgeEditor({ clinic }: { clinic: string }) {
           <div className="card space-y-2">
             <div className="text-sm font-semibold">홈페이지에 붙이기</div>
             <ol className="mute list-decimal space-y-1 pl-5 text-sm">
-              <li>저장 후 법률 확인을 체크합니다.</li>
+              <li><b>밴스의원 홈페이지(자동):</b> &lsquo;홈페이지로 보내기&rsquo;를 누르면 홈페이지 데이터에 들어가고, 다음 개발 배포 때 개발 사이트에 보입니다. 운영 사이트에는 법률 확인을 체크한 뒤에만 보입니다.</li>
+              <li>다른 홈페이지(수동): 저장 후 법률 확인을 체크합니다.</li>
               <li>아래 버튼으로 HTML 조각을 내려받아 홈페이지 관리자 화면의 HTML 넣기 칸에 붙여 넣습니다.</li>
               <li>숫자는 자동으로 바뀌지 않습니다. 한 달에 한 번 숫자·기준일을 고치고 다시 붙여 넣으세요.</li>
             </ol>

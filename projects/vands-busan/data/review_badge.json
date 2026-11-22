@@ -1,0 +1,17 @@
+{
+  "asOf": "2026-11-23",
+  "naver": {
+    "count": null,
+    "rating": null,
+    "url": "https://map.naver.com/p/search/%EB%B0%B4%EC%8A%A4%EC%9D%98%EC%9B%90%20%EB%B6%80%EC%82%B0%EC%A0%90"
+  },
+  "kakao": {
+    "count": null,
+    "rating": null,
+    "url": "https://map.kakao.com/?q=%EB%B0%B4%EC%8A%A4%EC%9D%98%EC%9B%90%20%EB%B6%80%EC%82%B0%EC%A0%90"
+  },
+  "google": {},
+  "confirmed": {
+    "done": false
+  }
+}

@@ -15,7 +15,7 @@ export const EMPTY_BADGE: Badge = { asOf: "", naver: {}, kakao: {}, google: {}, 
 const HOSTS: Record<"naver" | "kakao" | "google", RegExp> = {
   naver: /^https:\/\/(m\.)?(map|place|pcmap)\.naver\.com\/|^https:\/\/naver\.me\//,
   kakao: /^https:\/\/(place\.)?map\.kakao\.com\/|^https:\/\/kko\.to\//,
-  google: /^https:\/\/(www\.)?google\.[a-z.]+\/maps|^https:\/\/maps\.app\.goo\.gl\/|^https:\/\/g\.page\//,
+  google: /^https:\/\/(www\.)?google\.[a-z.]+\/maps|^https:\/\/maps\.google\.com\/|^https:\/\/maps\.app\.goo\.gl\/|^https:\/\/g\.page\//,
 };
 
 export function validateBadge(b: Badge): string[] {
@@ -40,13 +40,14 @@ function esc(s: string) {
 /** 홈페이지에 그대로 붙여 넣는 HTML 조각 (외부 스크립트·글꼴 없음) */
 export function badgeSnippet(b: Badge): string {
   const items = (["naver", "kakao", "google"] as const)
-    .filter((k) => b[k].url && (b[k].count != null || b[k].rating != null))
+    .filter((k) => b[k].url) // 숫자가 없으면 "리뷰 보기" 링크만
     .map((k) => {
       const c = b[k];
       const parts = [
         c.rating != null ? `★ ${c.rating.toFixed(1)}` : "",
         c.count != null ? `리뷰 ${c.count.toLocaleString("ko-KR")}건` : "",
       ].filter(Boolean);
+      if (!parts.length) parts.push("리뷰 보기");
       return `<a class="cmw-rb-item" href="${esc(c.url!)}" target="_blank" rel="nofollow noopener noreferrer"><span class="cmw-rb-ch">${NAME[k]}</span><span class="cmw-rb-v">${parts.join(" · ")}</span><span class="cmw-rb-go">보기 ›</span></a>`;
     });
   if (!items.length) return "";
@@ -56,4 +57,18 @@ export function badgeSnippet(b: Badge): string {
 ${items.join("\n")}
 <span class="cmw-rb-asof">${esc(b.asOf)} 기준 · 각 플랫폼에서 직접 확인하세요</span>
 </div>`;
+}
+
+/** 홈페이지(vands 사이트)가 읽는 데이터 파일. 리뷰 원문은 없다. confirmed=false면 홈페이지는 개발 사이트에서만 보여 준다 */
+export function homepageJson(b: Badge) {
+  return {
+    schema: 1,
+    generated_by: "clinic-reviews",
+    asOf: b.asOf,
+    confirmed: b.confirmed.done,
+    note: "리뷰 원문을 싣지 않는다(의료법 제56조 제2항 제2호). 숫자가 없으면 '리뷰 보기' 링크만.",
+    channels: (["naver", "kakao", "google"] as const)
+      .filter((k) => b[k].url)
+      .map((k) => ({ id: k, name: NAME[k], url: b[k].url!, count: b[k].count ?? null, rating: k === "naver" ? null : b[k].rating ?? null })),
+  };
 }
