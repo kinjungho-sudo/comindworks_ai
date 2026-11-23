@@ -18,5 +18,6 @@ export const env = {
   sttFallbackModel: process.env.STT_FALLBACK_MODEL || "gpt-4o-transcribe",
   translateModel: process.env.TRANSLATE_MODEL || "gpt-5.4-mini",
   ttsModel: process.env.TTS_MODEL || "gpt-4o-mini-tts",
+  diarizeModel: process.env.DIARIZE_MODEL || "gpt-4o-transcribe-diarize",
   backModel: process.env.BACK_MODEL || "gpt-5.4-mini",
 };

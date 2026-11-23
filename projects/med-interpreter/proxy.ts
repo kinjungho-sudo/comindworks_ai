@@ -3,8 +3,8 @@ import { ADMIN_COOKIE, verify } from "@/lib/auth";
 
 // 통역 화면은 주소만 열면 바로 쓴다(등록 코드 없음). 관리자 화면만 PIN 이 필요하다.
 // 대신 돈이 드는 API(받아쓰기·번역·음성)는 ① 이 사이트 화면에서 온 요청만 받고 ② 한 곳에서 너무 많이 부르면 잠시 막는다.
-const COSTLY = ["/api/stt-token", "/api/translate", "/api/tts", "/api/transcribe", "/api/backtranslate", "/api/summary"];
-const LIMIT_PER_MIN = 90;
+const COSTLY = ["/api/stt-token", "/api/translate", "/api/tts", "/api/transcribe", "/api/backtranslate", "/api/summary", "/api/diarize"];
+const LIMIT_PER_MIN = 150;
 const hits = new Map<string, { n: number; reset: number }>();
 
 function sameSite(req: NextRequest) {

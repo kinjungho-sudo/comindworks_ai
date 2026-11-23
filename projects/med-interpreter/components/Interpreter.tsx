@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { Listener, MicEngine, PcmPlayer, listMics, type ListenState } from "@/lib/client/audio";
+import { Listener, MicEngine, PcmPlayer, listMics, toWav, type FinalTurn, type ListenState } from "@/lib/client/audio";
 import { Room, deskNumber, deskRoom, normalizeRoom, type RoomEvent } from "@/lib/client/room";
 import { GUEST_LANGS, GUEST_UI, LANG_META, detectLang, isGuestLang, isRisky, type GuestLang, type Lang } from "@/lib/langs";
 
@@ -23,7 +23,8 @@ type Boot = { settings: Settings; phrases: Phrase[]; realtime: { url: string; ke
 type Msg = {
   id: string; speaker: Side; kind: "speech" | "text" | "phrase";
   srcLang: Lang; src: string; tgtLang: Lang; tgt: string;
-  status: "translating" | "done" | "error"; at: number;
+  status: "hearing" | "translating" | "done" | "error"; at: number;
+  recovered?: boolean; // 겹친 말 복원으로 찾아낸 발화
   back?: string; // 역번역 (직원 말 → 손님 언어 → 다시 한국어)
   backOk?: boolean; backIssue?: string;
 };
@@ -193,7 +194,8 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     setMsgs((xs) => {
       const i = xs.findIndex((x) => x.id === m.id);
       if (i < 0) return [...xs, m].sort((a, b) => a.at - b.at).slice(-200);
-      const c = xs.slice(); c[i] = { ...c[i], ...m }; return c;
+      const c = xs.slice(); c[i] = { ...c[i], ...m };
+      return c[i].at !== xs[i].at ? c.sort((a, b) => a.at - b.at) : c;
     });
   }, []);
 
@@ -239,17 +241,14 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     ttsBusy.current = true;
     while (ttsQueue.current.length) {
       // 이 기기 앞 사람이 말하는 중이면 끝날 때까지 기다린다 (말을 끊지 않게, 최대 15초)
-      for (let w = 0; w < 100 && anyTalking(); w++) await new Promise((r) => setTimeout(r, 150));
+      for (let w = 0; w < 40 && anyTalking(); w++) await new Promise((r) => setTimeout(r, 150));
       const m = ttsQueue.current.shift();
       if (!m) break;
       setSpeakingId(m.id);
-      pauseAll("tts", true);
       room.current?.send("tts", { dev: dev.current, on: true });
       recent.current.push({ text: m.tgt, at: Date.now() });
       await player.current?.play(m.id + m.tgt.length, m.tgt, m.tgtLang);
       room.current?.send("tts", { dev: dev.current, on: false });
-      await new Promise((r) => setTimeout(r, 250)); // 스피커 잔향이 마이크에 안 들어가게
-      pauseAll("tts", false);
       setSpeakingId(null);
     }
     ttsBusy.current = false;
@@ -283,12 +282,11 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     } catch {}
   }, [upsertMsg]);
 
-  const interpret = useCallback(async (text: string, srcLang: Lang, kind: "speech" | "text") => {
+  // 이미 채팅에 올라간 메시지(원문)를 통역한다. 여러 개가 동시에 돌아도 된다.
+  const translateMsg = useCallback(async (m0: Msg) => {
     lastActivity.current = Date.now();
-    const speaker: Side = srcLang === "ko" ? "staff" : "guest";
-    const tgtLang: Lang = srcLang === "ko" ? S.current.guestLang : "ko";
-    const hist = S.current.msgs.filter((m) => m.status === "done").slice(-6).map((m) => ({ speaker: m.speaker, text: m.speaker === "staff" ? m.src : m.tgt }));
-    const m: Msg = { id: uid(), speaker, kind, srcLang, src: text, tgtLang, tgt: "", status: "translating", at: Date.now() };
+    const m: Msg = { ...m0, tgt: "", status: "translating" };
+    const hist = S.current.msgs.filter((x) => x.status === "done" && x.id !== m.id && x.at < m.at).slice(-6).map((x) => ({ speaker: x.speaker, text: x.speaker === "staff" ? x.src : x.tgt }));
     upsertMsg(m);
     room.current?.send("msg", { msg: m });
     if (authority) void ensureSession();
@@ -297,7 +295,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     try {
       const r = await fetch("/api/translate", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, from: srcLang, to: tgtLang, speaker, kind, sessionId: consent ? S.current.session.id : null, history: hist }),
+        body: JSON.stringify({ text: m.src, from: m.srcLang, to: m.tgtLang, speaker: m.speaker, kind: m.kind === "text" ? "text" : "speech", sessionId: consent ? S.current.session.id : null, history: hist }),
       });
       if (!r.ok || !r.body) throw new Error(String(r.status));
       const rd = r.body.getReader();
@@ -322,36 +320,138 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
     if (m.status === "done") {
       recent.current.push({ text: m.tgt, at: Date.now() });
       speak(m);
-      suggestCard(speaker === "staff" ? m.src : m.tgt);
-      if (speaker === "staff") void backTranslate({ ...m });
+      suggestCard(m.speaker === "staff" ? m.src : m.tgt);
+      if (m.speaker === "staff") void backTranslate({ ...m });
     }
   }, [authority, ensureSession, speak, upsertMsg, suggestCard, backTranslate]);
 
-  // 마이크가 확정한 문장. role: 이 마이크가 맡은 사람 (staff=한국어만, guest=외국어만, any=모두)
-  const onFinal = useCallback((text: string, role: Role, key: string) => {
-    const end = () => { setLives((l) => { const c = { ...l }; delete c[key]; return c; }); room.current?.send("live", { dev: key, text: "" }); };
-    const lang = detectLang(text, S.current.guestLang);
-    if (!lang) { end(); return; }
-    if ((role === "staff" && lang !== "ko") || (role === "guest" && lang === "ko")) { end(); return; }
-    // 방금 스피커로 나온 통역(또는 상대 기기 원문)을 다시 받아쓴 것이면 버린다
-    const t = Date.now();
-    recent.current = recent.current.filter((r) => t - r.at < 25_000);
-    if (recent.current.some((r) => similar(r.text, text) > 0.55)) { end(); return; }
-    end();
-    if (lang !== "ko" && isGuestLang(lang)) changeGuestLang(lang);
-    recent.current.push({ text, at: t });
-    void interpret(text, lang, "speech");
-  }, [changeGuestLang, interpret]);
+  const makeMsg = (id: string, src: string, srcLang: Lang, kind: Msg["kind"], at: number, extra?: Partial<Msg>): Msg => ({
+    id, speaker: srcLang === "ko" ? "staff" : "guest", kind, srcLang, src, tgtLang: srcLang === "ko" ? S.current.guestLang : "ko", tgt: "", status: "translating", at, ...extra,
+  });
 
-  const onPartial = useCallback((text: string, role: Role, key: string) => {
+  // 글자 입력·자주 쓰는 문장 번역용
+  const interpret = useCallback(async (text: string, srcLang: Lang, kind: "speech" | "text") => {
+    await translateMsg(makeMsg(uid(), text, srcLang, kind, Date.now()));
+  }, [translateMsg]);
+
+  const removeMsg = useCallback((id: string) => {
+    setMsgs((xs) => xs.filter((x) => x.id !== id));
+    room.current?.send("msgdel", { id });
+  }, []);
+
+  // 스피커로 나온 통역이 마이크에 다시 들어온 부분을 걸러낸다 (문장 전체가 비슷하면 버리고, 통역문이 통째로 섞여 있으면 그 부분만 뺀다)
+  const stripEcho = (text: string) => {
+    const now = Date.now();
+    recent.current = recent.current.filter((r) => now - r.at < 25_000);
+    let t = text;
+    for (const r of recent.current) {
+      if (similar(r.text, t) > 0.55) return "";
+      if (r.text.length >= 10) {
+        const i = t.toLowerCase().indexOf(r.text.toLowerCase());
+        if (i >= 0) t = (t.slice(0, i) + " " + t.slice(i + r.text.length)).trim();
+      }
+    }
+    return t.replace(/\s+/g, " ").trim();
+  };
+
+  // 한 발화 안에 한국어와 외국어가 섞여 있으면 언어별로 나눈다 (MRI·CT 같은 짧은 영어 단어는 한국어 문장에 둔다)
+  const splitByLang = (text: string): { lang: Lang; text: string }[] => {
+    const toks = text.split(/\s+/).filter(Boolean);
+    const runs: { side: "ko" | "fx"; words: string[] }[] = [];
+    for (const w of toks) {
+      const side: "ko" | "fx" | "n" = /[\uac00-\ud7a3]/.test(w) ? "ko" : /[\p{L}]/u.test(w) ? "fx" : "n";
+      const last = runs[runs.length - 1];
+      if (side === "n" || (last && last.side === side)) { if (last) last.words.push(w); else runs.push({ side: "fx", words: [w] }); }
+      else runs.push({ side, words: [w] });
+    }
+    // 한국어 사이에 낀 짧은 라틴 문자(약어·외래어)는 한국어로 합친다
+    const merged: typeof runs = [];
+    runs.forEach((r, i) => {
+      const latinShort = r.side === "fx" && r.words.length <= 2 && /^[\x00-\x7F\s]+$/.test(r.words.join(" ")) && (runs[i - 1]?.side === "ko" || runs[i + 1]?.side === "ko");
+      const side = latinShort ? "ko" : r.side;
+      const last = merged[merged.length - 1];
+      if (last && last.side === side) last.words.push(...r.words); else merged.push({ side, words: [...r.words] });
+    });
+    return merged.map((r) => {
+      const t = r.words.join(" ").trim();
+      return { lang: (r.side === "ko" ? "ko" : detectLang(t, S.current.guestLang) ?? S.current.guestLang) as Lang, text: t };
+    }).filter((p) => p.text.replace(/[\s.,!?。、，？！…'"·-]/g, "").length >= (p.lang === "ko" ? 1 : 2));
+  };
+
+  // 겹친 말 복원: 마이크 하나에서 실시간 받아쓰기가 놓친 상대 말이 있는지 화자 분리로 다시 확인한다
+  const recover = useCallback(async (turn: FinalTurn, live: { ko?: { id: string; text: string }; fx?: { id: string; text: string } }) => {
+    try {
+      const fd = new FormData();
+      fd.append("audio", toWav(turn.chunks), "turn.wav");
+      const r = await fetch("/api/diarize", { method: "POST", body: fd });
+      if (!r.ok) return;
+      const { segments } = await r.json() as { segments: { speaker: string; text: string }[] };
+      const sides: Record<"ko" | "fx", string[]> = { ko: [], fx: [] };
+      for (const seg of segments) for (const p of splitByLang(seg.text)) sides[p.lang === "ko" ? "ko" : "fx"].push(p.text);
+      const size = (t: string) => t.replace(/[\s.,!?。、，？！…'"·-]/g, "").length;
+      const fix = (side: "ko" | "fx", offset: number) => {
+        const text = stripEcho(sides[side].join(" ").trim());
+        if (!text) return;
+        const had = live[side];
+        // 실시간 받아쓰기가 이 사람 말을 못 잡았거나, 조각만 잡았으면(복원본이 훨씬 길면) 복원본으로 채운다
+        if (had && size(text) <= size(had.text) * 1.5 + 6) return;
+        const lang: Lang = side === "ko" ? "ko" : (detectLang(text, S.current.guestLang) ?? S.current.guestLang);
+        if (lang !== "ko" && isGuestLang(lang)) changeGuestLang(lang);
+        const at = S.current.msgs.find((m) => m.id === had?.id)?.at ?? turn.started + offset;
+        void translateMsg(makeMsg(had?.id ?? `r-${turn.id}-${side}`, text, lang, "speech", at, { recovered: true }));
+      };
+      if (sides.fx.length) fix("fx", 2);
+      if (sides.ko.length) fix("ko", 1);
+    } catch { /* 복원 실패는 조용히 넘긴다 */ }
+  }, [translateMsg, changeGuestLang]);
+
+  // 발화가 끝나면(커밋) 바로 채팅에 원문을 올린다. 통역은 확정본이 오면 뒤따른다.
+  const onCommit = useCallback((tid: string, text: string, role: Role, key: string) => {
+    const lk = `${key}:${tid}`;
+    setLives((l) => { const c = { ...l }; delete c[lk]; return c; });
+    room.current?.send("live", { dev: lk, text: "" });
+    if (role !== "any" || !text.trim()) return; // 두 기기 모드는 확정본에서 언어를 보고 올린다
+    const lang = detectLang(text, S.current.guestLang) ?? "ko";
+    const m = makeMsg(`v-${lk}`, text, lang, "speech", Date.now(), { status: "hearing" });
+    upsertMsg(m);
+    room.current?.send("msg", { msg: m });
+  }, [upsertMsg]);
+
+  // 확정본: 메아리 제거 → 언어별 분리 → 각각 통역. 마이크 하나면 겹친 말 복원도 돌린다.
+  const onFinal = useCallback((turn: FinalTurn, role: Role, key: string) => {
+    const lk = `${key}:${turn.id}`;
+    const mid = `v-${lk}`;
+    setLives((l) => { const c = { ...l }; delete c[lk]; return c; });
+    const clean = turn.text ? stripEcho(turn.text) : "";
+    let parts = clean ? splitByLang(clean) : [];
+    if (role === "staff") parts = parts.filter((p) => p.lang === "ko");
+    if (role === "guest") parts = parts.filter((p) => p.lang !== "ko");
+    const live: { ko?: { id: string; text: string }; fx?: { id: string; text: string } } = {};
+    if (!parts.length) {
+      if (S.current.msgs.some((m) => m.id === mid) || role === "any") removeMsg(mid);
+    } else {
+      parts.forEach((p, i) => {
+        const id = i === 0 ? mid : `${mid}-${i}`;
+        const side = p.lang === "ko" ? "ko" : "fx";
+        if (!live[side]) live[side] = { id, text: p.text };
+        if (p.lang !== "ko" && isGuestLang(p.lang)) changeGuestLang(p.lang);
+        void translateMsg(makeMsg(id, p.text, p.lang, "speech", turn.started + i * 3));
+      });
+    }
+    if (role === "any" && turn.voicedMs >= 800 && turn.chunks.length) void recover(turn, live);
+  }, [changeGuestLang, translateMsg, removeMsg, recover]);
+
+  const onPartial = useCallback((tid: string, text: string, role: Role, key: string) => {
     const lang = detectLang(text, S.current.guestLang);
     if (text && ((role === "staff" && lang && lang !== "ko") || (role === "guest" && lang === "ko"))) return;
+    const lk = `${key}:${tid}`;
     const speaker: Side = role === "guest" ? "guest" : role === "staff" ? "staff" : lang && lang !== "ko" ? "guest" : "staff";
     const live: Live = { speaker, text, at: Date.now() };
-    setLives((l) => ({ ...l, [key]: live }));
+    setLives((l) => ({ ...l, [lk]: live }));
     lastActivity.current = Date.now();
-    if (Date.now() - (liveSent.current[key] ?? 0) > 250 || !text) { liveSent.current[key] = Date.now(); room.current?.send("live", { dev: key, ...live }); }
+    if (Date.now() - (liveSent.current[lk] ?? 0) > 250 || !text) { liveSent.current[lk] = Date.now(); room.current?.send("live", { dev: lk, ...live }); }
   }, []);
+  const onCommitRef = useRef(onCommit); onCommitRef.current = onCommit;
   const onPartialRef = useRef(onPartial); onPartialRef.current = onPartial;
   const onFinalRef = useRef(onFinal); onFinalRef.current = onFinal;
 
@@ -398,7 +498,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         lastActivity.current = Date.now();
         if (authority) void ensureSession();
         if (isNewDone) {
-          recent.current.push({ text: m.tgt, at: Date.now() }, { text: m.src, at: Date.now() });
+          recent.current.push({ text: m.tgt, at: Date.now() });
           speak(m);
           suggestCard(m.speaker === "staff" ? m.src : m.tgt);
         }
@@ -413,6 +513,7 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         });
         break;
       }
+      case "msgdel": if (typeof p.id === "string") setMsgs((xs) => xs.filter((x) => x.id !== p.id)); break;
       case "show": setShown((p.shown as Shown) ?? null); break;
       case "human": setHumanNotice(!!p.on); break;
       case "human-request": if (authority) setHumanAsked(true); break;
@@ -455,8 +556,9 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         const l = new Listener(mic, () => ({ guestLang: S.current.guestLang }));
         l.onState = () => refreshListen();
         l.onLevel = (v) => { levels.current[key] = v; setLevel(Math.max(...Object.values(levels.current))); };
-        l.onPartial = (t) => onPartialRef.current(t, pl.role, key);
-        l.onFinal = (t) => onFinalRef.current(t, pl.role, key);
+        l.onPartial = (tid, t) => onPartialRef.current(tid, t, pl.role, key);
+        l.onCommit = (tid, t) => onCommitRef.current(tid, t, pl.role, key);
+        l.onFinal = (turn) => onFinalRef.current(turn, pl.role, key);
         l.setMuted(muted);
         ears.current.push({ role: pl.role, mic, l });
         void l.connect();
@@ -850,7 +952,7 @@ function NowCaption({ current, mode, G, speaking, onReplay }: { current: NonNull
   const backOff = !!m.back && m.backOk === false;
   return (
     <div className={`caption ${m.speaker} ${speaking ? "speaking" : ""}`}>
-      <span className="cap-who">{whoLabel(m.speaker, guestView, G)}<em>{LANG_META[m.srcLang].flag} → {LANG_META[m.tgtLang].flag}</em></span>
+      <span className="cap-who">{whoLabel(m.speaker, guestView, G)}<em>{LANG_META[m.srcLang].flag} → {LANG_META[m.tgtLang].flag}</em>{m.recovered && !guestView && <em>· 겹친 말 복원</em>}{m.status === "hearing" && <em>· {guestView ? "…" : "받아쓰는 중"}</em>}</span>
       <p className="cap-main" lang={LANG_META[p.lang].html} dir={LANG_META[p.lang].rtl ? "rtl" : undefined}>{p.text || dots}</p>
       <p className={`cap-sub ${mode === "solo" ? "solo" : ""}`} lang={LANG_META[q.lang].html} dir={LANG_META[q.lang].rtl ? "rtl" : undefined}>{q.text || (m.status === "error" ? "" : dots)}</p>
       {!guestView && m.back && <p className={`cap-back ${backOff ? "off" : ""}`}><b>{backOff ? "⚠ 뜻 확인" : "역번역 ✓"}</b> {m.back}{backOff && m.backIssue ? ` — ${m.backIssue}` : ""}</p>}
@@ -872,6 +974,7 @@ function HistoryRow({ m, mode, G, speaking, onReplay }: { m: Msg; mode: Mode; G:
         <p className="h-main" lang={LANG_META[p.lang].html} dir={LANG_META[p.lang].rtl ? "rtl" : undefined}>{p.text}</p>
         <p className="h-sub" lang={LANG_META[q.lang].html} dir={LANG_META[q.lang].rtl ? "rtl" : undefined}>{q.text}</p>
         {!guestView && backOff && <p className="h-warn">⚠ 뜻 확인 — {m.backIssue || m.back}</p>}
+        {m.recovered && !guestView && <p className="h-tag">겹친 말 복원</p>}
         {m.status === "error" && <p className="err">⚠︎ {guestView ? G.failed : "통역 실패"}</p>}
       </div>
       {m.status === "done" && <button className="h-replay" onClick={onReplay} aria-label={guestView ? G.replay : "다시 듣기"}><Icon n={speaking ? "sound" : "play"} size={16} /></button>}

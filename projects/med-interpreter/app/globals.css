@@ -520,3 +520,4 @@ body { background: var(--bg); letter-spacing: -0.005em; }
 .consent-bar { border-width: 1px; box-shadow: 0 12px 30px rgba(11,26,30,.08); }
 .sheet { border-radius: 26px 26px 0 0; }
 .btn.primary { background: var(--accent, var(--brand)); }
+.h-tag { margin-top: 4px; display: inline-block; font-size: 11.5px; font-weight: 750; color: var(--guest-ink); background: var(--guest-soft); padding: 2px 8px; border-radius: 999px; }
