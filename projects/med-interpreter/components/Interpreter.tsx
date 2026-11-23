@@ -393,8 +393,10 @@ function Conversation({ mode, room: roomCode, boot, onExit }: { mode: Mode; room
         const text = stripEcho(sides[side].join(" ").trim());
         if (!text) return;
         const had = live[side];
-        // 실시간 받아쓰기가 이 사람 말을 못 잡았거나, 조각만 잡았으면(복원본이 훨씬 길면) 복원본으로 채운다
-        if (had && size(text) <= size(had.text) * 1.5 + 6) return;
+        // 실시간 받아쓰기가 이 사람 말을 못 잡았거나, 조각만 잡았으면(복원본이 훨씬 길면) 복원본으로 채운다.
+        // 두 사람 목소리가 함께 나온 발화(진짜 겹침)면 실시간 쪽이 섞여 틀리기 쉬우므로, 내용이 다를 때 복원본을 쓴다.
+        const overlapped = sides.ko.length > 0 && sides.fx.length > 0;
+        if (had && !(size(text) > size(had.text) * 1.5 + 6 || (overlapped && similar(text, had.text) < 0.8))) return;
         const lang: Lang = side === "ko" ? "ko" : (detectLang(text, S.current.guestLang) ?? S.current.guestLang);
         if (lang !== "ko" && isGuestLang(lang)) changeGuestLang(lang);
         const at = S.current.msgs.find((m) => m.id === had?.id)?.at ?? turn.started + offset;
