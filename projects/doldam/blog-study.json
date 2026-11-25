@@ -48,5 +48,12 @@
   "output_dir": "output/blog-study",
   "summary_path": "docs/research/blog-study-summary.md",
   "project_dir": ".",
-  "clinic_only": true
+  "clinic_only": true,
+  "watch_blogs": [
+    {
+      "id": "ladeover886",
+      "name": "오쿨리한방병원",
+      "per_day": 5
+    }
+  ]
 }

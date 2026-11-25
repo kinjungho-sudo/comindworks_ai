@@ -10,7 +10,8 @@ _프로젝트 규칙 — v0.1 (2026-11-26)_
 
 ## 블로그 학습 (2026-11-26 정호님 지시)
 
-- 매일 새벽 예약 작업 `doldam-blog-study-daily`가 30개를 학습한다. 설정: [blog-study.json](blog-study.json)
+- 매일 새벽 예약 작업 `doldam-blog-study-daily`가 키워드 글 30개 + 지정 블로그 새 글을 학습한다. 설정: [blog-study.json](blog-study.json)
+- 지정 벤치마킹 블로그(`watch_blogs`): 오쿨리한방병원(ladeover886). 추가는 blog-study.json에 한 줄, 처음 한 번은 `--backfill 30`으로 지난 글까지
 - 실행: `python3 ../../shared/skills/blog-study/scripts/study.py blog-study.json` (이 폴더에서, 3~5분)
 - 결과: 오늘 `output/blog-study/<날짜>.md`, 누적·트렌드 `docs/research/blog-study-summary.md`, 글쓰기 가이드 `docs/blog-guide.md`
 - 다른 병원 글의 문장·이미지는 저장·복사하지 않는다. 형식만 배운다.

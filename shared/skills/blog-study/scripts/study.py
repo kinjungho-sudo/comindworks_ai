@@ -11,6 +11,9 @@
   clinic_hint         제목에 이 정규식이 맞으면 병원 글로 본다(우선 선택)
   clinic_only         true면 병원 글만 고른다(모자라면 그날은 적게 모은다)
   exclude_authors     학습에서 뺄 블로그 아이디(우리 병원 블로그 등)
+  watch_blogs         지정 벤치마킹 블로그 [{"id": "블로그아이디", "name": "이름", "per_day": 5}].
+                      매일 안 본 글을 최신순으로 per_day개 측정하고, 글 목록으로 발행 주기·글 종류를 본다.
+                      --backfill N 을 붙이면 이번 실행만 블로그당 N개까지 측정(처음 등록할 때)
   data_dir, output_dir, summary_path, project_dir   설정 파일 기준 상대 경로
 
 하는 일: 네이버 블로그 검색 → 안 본 글 선택 → 모바일 화면에서 형식 측정(measure.js) →
@@ -56,6 +59,26 @@ def load_json(p, default):
         return json.loads(Path(p).read_text())
     except (OSError, json.JSONDecodeError):
         return default
+
+
+def watch_list(bid, pages=3):
+    """블로그 글 목록(제목·날짜). 글 본문은 열지 않는다."""
+    items = []
+    for page in range(1, pages + 1):
+        u = f"https://m.blog.naver.com/api/blogs/{bid}/post-list?categoryNo=0&itemCount=30&page={page}"
+        req = urllib.request.Request(u, headers={"User-Agent": UA, "Referer": f"https://m.blog.naver.com/{bid}"})
+        try:
+            d = json.loads(urllib.request.urlopen(req, timeout=15).read().decode("utf-8", "ignore"))
+        except (OSError, json.JSONDecodeError):
+            break
+        got = (d.get("result") or {}).get("items") or []
+        for it in got:
+            items.append({"logNo": str(it.get("logNo")), "date": date.fromtimestamp(int(it.get("addDate", 0)) / 1000).isoformat(),
+                          "title": html.unescape(re.sub(r"<[^>]+>", "", it.get("titleWithInspectMessage") or it.get("title") or ""))})
+        if len(got) < 30:
+            break
+        time.sleep(1)
+    return items
 
 
 # ---------- 글 하나에서 계산 ----------
@@ -133,6 +156,19 @@ def collect(cfg, base):
                 c.update(keyword=q, mode=mode, clinic_like=c in clinic)
             picks += chosen
             print(f"[검색] {q} ({mode}): 후보 {len(cand)}, 병원 글 {len(clinic)} → {len(chosen)}개")
+    backfill = int(sys.argv[sys.argv.index("--backfill") + 1]) if "--backfill" in sys.argv else 0
+    for w in cfg.get("watch_blogs", []):
+        lst = watch_list(w["id"])
+        snap = load_json(data / f"watch_{w['id']}.json", {})
+        for it in lst:
+            snap[it["logNo"]] = it
+        (data / f"watch_{w['id']}.json").write_text(json.dumps(snap, ensure_ascii=False, indent=1))
+        k = max(backfill, w.get("per_day", 5))
+        new = [it for it in lst if f"https://m.blog.naver.com/{w['id']}/{it['logNo']}" not in seen][:k]
+        for it in new:
+            picks.append({"author": w["id"], "url": f"https://m.blog.naver.com/{w['id']}/{it['logNo']}", "search_title": it["title"], "rank": 0,
+                          "keyword": f"[지정] {w.get('name', w['id'])}", "mode": "지정", "clinic_like": True, "posted": it["date"]})
+        print(f"[지정] {w.get('name', w['id'])}: 목록 {len(lst)}개, 이번에 측정 {len(new)}개")
     with tempfile.TemporaryDirectory() as td:
         inp, outp = Path(td) / "in.json", Path(td) / "out.json"
         inp.write_text(json.dumps([p["url"] for p in picks]))
@@ -199,7 +235,36 @@ def title_terms(rows):
     return c
 
 
-def summarize(rows, title, trend_rows=None):
+def watch_section(cfg, data, allrows):
+    out = []
+    for w in cfg.get("watch_blogs", []):
+        snap = list(load_json(data / f"watch_{w['id']}.json", {}).values())
+        if not snap:
+            continue
+        name = w.get("name", w["id"])
+        today = date.today()
+        d30 = sum(1 for it in snap if it["date"] >= (today - timedelta(days=30)).isoformat())
+        d90 = sum(1 for it in snap if it["date"] >= (today - timedelta(days=90)).isoformat())
+        series = Counter()
+        for it in snap:
+            m = re.match(r"\s*[\[〔(]([^\]〕)]+)[\]〕)]", it["title"])
+            series[re.sub(r"\s*[①-⑳\d]+$", "", m.group(1)).strip() if m else "정보 글(꺾쇠 없음)"] += 1
+        mine = [r for r in allrows if r.get("ok") and r.get("author") == w["id"]]
+        out += [f"## 지정 블로그: {name} ([블로그](https://m.blog.naver.com/{w['id']}))", "",
+                f"- 글 목록 {len(snap)}개 기준 발행: 최근 30일 {d30}편, 최근 90일 {d90}편 (주 {round(d90 / 13, 1)}편)",
+                "- 글 종류(제목 앞 꺾쇠 기준): " + ", ".join(f"{k} {v}" for k, v in series.most_common(6))]
+        if mine:
+            T = [r.get("tone") or {} for r in mine]
+            out += [f"- 측정 {len(mine)}개: 글자 {rng([r['chars'] for r in mine], '자')}, 이미지 {rng([r['n_images'] for r in mine], '장')}, "
+                    f"인용구 {rng([r['n_quote'] for r in mine], '개')}, 표 사용 {pct(sum(1 for r in mine if r['n_table']), len(mine))}, "
+                    f"지도 {pct(sum(1 for r in mine if r['n_map']), len(mine))}",
+                    "- 주된 말투: " + ", ".join(f"{k} {v}" for k, v in Counter(max(t['endings'], key=t['endings'].get) for t in T if t.get('endings')).most_common()),
+                    "- 위험 표현이 잡힌 글: " + ", ".join(f"{RULE_NAME.get(k.split(':', 1)[1], k)} {v}" for k, v in Counter(k for r in mine for k in (r.get('medad') or {}) if k.startswith('block:')).most_common(5)) or "- 위험 표현: 없음"]
+        out += ["", "### 최근 글 제목", ""] + [f"- {it['date']} {it['title'][:70]}" for it in sorted(snap, key=lambda x: x["date"], reverse=True)[:15]] + [""]
+    return out
+
+
+def summarize(rows, title, trend_rows=None, extra=None):
     R = [r for r in rows if r.get("ok")]
     n = len(R)
     if not n:
@@ -268,6 +333,7 @@ def summarize(rows, title, trend_rows=None):
                 f"최근 7일 최신순 글 {len(recent)}개 vs 그 밖의 글 {len(old)}개. 낱말: 최근 비율 / 이전 비율", ""]
         out += [f"- {w}: {round(100 * c / nr)}% / {round(100 * co.get(w, 0) / no)}%" for w, c in rising] or ["- (아직 자료가 적어요)"]
         out += ["", "### 최근 최신 글 제목", ""] + [f"- {r['title'][:60]}  _({r['keyword']}, {r['date']})_" for r in recent[-25:]] + [""]
+    out += extra or []
     out += ["## 소제목 예시 (인용구·큰 글씨에서)", ""]
     ex = [f"- {h}  _({r['keyword']})_" for r in R for h in (r["heads"] + r["big_paras"])[:3] if 6 <= len(h) <= 50]
     out += ex[:30] + ["", "## 첫 문장 유형을 볼 발췌 (짧게)", ""]
@@ -296,7 +362,7 @@ def main():
     recent = [r for r in allrows if r.get("mode") == "최신" and r["date"] >= cut]
     days = sorted({r["date"] for r in allrows})
     summary.parent.mkdir(parents=True, exist_ok=True)
-    summary.write_text(summarize(allrows, f"{cfg.get('name', '블로그')} 학습 누적 요약 ({days[0] if days else '-'} ~ {days[-1] if days else '-'}, {len(allrows)}개)", trend_rows=recent))
+    summary.write_text(summarize(allrows, f"{cfg.get('name', '블로그')} 학습 누적 요약 ({days[0] if days else '-'} ~ {days[-1] if days else '-'}, {len(allrows)}개)", trend_rows=recent, extra=watch_section(cfg, data, allrows)))
     print(f"[누적] {summary} ({len(allrows)}개)")
 
 
