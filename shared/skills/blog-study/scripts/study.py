@@ -182,7 +182,8 @@ def collect(cfg, base):
         if m.get("ok"):
             row["tone"] = tone(m.get("text", ""))
             row["img"] = image_profile(m)
-            row["medad"] = medad_counts(project, m.get("title", ""), m.get("text", ""))
+            if cfg.get("medad", True):
+                row["medad"] = medad_counts(project, m.get("title", ""), m.get("text", ""))
         rows.append(row)
         seen.add(p["url"])
     with open(data / "posts.jsonl", "a") as f:

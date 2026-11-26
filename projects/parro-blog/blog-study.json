@@ -1,0 +1,22 @@
+{
+  "name": "Parro 홍보 블로그 벤치마킹",
+  "_about": "B2B SaaS CS·온보딩 담당자가 검색할 매뉴얼·가이드·온보딩 주제. 키워드 6개 × (관련도 3 + 최신 2).",
+  "keywords_per_day": 6,
+  "per_keyword": 3,
+  "per_keyword_recent": 2,
+  "clinic_hint": "가이드|매뉴얼|온보딩|SaaS|솔루션|툴|자동화|CS|고객|교육|튜토리얼|플랫폼",
+  "clinic_only": false,
+  "medad": false,
+  "exclude_authors": [],
+  "keywords": [
+    "업무 매뉴얼 만들기", "사용자 매뉴얼 작성법", "고객 온보딩 자동화", "SaaS 온보딩",
+    "CS 업무 효율화", "튜토리얼 만드는 법", "화면 캡처 매뉴얼", "매뉴얼 자동화 툴",
+    "인앱 가이드", "디지털 어답션 플랫폼", "신입 교육 매뉴얼", "업무 인수인계 문서",
+    "고객 지원 FAQ 만들기", "B2B SaaS 고객 성공", "프로그램 사용법 영상 만들기", "Scribe 사용법",
+    "Tango 매뉴얼", "업무 프로세스 문서화", "사내 시스템 교육", "CS 반복 문의 줄이기"
+  ],
+  "data_dir": "data/blog-study",
+  "output_dir": "output/blog-study",
+  "summary_path": "docs/research/blog-study-summary.md",
+  "project_dir": "."
+}
