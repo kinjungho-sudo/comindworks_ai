@@ -1,0 +1,1032 @@
+{
+ "terms": [
+  {
+   "category": "진료과",
+   "ko": "내과",
+   "en": "Internal Medicine",
+   "zh": "内科",
+   "ja": "内科",
+   "ru": "терапия",
+   "vi": "Nội khoa"
+  },
+  {
+   "category": "진료과",
+   "ko": "외과",
+   "en": "General Surgery",
+   "zh": "普通外科",
+   "ja": "外科",
+   "ru": "общая хирургия",
+   "vi": "Ngoại tổng quát"
+  },
+  {
+   "category": "진료과",
+   "ko": "정형외과",
+   "en": "Orthopedics",
+   "zh": "骨科",
+   "ja": "整形外科",
+   "ru": "ортопедия",
+   "vi": "Chấn thương chỉnh hình"
+  },
+  {
+   "category": "진료과",
+   "ko": "신경외과",
+   "en": "Neurosurgery",
+   "zh": "神经外科",
+   "ja": "脳神経外科",
+   "ru": "нейрохирургия",
+   "vi": "Ngoại thần kinh"
+  },
+  {
+   "category": "진료과",
+   "ko": "신경과",
+   "en": "Neurology",
+   "zh": "神经内科",
+   "ja": "脳神経内科",
+   "ru": "неврология",
+   "vi": "Thần kinh"
+  },
+  {
+   "category": "진료과",
+   "ko": "소아청소년과",
+   "en": "Pediatrics",
+   "zh": "儿科",
+   "ja": "小児科",
+   "ru": "педиатрия",
+   "vi": "Nhi khoa"
+  },
+  {
+   "category": "진료과",
+   "ko": "산부인과",
+   "en": "Obstetrics and Gynecology",
+   "zh": "妇产科",
+   "ja": "産婦人科",
+   "ru": "акушерство и гинекология",
+   "vi": "Sản phụ khoa"
+  },
+  {
+   "category": "진료과",
+   "ko": "피부과",
+   "en": "Dermatology",
+   "zh": "皮肤科",
+   "ja": "皮膚科",
+   "ru": "дерматология",
+   "vi": "Da liễu"
+  },
+  {
+   "category": "진료과",
+   "ko": "안과",
+   "en": "Ophthalmology",
+   "zh": "眼科",
+   "ja": "眼科",
+   "ru": "офтальмология",
+   "vi": "Mắt"
+  },
+  {
+   "category": "진료과",
+   "ko": "이비인후과",
+   "en": "Otolaryngology (ENT)",
+   "zh": "耳鼻咽喉科",
+   "ja": "耳鼻咽喉科",
+   "ru": "оториноларингология",
+   "vi": "Tai Mũi Họng"
+  },
+  {
+   "category": "진료과",
+   "ko": "비뇨의학과",
+   "en": "Urology",
+   "zh": "泌尿外科",
+   "ja": "泌尿器科",
+   "ru": "урология",
+   "vi": "Tiết niệu"
+  },
+  {
+   "category": "진료과",
+   "ko": "치과",
+   "en": "Dentistry",
+   "zh": "口腔科",
+   "ja": "歯科",
+   "ru": "стоматология",
+   "vi": "Nha khoa"
+  },
+  {
+   "category": "진료과",
+   "ko": "정신건강의학과",
+   "en": "Psychiatry",
+   "zh": "精神科",
+   "ja": "精神科",
+   "ru": "психиатрия",
+   "vi": "Tâm thần"
+  },
+  {
+   "category": "진료과",
+   "ko": "재활의학과",
+   "en": "Rehabilitation Medicine",
+   "zh": "康复医学科",
+   "ja": "リハビリテーション科",
+   "ru": "реабилитационная медицина",
+   "vi": "Phục hồi chức năng"
+  },
+  {
+   "category": "진료과",
+   "ko": "가정의학과",
+   "en": "Family Medicine",
+   "zh": "全科医学科",
+   "ja": "家庭医療科",
+   "ru": "семейная медицина",
+   "vi": "Y học gia đình"
+  },
+  {
+   "category": "진료과",
+   "ko": "영상의학과",
+   "en": "Radiology",
+   "zh": "医学影像科",
+   "ja": "放射線科",
+   "ru": "лучевая диагностика",
+   "vi": "Chẩn đoán hình ảnh"
+  },
+  {
+   "category": "진료과",
+   "ko": "응급실",
+   "en": "Emergency Room",
+   "zh": "急诊室",
+   "ja": "救急外来",
+   "ru": "приёмное отделение",
+   "vi": "Khoa Cấp cứu"
+  },
+  {
+   "category": "진료과",
+   "ko": "건강검진센터",
+   "en": "Health Checkup Center",
+   "zh": "体检中心",
+   "ja": "健診センター",
+   "ru": "центр медицинских осмотров",
+   "vi": "Trung tâm khám sức khỏe"
+  },
+  {
+   "category": "접수",
+   "ko": "접수",
+   "en": "registration",
+   "zh": "挂号",
+   "ja": "受付",
+   "ru": "регистрация",
+   "vi": "đăng ký khám"
+  },
+  {
+   "category": "접수",
+   "ko": "초진",
+   "en": "first visit",
+   "zh": "初诊",
+   "ja": "初診",
+   "ru": "первичный прием",
+   "vi": "khám lần đầu"
+  },
+  {
+   "category": "접수",
+   "ko": "재진",
+   "en": "follow-up visit",
+   "zh": "复诊",
+   "ja": "再診",
+   "ru": "повторный прием",
+   "vi": "tái khám"
+  },
+  {
+   "category": "접수",
+   "ko": "예약",
+   "en": "appointment",
+   "zh": "预约",
+   "ja": "予約",
+   "ru": "запись на прием",
+   "vi": "đặt lịch hẹn"
+  },
+  {
+   "category": "접수",
+   "ko": "당일 접수",
+   "en": "same-day registration",
+   "zh": "当日挂号",
+   "ja": "当日受付",
+   "ru": "запись в день обращения",
+   "vi": "đăng ký khám trong ngày"
+  },
+  {
+   "category": "접수",
+   "ko": "대기 번호",
+   "en": "waiting number",
+   "zh": "候诊号",
+   "ja": "受付番号",
+   "ru": "номер очереди",
+   "vi": "số thứ tự chờ"
+  },
+  {
+   "category": "접수",
+   "ko": "진료 대기",
+   "en": "waiting to see the doctor",
+   "zh": "候诊",
+   "ja": "診察待ち",
+   "ru": "ожидание приема врача",
+   "vi": "chờ khám"
+  },
+  {
+   "category": "접수",
+   "ko": "신분증",
+   "en": "ID card",
+   "zh": "身份证件",
+   "ja": "身分証明書",
+   "ru": "удостоверение личности",
+   "vi": "giấy tờ tùy thân"
+  },
+  {
+   "category": "접수",
+   "ko": "여권",
+   "en": "passport",
+   "zh": "护照",
+   "ja": "パスポート",
+   "ru": "паспорт",
+   "vi": "hộ chiếu"
+  },
+  {
+   "category": "접수",
+   "ko": "외국인등록증",
+   "en": "Alien Registration Card",
+   "zh": "外国人居留证件",
+   "ja": "在留カード",
+   "ru": "вид на жительство",
+   "vi": "thẻ tạm trú"
+  },
+  {
+   "category": "접수",
+   "ko": "건강보험증",
+   "en": "National Health Insurance card",
+   "zh": "医保卡",
+   "ja": "健康保険証",
+   "ru": "полис ОМС",
+   "vi": "thẻ bảo hiểm y tế"
+  },
+  {
+   "category": "접수",
+   "ko": "건강보험",
+   "en": "National Health Insurance",
+   "zh": "医保",
+   "ja": "健康保険",
+   "ru": "ОМС",
+   "vi": "bảo hiểm y tế"
+  },
+  {
+   "category": "접수",
+   "ko": "비보험",
+   "en": "not covered by insurance",
+   "zh": "自费",
+   "ja": "保険適用外",
+   "ru": "не покрывается страховкой",
+   "vi": "không được bảo hiểm chi trả"
+  },
+  {
+   "category": "접수",
+   "ko": "실손보험",
+   "en": "private medical insurance",
+   "zh": "商业医疗保险",
+   "ja": "民間医療保険",
+   "ru": "ДМС",
+   "vi": "bảo hiểm sức khỏe tư nhân"
+  },
+  {
+   "category": "접수",
+   "ko": "진료의뢰서",
+   "en": "referral letter",
+   "zh": "转诊单",
+   "ja": "紹介状",
+   "ru": "направление",
+   "vi": "giấy chuyển tuyến"
+  },
+  {
+   "category": "접수",
+   "ko": "문진표",
+   "en": "medical questionnaire",
+   "zh": "病史问卷",
+   "ja": "問診票",
+   "ru": "медицинская анкета",
+   "vi": "phiếu khai bệnh sử"
+  },
+  {
+   "category": "접수",
+   "ko": "개인정보 동의서",
+   "en": "personal information consent form",
+   "zh": "个人信息同意书",
+   "ja": "個人情報取扱同意書",
+   "ru": "согласие на обработку персональных данных",
+   "vi": "phiếu đồng ý xử lý thông tin cá nhân"
+  },
+  {
+   "category": "접수",
+   "ko": "보호자",
+   "en": "guardian",
+   "zh": "监护人",
+   "ja": "保護者",
+   "ru": "законный представитель",
+   "vi": "người giám hộ"
+  },
+  {
+   "category": "수납",
+   "ko": "수납",
+   "en": "payment counter",
+   "zh": "收费处",
+   "ja": "会計",
+   "ru": "касса",
+   "vi": "quầy thu ngân"
+  },
+  {
+   "category": "수납",
+   "ko": "진료비",
+   "en": "medical fee",
+   "zh": "医疗费用",
+   "ja": "診療費",
+   "ru": "стоимость медицинских услуг",
+   "vi": "chi phí khám chữa bệnh"
+  },
+  {
+   "category": "수납",
+   "ko": "본인부담금",
+   "en": "co-payment",
+   "zh": "个人自付",
+   "ja": "自己負担金",
+   "ru": "доплата пациента",
+   "vi": "đồng chi trả"
+  },
+  {
+   "category": "수납",
+   "ko": "영수증",
+   "en": "receipt",
+   "zh": "收据",
+   "ja": "領収書",
+   "ru": "квитанция",
+   "vi": "biên lai"
+  },
+  {
+   "category": "수납",
+   "ko": "진료비 세부내역서",
+   "en": "itemized bill",
+   "zh": "费用明细清单",
+   "ja": "診療明細書",
+   "ru": "детализация счета",
+   "vi": "bảng kê chi phí khám chữa bệnh"
+  },
+  {
+   "category": "수납",
+   "ko": "진단서",
+   "en": "medical certificate",
+   "zh": "诊断证明",
+   "ja": "診断書",
+   "ru": "медицинская справка",
+   "vi": "giấy chẩn đoán"
+  },
+  {
+   "category": "수납",
+   "ko": "소견서",
+   "en": "doctor's note",
+   "zh": "医师意见书",
+   "ja": "診療情報提供書",
+   "ru": "заключение врача",
+   "vi": "giấy xác nhận của bác sĩ"
+  },
+  {
+   "category": "수납",
+   "ko": "처방전",
+   "en": "prescription",
+   "zh": "处方",
+   "ja": "処方箋",
+   "ru": "рецепт",
+   "vi": "đơn thuốc"
+  },
+  {
+   "category": "수납",
+   "ko": "약국",
+   "en": "pharmacy",
+   "zh": "药房",
+   "ja": "薬局",
+   "ru": "аптека",
+   "vi": "nhà thuốc"
+  },
+  {
+   "category": "수납",
+   "ko": "원외처방",
+   "en": "prescription to be filled at an outside pharmacy",
+   "zh": "院外处方",
+   "ja": "院外処方",
+   "ru": "рецепт для внешней аптеки",
+   "vi": "đơn thuốc mua ngoài bệnh viện"
+  },
+  {
+   "category": "수납",
+   "ko": "카드 결제",
+   "en": "card payment",
+   "zh": "刷卡支付",
+   "ja": "カード払い",
+   "ru": "оплата картой",
+   "vi": "thanh toán bằng thẻ"
+  },
+  {
+   "category": "수납",
+   "ko": "환불",
+   "en": "refund",
+   "zh": "退款",
+   "ja": "返金",
+   "ru": "возврат средств",
+   "vi": "hoàn tiền"
+  },
+  {
+   "category": "검사",
+   "ko": "혈액검사",
+   "en": "blood test",
+   "zh": "血液检查",
+   "ja": "血液検査",
+   "ru": "анализ крови",
+   "vi": "xét nghiệm máu"
+  },
+  {
+   "category": "검사",
+   "ko": "소변검사",
+   "en": "urine test",
+   "zh": "尿液检查",
+   "ja": "尿検査",
+   "ru": "анализ мочи",
+   "vi": "xét nghiệm nước tiểu"
+  },
+  {
+   "category": "검사",
+   "ko": "엑스레이",
+   "en": "X-ray",
+   "zh": "X光检查",
+   "ja": "レントゲン検査",
+   "ru": "рентген",
+   "vi": "chụp X-quang"
+  },
+  {
+   "category": "검사",
+   "ko": "초음파",
+   "en": "ultrasound",
+   "zh": "超声检查",
+   "ja": "超音波検査",
+   "ru": "УЗИ",
+   "vi": "siêu âm"
+  },
+  {
+   "category": "검사",
+   "ko": "CT",
+   "en": "CT scan",
+   "zh": "CT检查",
+   "ja": "CT検査",
+   "ru": "КТ",
+   "vi": "chụp CT"
+  },
+  {
+   "category": "검사",
+   "ko": "MRI",
+   "en": "MRI",
+   "zh": "MRI检查",
+   "ja": "MRI検査",
+   "ru": "МРТ",
+   "vi": "chụp MRI"
+  },
+  {
+   "category": "검사",
+   "ko": "심전도",
+   "en": "electrocardiogram (ECG)",
+   "zh": "心电图",
+   "ja": "心電図",
+   "ru": "ЭКГ",
+   "vi": "điện tâm đồ"
+  },
+  {
+   "category": "검사",
+   "ko": "위내시경",
+   "en": "gastroscopy (upper endoscopy)",
+   "zh": "胃镜检查",
+   "ja": "胃カメラ",
+   "ru": "гастроскопия",
+   "vi": "nội soi dạ dày"
+  },
+  {
+   "category": "검사",
+   "ko": "대장내시경",
+   "en": "colonoscopy",
+   "zh": "结肠镜检查",
+   "ja": "大腸内視鏡",
+   "ru": "колоноскопия",
+   "vi": "nội soi đại tràng"
+  },
+  {
+   "category": "검사",
+   "ko": "수면내시경",
+   "en": "sedated endoscopy",
+   "zh": "无痛内镜",
+   "ja": "鎮静下内視鏡",
+   "ru": "эндоскопия под седацией",
+   "vi": "nội soi gây mê"
+  },
+  {
+   "category": "검사",
+   "ko": "금식",
+   "en": "fasting",
+   "zh": "禁食",
+   "ja": "絶食",
+   "ru": "голодание",
+   "vi": "nhịn ăn"
+  },
+  {
+   "category": "검사",
+   "ko": "공복",
+   "en": "empty stomach",
+   "zh": "空腹",
+   "ja": "空腹",
+   "ru": "натощак",
+   "vi": "bụng đói"
+  },
+  {
+   "category": "검사",
+   "ko": "조영제",
+   "en": "contrast agent",
+   "zh": "造影剂",
+   "ja": "造影剤",
+   "ru": "контрастное вещество",
+   "vi": "thuốc cản quang"
+  },
+  {
+   "category": "검사",
+   "ko": "검사 결과",
+   "en": "test results",
+   "zh": "检查结果",
+   "ja": "検査結果",
+   "ru": "результаты анализов",
+   "vi": "kết quả xét nghiệm"
+  },
+  {
+   "category": "증상",
+   "ko": "두통",
+   "en": "headache",
+   "zh": "头痛",
+   "ja": "頭痛",
+   "ru": "головная боль",
+   "vi": "đau đầu"
+  },
+  {
+   "category": "증상",
+   "ko": "복통",
+   "en": "stomach ache",
+   "zh": "腹痛",
+   "ja": "腹痛",
+   "ru": "боль в животе",
+   "vi": "đau bụng"
+  },
+  {
+   "category": "증상",
+   "ko": "발열",
+   "en": "fever",
+   "zh": "发热",
+   "ja": "発熱",
+   "ru": "лихорадка",
+   "vi": "sốt"
+  },
+  {
+   "category": "증상",
+   "ko": "기침",
+   "en": "cough",
+   "zh": "咳嗽",
+   "ja": "咳",
+   "ru": "кашель",
+   "vi": "ho"
+  },
+  {
+   "category": "증상",
+   "ko": "어지러움",
+   "en": "dizziness",
+   "zh": "头晕",
+   "ja": "めまい",
+   "ru": "головокружение",
+   "vi": "chóng mặt"
+  },
+  {
+   "category": "증상",
+   "ko": "구토",
+   "en": "vomiting",
+   "zh": "呕吐",
+   "ja": "嘔吐",
+   "ru": "рвота",
+   "vi": "nôn"
+  },
+  {
+   "category": "증상",
+   "ko": "설사",
+   "en": "diarrhea",
+   "zh": "腹泻",
+   "ja": "下痢",
+   "ru": "диарея",
+   "vi": "tiêu chảy"
+  },
+  {
+   "category": "증상",
+   "ko": "가슴 통증",
+   "en": "chest pain",
+   "zh": "胸痛",
+   "ja": "胸痛",
+   "ru": "боль в груди",
+   "vi": "đau ngực"
+  },
+  {
+   "category": "증상",
+   "ko": "호흡곤란",
+   "en": "shortness of breath",
+   "zh": "呼吸困难",
+   "ja": "呼吸困難",
+   "ru": "одышка",
+   "vi": "khó thở"
+  },
+  {
+   "category": "증상",
+   "ko": "알레르기",
+   "en": "allergy",
+   "zh": "过敏",
+   "ja": "アレルギー",
+   "ru": "аллергия",
+   "vi": "dị ứng"
+  },
+  {
+   "category": "증상",
+   "ko": "복용 중인 약",
+   "en": "medications you are currently taking",
+   "zh": "正在服用的药物",
+   "ja": "服用中の薬",
+   "ru": "принимаемые лекарства",
+   "vi": "thuốc đang dùng"
+  },
+  {
+   "category": "증상",
+   "ko": "임신 여부",
+   "en": "whether you are pregnant",
+   "zh": "是否怀孕",
+   "ja": "妊娠の有無",
+   "ru": "наличие беременности",
+   "vi": "tình trạng mang thai"
+  },
+  {
+   "category": "안내",
+   "ko": "진료실",
+   "en": "consultation room",
+   "zh": "诊室",
+   "ja": "診察室",
+   "ru": "кабинет врача",
+   "vi": "phòng khám"
+  },
+  {
+   "category": "안내",
+   "ko": "주사실",
+   "en": "injection room",
+   "zh": "注射室",
+   "ja": "注射室",
+   "ru": "процедурный кабинет",
+   "vi": "phòng tiêm"
+  },
+  {
+   "category": "안내",
+   "ko": "채혈실",
+   "en": "blood collection room",
+   "zh": "采血室",
+   "ja": "採血室",
+   "ru": "кабинет забора крови",
+   "vi": "phòng lấy máu"
+  },
+  {
+   "category": "안내",
+   "ko": "원무과",
+   "en": "administration office",
+   "zh": "医务科",
+   "ja": "医事課",
+   "ru": "административный отдел",
+   "vi": "phòng hành chính"
+  },
+  {
+   "category": "안내",
+   "ko": "엘리베이터",
+   "en": "elevator",
+   "zh": "电梯",
+   "ja": "エレベーター",
+   "ru": "лифт",
+   "vi": "thang máy"
+  },
+  {
+   "category": "안내",
+   "ko": "화장실",
+   "en": "restroom",
+   "zh": "卫生间",
+   "ja": "トイレ",
+   "ru": "туалет",
+   "vi": "nhà vệ sinh"
+  },
+  {
+   "category": "안내",
+   "ko": "주차 정산",
+   "en": "parking validation",
+   "zh": "停车缴费",
+   "ja": "駐車料金精算",
+   "ru": "оплата парковки",
+   "vi": "thanh toán phí đỗ xe"
+  },
+  {
+   "category": "안내",
+   "ko": "입원",
+   "en": "hospitalization",
+   "zh": "住院",
+   "ja": "入院",
+   "ru": "госпитализация",
+   "vi": "nhập viện"
+  },
+  {
+   "category": "안내",
+   "ko": "퇴원",
+   "en": "discharge",
+   "zh": "出院",
+   "ja": "退院",
+   "ru": "выписка",
+   "vi": "xuất viện"
+  },
+  {
+   "category": "안내",
+   "ko": "통역 서비스",
+   "en": "interpretation service",
+   "zh": "口译服务",
+   "ja": "通訳サービス",
+   "ru": "услуги переводчика",
+   "vi": "dịch vụ phiên dịch"
+  }
+ ],
+ "phrases": [
+  {
+   "category": "접수",
+   "sort": 0,
+   "ko": "안녕하세요. 무엇을 도와드릴까요?",
+   "en": "Hello. How can I help you?",
+   "zh": "您好。请问有什么可以帮您？",
+   "ja": "こんにちは。どのようなご用件でしょうか。",
+   "ru": "Здравствуйте. Чем я могу Вам помочь?",
+   "vi": "Xin chào. Tôi có thể giúp gì cho quý vị ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 1,
+   "ko": "처음 오셨나요, 아니면 이전에 오신 적이 있나요?",
+   "en": "Is this your first visit, or have you been here before?",
+   "zh": "请问您是第一次来，还是以前来过？",
+   "ja": "初めてお越しですか。それとも以前に来られたことがありますか。",
+   "ru": "Вы у нас впервые или уже были раньше?",
+   "vi": "Đây là lần đầu quý vị đến, hay quý vị đã từng đến trước đây ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 2,
+   "ko": "예약하셨나요?",
+   "en": "Do you have an appointment?",
+   "zh": "请问您有预约吗？",
+   "ja": "ご予約はされていますか。",
+   "ru": "У Вас есть запись на прием?",
+   "vi": "Quý vị có đặt lịch hẹn không ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 3,
+   "ko": "신분증이나 여권을 보여주시겠어요?",
+   "en": "May I see your ID card or passport, please?",
+   "zh": "请出示您的身份证件或护照。",
+   "ja": "身分証明書かパスポートを見せていただけますか。",
+   "ru": "Пожалуйста, покажите Ваше удостоверение личности или паспорт.",
+   "vi": "Quý vị vui lòng cho xem giấy tờ tùy thân hoặc hộ chiếu được không ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 4,
+   "ko": "이 문진표를 작성해 주세요.",
+   "en": "Please fill out this medical questionnaire.",
+   "zh": "请填写这份问诊表。",
+   "ja": "こちらの問診票にご記入ください。",
+   "ru": "Пожалуйста, заполните эту медицинскую анкету.",
+   "vi": "Vui lòng điền vào phiếu khai bệnh này ạ."
+  },
+  {
+   "category": "접수",
+   "sort": 5,
+   "ko": "어디가 불편하신가요?",
+   "en": "What seems to be bothering you?",
+   "zh": "请问您哪里不舒服？",
+   "ja": "どこがおつらいですか。",
+   "ru": "Что Вас беспокоит?",
+   "vi": "Quý vị thấy khó chịu ở đâu ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 6,
+   "ko": "언제부터 아프셨나요?",
+   "en": "When did the pain start?",
+   "zh": "请问您从什么时候开始疼的？",
+   "ja": "いつから痛みがありますか。",
+   "ru": "С какого времени у Вас болит?",
+   "vi": "Quý vị bị đau từ khi nào ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 7,
+   "ko": "복용 중인 약이나 알레르기가 있으신가요?",
+   "en": "Are you taking any medications, or do you have any allergies?",
+   "zh": "请问您现在有在服用药物，或有过敏史吗？",
+   "ja": "服用中のお薬やアレルギーはありますか。",
+   "ru": "Вы принимаете какие-либо лекарства или у Вас есть аллергия?",
+   "vi": "Quý vị có đang dùng thuốc gì hoặc có dị ứng gì không ạ?"
+  },
+  {
+   "category": "접수",
+   "sort": 8,
+   "ko": "접수되었습니다. 잠시 앉아서 기다려 주세요.",
+   "en": "Your registration is complete. Please have a seat and wait for a moment.",
+   "zh": "已经为您挂号了。请坐下稍等。",
+   "ja": "受付が完了しました。お掛けになって少々お待ちください。",
+   "ru": "Ваша регистрация завершена. Пожалуйста, присядьте и немного подождите.",
+   "vi": "Quý vị đã được tiếp nhận. Vui lòng ngồi chờ một chút ạ."
+  },
+  {
+   "category": "접수",
+   "sort": 9,
+   "ko": "이름이 불리면 진료실로 들어가 주세요.",
+   "en": "When your name is called, please go into the consultation room.",
+   "zh": "叫到您的名字时，请进入诊室。",
+   "ja": "お名前が呼ばれましたら、診察室へお入りください。",
+   "ru": "Когда назовут Ваше имя, пожалуйста, пройдите в кабинет врача.",
+   "vi": "Khi được gọi tên, vui lòng vào phòng khám ạ."
+  },
+  {
+   "category": "접수",
+   "sort": 10,
+   "ko": "대기 시간은 약 20분입니다.",
+   "en": "The wait time is about 20 minutes.",
+   "zh": "等候时间大约是20分钟。",
+   "ja": "待ち時間は約20分です。",
+   "ru": "Время ожидания составляет примерно 20 минут.",
+   "vi": "Thời gian chờ khoảng 20 phút ạ."
+  },
+  {
+   "category": "수납",
+   "sort": 11,
+   "ko": "진료가 끝나셨으면 수납 창구로 와 주세요.",
+   "en": "When your consultation is finished, please come to the payment counter.",
+   "zh": "看诊结束后，请到收费窗口。",
+   "ja": "診察が終わりましたら、会計窓口へお越しください。",
+   "ru": "После окончания приема, пожалуйста, подойдите к кассе.",
+   "vi": "Sau khi khám xong, vui lòng đến quầy thanh toán ạ."
+  },
+  {
+   "category": "수납",
+   "sort": 12,
+   "ko": "진료비는 이쪽에서 결제하시면 됩니다.",
+   "en": "You can pay the medical fee here.",
+   "zh": "您可以在这里支付诊疗费。",
+   "ja": "診療費はこちらでお支払いいただけます。",
+   "ru": "Оплатить медицинские услуги можно здесь.",
+   "vi": "Quý vị có thể thanh toán phí khám chữa bệnh tại đây ạ."
+  },
+  {
+   "category": "수납",
+   "sort": 13,
+   "ko": "카드로 결제하시겠어요, 현금으로 하시겠어요?",
+   "en": "Would you like to pay by card or in cash?",
+   "zh": "请问您用银行卡支付还是现金支付？",
+   "ja": "カードでお支払いになりますか。それとも現金になさいますか。",
+   "ru": "Вы будете оплачивать картой или наличными?",
+   "vi": "Quý vị muốn thanh toán bằng thẻ hay bằng tiền mặt ạ?"
+  },
+  {
+   "category": "수납",
+   "sort": 14,
+   "ko": "외국인은 건강보험이 적용되지 않을 수 있습니다.",
+   "en": "Health insurance may not apply to foreign nationals.",
+   "zh": "外国人可能无法适用健康保险。",
+   "ja": "外国籍の方は健康保険が適用されない場合があります。",
+   "ru": "Для иностранных граждан медицинская страховка может не применяться.",
+   "vi": "Người nước ngoài có thể không được áp dụng bảo hiểm y tế ạ."
+  },
+  {
+   "category": "수납",
+   "sort": 15,
+   "ko": "영수증과 처방전 여기 있습니다.",
+   "en": "Here are your receipt and prescription.",
+   "zh": "这是您的收据和处方。",
+   "ja": "領収書と処方箋はこちらです。",
+   "ru": "Вот Ваш чек и рецепт.",
+   "vi": "Đây là hóa đơn và đơn thuốc của quý vị ạ."
+  },
+  {
+   "category": "수납",
+   "sort": 16,
+   "ko": "처방전을 가지고 근처 약국에 가시면 됩니다.",
+   "en": "Please take the prescription to a nearby pharmacy.",
+   "zh": "请拿着处方去附近的药店取药。",
+   "ja": "処方箋を持って、お近くの薬局へ行ってください。",
+   "ru": "С этим рецептом Вы можете обратиться в ближайшую аптеку.",
+   "vi": "Quý vị vui lòng mang đơn thuốc đến nhà thuốc gần đây ạ."
+  },
+  {
+   "category": "수납",
+   "sort": 17,
+   "ko": "진단서가 필요하시면 말씀해 주세요.",
+   "en": "If you need a medical certificate, please let us know.",
+   "zh": "如果您需要诊断书，请告诉我们。",
+   "ja": "診断書が必要でしたら、お申し付けください。",
+   "ru": "Если Вам нужна медицинская справка, пожалуйста, сообщите нам.",
+   "vi": "Nếu quý vị cần giấy chẩn đoán, vui lòng cho chúng tôi biết ạ."
+  },
+  {
+   "category": "검사",
+   "sort": 18,
+   "ko": "검사 전 8시간 동안 금식해 주세요.",
+   "en": "Please fast for 8 hours before the test.",
+   "zh": "检查前请禁食8小时。",
+   "ja": "検査前の8時間は絶食してください。",
+   "ru": "Пожалуйста, не ешьте в течение 8 часов перед обследованием.",
+   "vi": "Vui lòng nhịn ăn trong 8 giờ trước khi xét nghiệm ạ."
+  },
+  {
+   "category": "검사",
+   "sort": 19,
+   "ko": "검사실은 2층에 있습니다.",
+   "en": "The testing room is on the second floor.",
+   "zh": "检查室在二楼。",
+   "ja": "検査室は2階にあります。",
+   "ru": "Кабинет обследования находится на втором этаже.",
+   "vi": "Phòng xét nghiệm ở tầng 2 ạ."
+  },
+  {
+   "category": "검사",
+   "sort": 20,
+   "ko": "검사 결과는 다음 진료 때 설명드립니다.",
+   "en": "We will explain the test results at your next appointment.",
+   "zh": "检查结果会在下次就诊时为您说明。",
+   "ja": "検査結果は次回の診察時にご説明します。",
+   "ru": "Результаты обследования мы объясним на следующем приеме.",
+   "vi": "Kết quả xét nghiệm sẽ được giải thích vào lần khám tiếp theo ạ."
+  },
+  {
+   "category": "안내",
+   "sort": 21,
+   "ko": "엘리베이터를 타고 3층으로 가세요.",
+   "en": "Please take the elevator to the third floor.",
+   "zh": "请乘电梯到三楼。",
+   "ja": "エレベーターで3階へお上がりください。",
+   "ru": "Пожалуйста, поднимитесь на лифте на третий этаж.",
+   "vi": "Vui lòng đi thang máy lên tầng 3 ạ."
+  },
+  {
+   "category": "안내",
+   "sort": 22,
+   "ko": "화장실은 복도 끝 오른쪽에 있습니다.",
+   "en": "The restroom is on the right at the end of the hallway.",
+   "zh": "洗手间在走廊尽头右侧。",
+   "ja": "お手洗いは廊下の突き当たり右側にあります。",
+   "ru": "Туалет находится справа в конце коридора.",
+   "vi": "Nhà vệ sinh ở bên phải cuối hành lang ạ."
+  },
+  {
+   "category": "안내",
+   "sort": 23,
+   "ko": "잠시만 기다려 주세요. 담당 직원을 불러 드리겠습니다.",
+   "en": "Please wait a moment. I will call the staff member in charge.",
+   "zh": "请稍等。我帮您叫负责的工作人员。",
+   "ja": "少々お待ちください。担当のスタッフをお呼びします。",
+   "ru": "Пожалуйста, подождите немного. Я позову ответственного сотрудника.",
+   "vi": "Vui lòng chờ một chút. Tôi sẽ gọi nhân viên phụ trách cho quý vị ạ."
+  },
+  {
+   "category": "안내",
+   "sort": 24,
+   "ko": "응급 상황이면 바로 응급실로 안내해 드리겠습니다.",
+   "en": "If this is an emergency, we will take you to the emergency room right away.",
+   "zh": "如果是紧急情况，我们会马上带您去急诊室。",
+   "ja": "緊急の場合は、すぐに救急室へご案内します。",
+   "ru": "Если это экстренная ситуация, мы сразу проводим Вас в отделение неотложной помощи.",
+   "vi": "Nếu là trường hợp cấp cứu, chúng tôi sẽ đưa quý vị đến phòng cấp cứu ngay ạ."
+  },
+  {
+   "category": "안내",
+   "sort": 25,
+   "ko": "다음 예약 날짜를 잡아 드릴까요?",
+   "en": "Would you like me to schedule your next appointment?",
+   "zh": "需要为您预约下次就诊时间吗？",
+   "ja": "次回の予約日をお取りしましょうか。",
+   "ru": "Записать Вас на следующий прием?",
+   "vi": "Quý vị có muốn tôi đặt lịch hẹn lần sau không ạ?"
+  },
+  {
+   "category": "안내",
+   "sort": 26,
+   "ko": "궁금한 점이 있으시면 언제든 말씀해 주세요.",
+   "en": "If you have any questions, please feel free to let us know at any time.",
+   "zh": "如果您有任何疑问，请随时告诉我们。",
+   "ja": "ご不明な点がありましたら、いつでもお知らせください。",
+   "ru": "Если у Вас есть вопросы, пожалуйста, обращайтесь в любое время.",
+   "vi": "Nếu có thắc mắc gì, xin cứ cho chúng tôi biết bất cứ lúc nào ạ."
+  }
+ ]
+}

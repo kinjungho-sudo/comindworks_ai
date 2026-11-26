@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Pretendard, Apple SD Gothic Neo, sans-serif">
+  <rect width="1200" height="800" fill="#f4f7f8"/>
+  <text x="60" y="80" font-size="44" font-weight="800" fill="#0f1f24">층별 안내 · Floor Guide</text>
+  <text x="60" y="122" font-size="22" fill="#82949a">예시 그림입니다 — 관리자 화면에서 우리 병원 안내도로 바꿔 주세요</text>
+  <g font-size="30" font-weight="700">
+    <rect x="60" y="160" width="1080" height="130" rx="20" fill="#fff" stroke="#dde5e7" stroke-width="2"/>
+    <rect x="60" y="160" width="140" height="130" rx="20" fill="#0f766e"/><text x="130" y="238" fill="#fff" text-anchor="middle">3F</text>
+    <text x="240" y="215" fill="#0f1f24">영상의학과 (X-ray · CT · MRI)</text><text x="240" y="260" font-size="22" font-weight="500" fill="#4a5c62">Radiology · 放射科 · 放射線科</text>
+    <rect x="60" y="310" width="1080" height="130" rx="20" fill="#fff" stroke="#dde5e7" stroke-width="2"/>
+    <rect x="60" y="310" width="140" height="130" rx="20" fill="#0f766e"/><text x="130" y="388" fill="#fff" text-anchor="middle">2F</text>
+    <text x="240" y="365" fill="#0f1f24">내과 · 채혈실 · 주사실</text><text x="240" y="410" font-size="22" font-weight="500" fill="#4a5c62">Internal Medicine · Blood test · Injection room</text>
+    <rect x="60" y="460" width="1080" height="130" rx="20" fill="#fff" stroke="#3b5bdb" stroke-width="4"/>
+    <rect x="60" y="460" width="140" height="130" rx="20" fill="#3b5bdb"/><text x="130" y="538" fill="#fff" text-anchor="middle">1F</text>
+    <text x="240" y="515" fill="#0f1f24">원무과(접수·수납) · 약국 · 안내데스크</text><text x="240" y="560" font-size="22" font-weight="500" fill="#4a5c62">Registration &amp; Payment · Pharmacy · You are here ●</text>
+    <rect x="60" y="610" width="1080" height="130" rx="20" fill="#fff" stroke="#dde5e7" stroke-width="2"/>
+    <rect x="60" y="610" width="140" height="130" rx="20" fill="#82949a"/><text x="130" y="688" fill="#fff" text-anchor="middle">B1</text>
+    <text x="240" y="665" fill="#0f1f24">주차장 · 주차 정산기</text><text x="240" y="710" font-size="22" font-weight="500" fill="#4a5c62">Parking · Parking payment</text>
+  </g>
+</svg>
